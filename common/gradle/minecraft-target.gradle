@@ -15,7 +15,8 @@ def targets = [
     '1.21.1': [neo: '21.1.236', fabric: '0.116.17+1.21.1', forge: '52.1.0',
                mcRange: '[1.21.1,1.21.2)', neoRange: '[21.1.236,21.2)', forgeRange: '[52.1.0,53)', fml: '[52,)']
 ]
-def target = providers.gradleProperty('mcTarget').getOrElse('1.21.1')
+def target = providers.gradleProperty('mcTarget').getOrElse('1.21.3')
+if (target != '1.21.3') throw new GradleException('This branch only supports Minecraft 1.21.3')
 if (!targets.containsKey(target))
     throw new GradleException("Unsupported mcTarget '${target}'. Supported: ${targets.keySet().join(', ')}")
 def selected = targets[target]
