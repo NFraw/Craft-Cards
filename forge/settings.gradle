@@ -5,5 +5,5 @@ pluginManagement {
     }
 }
 rootProject.name = 'crafty-cards-forge'
-def target = providers.gradleProperty('mcTarget').getOrElse('1.21.1')
+def target = providers.gradleProperty('mcTarget').getOrElse('1.21.6')
 if (target == '1.21.11') rootProject.buildFileName = 'build-modern.gradle'
