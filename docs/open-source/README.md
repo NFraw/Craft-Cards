@@ -1,6 +1,6 @@
-# 开源发布资料索引（本地待审稿）
+# 开源发布资料索引
 
-本目录是准备公开的 1.0.0 说明稿。当前仓库没有 Git remote；审阅通过、确定仓库地址与发布范围之前，不推送分支、不创建 GitHub Release。对外中文首页为根目录 [README](../../README.md)，另有 [English README](../../README.en.md)；视觉介绍为 [单页预览](../open-source-preview.html)。本版玩法是三人联机斗地主。
+本目录收录 1.0.0 的公开说明。对外中文首页为根目录 [README](../../README.md)，另有 [English README](../../README.en.md)；视觉介绍为 [单页预览](../open-source-preview.html)。本版玩法是三人联机斗地主。
 
 | 文档 | 读者 | 内容 |
 | --- | --- | --- |
@@ -16,7 +16,7 @@
 ## 发布前审阅清单
 
 - [ ] 作者确认 `LICENSE` 的 GPL-3.0-only 适用于拟公开的**全部代码、贴图、模型、文档**；如需例外，明确写出例外条款。
-- [ ] 核对 [PlayingCards → Calemi 的来源链](../../CREDITS.md) 与实际继承文件；当前有 69 张 PNG 与 OmbreMoon 参考包逐字节一致。上游页面/包内许可标示不同，发布 jar 和图标前须澄清授权。
+- [ ] 核对 [PlayingCards → Calemi 的来源链](../../CREDITS.md) 与实际继承文件。
 - [ ] 按[音频权利说明](../../release-materials/AUDIO-RIGHTS.md)继续核对 1.21.1 三个带音频的学习样本。旧导入记录与另一项目的 README 均指向第三方音频，原“作者自有、可再分发”声明不能作为许可依据；如有侵权，请联系下架。
 - [ ] 审核 `docs/ReferenFiles/`、`docs/superpowers/` 等历史规划和 `docs/evidence/` 的公开范围；历史稿不得当作当前功能承诺。
 - [ ] 核对所有截图/日志不包含私人用户名、世界路径、账户信息或外部服务凭据。
@@ -27,4 +27,4 @@
 
 当前自动化通过不代表所有游戏环境均无问题。特别是音频资源“存在”测试无法证明实际听感，现代版本也未统一移植 NeoForge GameTest。证据与限制详见 [验证文档](TESTING.md)。
 
-本候选目录的单页预览已改链至 `docs/evidence/` 的归档摘要；本机动态验收总览仍需在开发工作区运行脚本生成，不随源码上传。
+`docs/open-source-preview.html` 的“本机验收结果”入口指向被 Git 忽略的 `build/acceptance-overview.html`，用于这次本地审阅。正式公开页面前，应移除这个本机专用链接或发布一份不含私人信息的静态验收报告并更新链接。

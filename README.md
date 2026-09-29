@@ -28,7 +28,7 @@ Forge 构建与验收见 [Forge POC 说明](docs/Forge-POC.md)。三种加载器
 
 逐版本三客户端自动验收的运行命令、结果位置和人工复核边界见 [多版本自动化验收](docs/自动化验收.md)。
 
-开源发布前的完整资料与待确认事项见 [开源发布资料索引](docs/open-source/README.md)，可先看 [项目单页预览](docs/open-source-preview.html)。当前单页与文档是**本地待审稿**，尚未上传 GitHub。
+发布资料见 [开源资料索引](docs/open-source/README.md)，项目介绍见 [单页预览](docs/open-source-preview.html)。
 
 ## 快速上手
 
@@ -188,7 +188,7 @@ python tools/soundpack_maker.py --cli <音频目录> --name <显示名>         
 
 ## 素材声明
 
-部分牌面、牌背、筹码和方块贴图继承自 PlayingCards；本仓库与本地参考包有 69 张完全相同的 PNG。现有模组图标也组合了这些牌面素材。来源链与尚待核实的许可差异见 [CREDITS.md](CREDITS.md) 与 [素材清单](docs/open-source/ASSETS.md)。
+部分卡牌和筹码资源源自 PlayingCards；项目来源与致谢见 [CREDITS.md](CREDITS.md)。
 模组 jar 不包含 `.ogg`；音频接口是为玩家/服务器的音乐包预留的（见上），没有音乐包时默认播放 Minecraft 原版音效。
 
 ## 许可证
