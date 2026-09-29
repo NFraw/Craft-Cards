@@ -1,24 +1,20 @@
-# 开发与架构
+# 开发与架构 · fabric / Minecraft 1.21.5
 
 ## 环境与目录
 
-需要 JDK 21 与 Windows PowerShell。仓库自带 Gradle wrapper；1.21.11 Forge 的测试启动器另需 JDK 8 构建工具链，游戏 JVM 仍为 JDK 21。首次构建会下载依赖。根目录是 NeoForge 工程，`fabric/`、`forge/` 是独立工程；三者共用 `common/src/main/java`、`common/src/main/resources`。`versions/` 保存 1.21.2 及以后按 API 代际覆盖的源码与 Gradle 适配规则，`common/gradle/minecraft-target.gradle` 登记目标依赖版本。
+需要 JDK 21 与 Windows PowerShell。本分支仅构建 fabric / Minecraft 1.21.5。加载器源码位于 `fabric/`，共用源码位于 `common/`，累计版本覆盖位于 `versions/`。依赖版本为 Fabric Loader 0.19.5 / Fabric API 0.128.2+1.21.5。
 
-纯规则和布局函数留在公共层；公共层其余类只调用 Minecraft 原版接口。加载器层负责注册、网络发送、客户端输入/渲染事件及 config 资源包注入。服务端持有桌子会话与权威 `DDZEngine`，按接收者分别构建快照，避免把私有手牌发给无权查看的客户端。客户端根据快照绘制 HUD、世界手牌与桌面牌；倒计时由服务端剩余刻数在本地插值。音乐包由客户端目录生成资源包并重载。
+纯规则和布局函数留在公共层；加载器层负责注册、网络、客户端输入和渲染。服务端持有权威牌局引擎并按接收者构建可见快照。
 
-## 单组合构建
+## 构建与验证
 
-在仓库根目录运行；`1.21.1` 是默认目标，其他版本显式传 `-PmcTarget`。编译结果会按版本隔离；正式安装包以 [构建矩阵脚本](../../tools/build-version-matrix.ps1) 收集的路径为准。
+从仓库根目录运行：
 
 ```powershell
-.\gradlew.bat '-PmcTarget=1.21.1' build
-.\fabric\gradlew.bat -p fabric '-PmcTarget=1.21.1' build
-.\forge\gradlew.bat -p forge '-PmcTarget=1.21.1' build
-
-.\tools\build-version-matrix.ps1 -Versions 1.21.11 -Loaders neoforge,fabric,forge
+powershell -ExecutionPolicy Bypass -File .\build-target.ps1
 ```
 
-现代版本由脚本选择适用的 Gradle wrapper/工具链。Forge 1.21.2 不在目标矩阵，不能以“构建失败”替代“不支持”。源码修改后先关闭对应开发客户端再重编译，避免类文件在运行时被覆盖。
+脚本只构建 Minecraft 1.21.5，执行 `build` 中的测试与检查，核对安装用 JAR `fabric/build/mc-1.21.5/libs/crafty_cards-fabric-mc1.21.5-1.0.0.jar`。不能用其他 `-PmcTarget` 从本分支生成另一版本。源码修改后先关闭开发客户端再重新构建。
 
 ## 开发边界
 
