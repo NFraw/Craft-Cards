@@ -1,0 +1,22 @@
+modLoader="javafml"
+loaderVersion="${forge_loader_version_range}"
+license="GPL-3.0-only"
+[[mods]]
+modId="crafty_cards"
+version="${version}"
+displayName="Crafty Cards"
+authors="JokerNan"
+logoFile="logo.png"
+description='''Crafty Cards brings three-player Dou Dizhu into Minecraft, with HUD hands, in-world cards, opt-in spectating, and optional item stakes.'''
+[[dependencies.crafty_cards]]
+modId="forge"
+mandatory=true
+versionRange="${forge_version_range}"
+ordering="NONE"
+side="BOTH"
+[[dependencies.crafty_cards]]
+modId="minecraft"
+mandatory=true
+versionRange="${minecraft_version_range}"
+ordering="NONE"
+side="BOTH"

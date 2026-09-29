@@ -1,0 +1,78 @@
+import org.objectweb.asm.ClassReader
+import org.objectweb.asm.Type
+import org.objectweb.asm.tree.ClassNode
+
+buildscript {
+    repositories { mavenCentral() }
+    dependencies { classpath 'org.ow2.asm:asm-tree:9.8' }
+}
+
+// Compilation does not validate Mixin's string targets. Inspect the exact target
+// bytecode on this version's named compile classpath without bootstrapping MC.
+def verifyMixins = tasks.register('verifyVersionMixinTargets') {
+    dependsOn tasks.named('compileJava')
+    inputs.files(tasks.named('compileJava').flatMap { it.destinationDirectory })
+    inputs.files(sourceSets.main.compileClasspath)
+    doLast {
+        def readClass = { byte[] bytes ->
+            def node = new ClassNode()
+            new ClassReader(bytes).accept(node, ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG)
+            node
+        }
+        def classPath = sourceSets.main.compileClasspath.files
+        def findClass = { String name ->
+            def entry = name + '.class'
+            for (def file : classPath) {
+                if (file.isDirectory()) {
+                    def candidate = new File(file, entry)
+                    if (candidate.isFile()) return readClass(candidate.bytes)
+                } else if (file.name.endsWith('.jar')) {
+                    def zip = new java.util.zip.ZipFile(file)
+                    try {
+                        def found = zip.getEntry(entry)
+                        if (found != null) return readClass(zip.getInputStream(found).bytes)
+                    } finally { zip.close() }
+                }
+            }
+            throw new GradleException("Mixin target class not found: ${name}")
+        }
+        def values = { annotation ->
+            def map = [:]
+            if (annotation?.values) for (int i = 0; i < annotation.values.size(); i += 2)
+                map[annotation.values[i]] = annotation.values[i + 1]
+            map
+        }
+        int checked = 0
+        fileTree(tasks.named('compileJava').get().destinationDirectory).matching { include '**/mixin/*.class' }.each { file ->
+            def mixin = readClass(file.bytes)
+            def annotations = (mixin.visibleAnnotations ?: []) + (mixin.invisibleAnnotations ?: [])
+            def spec = annotations.find { it.desc == 'Lorg/spongepowered/asm/mixin/Mixin;' }
+            if (spec == null) return
+            def targetType = values(spec).value?.first()
+            if (!(targetType instanceof Type)) throw new GradleException("Unsupported target declaration: ${file}")
+            def target = findClass(targetType.internalName)
+            mixin.fields.each { field ->
+                def all = (field.visibleAnnotations ?: []) + (field.invisibleAnnotations ?: [])
+                if (all.any { it.desc == 'Lorg/spongepowered/asm/mixin/Shadow;' } &&
+                    !target.fields.any { it.name == field.name && it.desc == field.desc })
+                    throw new GradleException("Missing shadow field ${target.name}.${field.name} ${field.desc}")
+            }
+            mixin.methods.each { handler ->
+                def all = (handler.visibleAnnotations ?: []) + (handler.invisibleAnnotations ?: [])
+                def inject = all.find { it.desc == 'Lorg/spongepowered/asm/mixin/injection/Inject;' }
+                if (inject == null) return
+                def args = Type.getArgumentTypes(handler.desc).collect { it.descriptor }
+                // CallbackInfo-only handlers intentionally omit all target args.
+                def captured = args.take(args.size() - 1)
+                values(inject).method.each { selector ->
+                    def candidates = target.methods.findAll { it.name == selector || it.name + it.desc == selector }
+                    if (!candidates.any { captured.isEmpty() || Type.getArgumentTypes(it.desc).collect { it.descriptor } == captured })
+                        throw new GradleException("Mixin injection signature mismatch: ${mixin.name}.${handler.name} -> ${target.name}.${selector}; handler=${handler.desc}")
+                    checked++
+                }
+            }
+        }
+        logger.lifecycle("Verified ${checked} version-specific Mixin injection targets for ${minecraft_version}")
+    }
+}
+tasks.named('check') { dependsOn verifyMixins }

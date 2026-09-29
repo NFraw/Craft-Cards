@@ -1,0 +1,391 @@
+{
+  "model": {
+    "property": "minecraft:damage",
+    "normalize": false,
+    "type": "minecraft:range_dispatch",
+    "fallback": {
+      "model": "crafty_cards:item/card_ace_spades",
+      "type": "minecraft:model"
+    },
+    "entries": [
+      {
+        "model": {
+          "model": "crafty_cards:item/card_ace_spades",
+          "type": "minecraft:model"
+        },
+        "threshold": 0
+      },
+      {
+        "model": {
+          "model": "crafty_cards:item/card_ace_clubs",
+          "type": "minecraft:model"
+        },
+        "threshold": 1
+      },
+      {
+        "model": {
+          "model": "crafty_cards:item/card_ace_diamonds",
+          "type": "minecraft:model"
+        },
+        "threshold": 2
+      },
+      {
+        "model": {
+          "model": "crafty_cards:item/card_ace_hearts",
+          "type": "minecraft:model"
+        },
+        "threshold": 3
+      },
+      {
+        "model": {
+          "model": "crafty_cards:item/card_2_spades",
+          "type": "minecraft:model"
+        },
+        "threshold": 4
+      },
+      {
+        "model": {
+          "model": "crafty_cards:item/card_2_clubs",
+          "type": "minecraft:model"
+        },
+        "threshold": 5
+      },
+      {
+        "model": {
+          "model": "crafty_cards:item/card_2_diamonds",
+          "type": "minecraft:model"
+        },
+        "threshold": 6
+      },
+      {
+        "model": {
+          "model": "crafty_cards:item/card_2_hearts",
+          "type": "minecraft:model"
+        },
+        "threshold": 7
+      },
+      {
+        "model": {
+          "model": "crafty_cards:item/card_3_spades",
+          "type": "minecraft:model"
+        },
+        "threshold": 8
+      },
+      {
+        "model": {
+          "model": "crafty_cards:item/card_3_clubs",
+          "type": "minecraft:model"
+        },
+        "threshold": 9
+      },
+      {
+        "model": {
+          "model": "crafty_cards:item/card_3_diamonds",
+          "type": "minecraft:model"
+        },
+        "threshold": 10
+      },
+      {
+        "model": {
+          "model": "crafty_cards:item/card_3_hearts",
+          "type": "minecraft:model"
+        },
+        "threshold": 11
+      },
+      {
+        "model": {
+          "model": "crafty_cards:item/card_4_spades",
+          "type": "minecraft:model"
+        },
+        "threshold": 12
+      },
+      {
+        "model": {
+          "model": "crafty_cards:item/card_4_clubs",
+          "type": "minecraft:model"
+        },
+        "threshold": 13
+      },
+      {
+        "model": {
+          "model": "crafty_cards:item/card_4_diamonds",
+          "type": "minecraft:model"
+        },
+        "threshold": 14
+      },
+      {
+        "model": {
+          "model": "crafty_cards:item/card_4_hearts",
+          "type": "minecraft:model"
+        },
+        "threshold": 15
+      },
+      {
+        "model": {
+          "model": "crafty_cards:item/card_5_spades",
+          "type": "minecraft:model"
+        },
+        "threshold": 16
+      },
+      {
+        "model": {
+          "model": "crafty_cards:item/card_5_clubs",
+          "type": "minecraft:model"
+        },
+        "threshold": 17
+      },
+      {
+        "model": {
+          "model": "crafty_cards:item/card_5_diamonds",
+          "type": "minecraft:model"
+        },
+        "threshold": 18
+      },
+      {
+        "model": {
+          "model": "crafty_cards:item/card_5_hearts",
+          "type": "minecraft:model"
+        },
+        "threshold": 19
+      },
+      {
+        "model": {
+          "model": "crafty_cards:item/card_6_spades",
+          "type": "minecraft:model"
+        },
+        "threshold": 20
+      },
+      {
+        "model": {
+          "model": "crafty_cards:item/card_6_clubs",
+          "type": "minecraft:model"
+        },
+        "threshold": 21
+      },
+      {
+        "model": {
+          "model": "crafty_cards:item/card_6_diamonds",
+          "type": "minecraft:model"
+        },
+        "threshold": 22
+      },
+      {
+        "model": {
+          "model": "crafty_cards:item/card_6_hearts",
+          "type": "minecraft:model"
+        },
+        "threshold": 23
+      },
+      {
+        "model": {
+          "model": "crafty_cards:item/card_7_spades",
+          "type": "minecraft:model"
+        },
+        "threshold": 24
+      },
+      {
+        "model": {
+          "model": "crafty_cards:item/card_7_clubs",
+          "type": "minecraft:model"
+        },
+        "threshold": 25
+      },
+      {
+        "model": {
+          "model": "crafty_cards:item/card_7_diamonds",
+          "type": "minecraft:model"
+        },
+        "threshold": 26
+      },
+      {
+        "model": {
+          "model": "crafty_cards:item/card_7_hearts",
+          "type": "minecraft:model"
+        },
+        "threshold": 27
+      },
+      {
+        "model": {
+          "model": "crafty_cards:item/card_8_spades",
+          "type": "minecraft:model"
+        },
+        "threshold": 28
+      },
+      {
+        "model": {
+          "model": "crafty_cards:item/card_8_clubs",
+          "type": "minecraft:model"
+        },
+        "threshold": 29
+      },
+      {
+        "model": {
+          "model": "crafty_cards:item/card_8_diamonds",
+          "type": "minecraft:model"
+        },
+        "threshold": 30
+      },
+      {
+        "model": {
+          "model": "crafty_cards:item/card_8_hearts",
+          "type": "minecraft:model"
+        },
+        "threshold": 31
+      },
+      {
+        "model": {
+          "model": "crafty_cards:item/card_9_spades",
+          "type": "minecraft:model"
+        },
+        "threshold": 32
+      },
+      {
+        "model": {
+          "model": "crafty_cards:item/card_9_clubs",
+          "type": "minecraft:model"
+        },
+        "threshold": 33
+      },
+      {
+        "model": {
+          "model": "crafty_cards:item/card_9_diamonds",
+          "type": "minecraft:model"
+        },
+        "threshold": 34
+      },
+      {
+        "model": {
+          "model": "crafty_cards:item/card_9_hearts",
+          "type": "minecraft:model"
+        },
+        "threshold": 35
+      },
+      {
+        "model": {
+          "model": "crafty_cards:item/card_10_spades",
+          "type": "minecraft:model"
+        },
+        "threshold": 36
+      },
+      {
+        "model": {
+          "model": "crafty_cards:item/card_10_clubs",
+          "type": "minecraft:model"
+        },
+        "threshold": 37
+      },
+      {
+        "model": {
+          "model": "crafty_cards:item/card_10_diamonds",
+          "type": "minecraft:model"
+        },
+        "threshold": 38
+      },
+      {
+        "model": {
+          "model": "crafty_cards:item/card_10_hearts",
+          "type": "minecraft:model"
+        },
+        "threshold": 39
+      },
+      {
+        "model": {
+          "model": "crafty_cards:item/card_jack_spades",
+          "type": "minecraft:model"
+        },
+        "threshold": 40
+      },
+      {
+        "model": {
+          "model": "crafty_cards:item/card_jack_clubs",
+          "type": "minecraft:model"
+        },
+        "threshold": 41
+      },
+      {
+        "model": {
+          "model": "crafty_cards:item/card_jack_diamonds",
+          "type": "minecraft:model"
+        },
+        "threshold": 42
+      },
+      {
+        "model": {
+          "model": "crafty_cards:item/card_jack_hearts",
+          "type": "minecraft:model"
+        },
+        "threshold": 43
+      },
+      {
+        "model": {
+          "model": "crafty_cards:item/card_queen_spades",
+          "type": "minecraft:model"
+        },
+        "threshold": 44
+      },
+      {
+        "model": {
+          "model": "crafty_cards:item/card_queen_clubs",
+          "type": "minecraft:model"
+        },
+        "threshold": 45
+      },
+      {
+        "model": {
+          "model": "crafty_cards:item/card_queen_diamonds",
+          "type": "minecraft:model"
+        },
+        "threshold": 46
+      },
+      {
+        "model": {
+          "model": "crafty_cards:item/card_queen_hearts",
+          "type": "minecraft:model"
+        },
+        "threshold": 47
+      },
+      {
+        "model": {
+          "model": "crafty_cards:item/card_king_spades",
+          "type": "minecraft:model"
+        },
+        "threshold": 48
+      },
+      {
+        "model": {
+          "model": "crafty_cards:item/card_king_clubs",
+          "type": "minecraft:model"
+        },
+        "threshold": 49
+      },
+      {
+        "model": {
+          "model": "crafty_cards:item/card_king_diamonds",
+          "type": "minecraft:model"
+        },
+        "threshold": 50
+      },
+      {
+        "model": {
+          "model": "crafty_cards:item/card_king_hearts",
+          "type": "minecraft:model"
+        },
+        "threshold": 51
+      },
+      {
+        "model": {
+          "model": "crafty_cards:item/card_joker_small",
+          "type": "minecraft:model"
+        },
+        "threshold": 52
+      },
+      {
+        "model": {
+          "model": "crafty_cards:item/card_joker_big",
+          "type": "minecraft:model"
+        },
+        "threshold": 53
+      }
+    ]
+  }
+}

@@ -1,0 +1,55 @@
+plugins {
+    id 'java-library'
+    id 'net.minecraftforge.gradle' version '7.0.40'
+}
+apply from: '../common/gradle/minecraft-target.gradle'
+version = mod_version
+group = 'com.jokernan.craftycards'
+base.archivesName = "crafty_cards-forge${mcArtifactSuffix}"
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+
+minecraft {
+    mappings channel: 'official', version: minecraft_version
+    runs {
+        configureEach { workingDir = layout.projectDirectory.dir("run-${name}${mcRunSuffix}") }
+        register('client')
+        register('server') { args '--nogui' }
+    }
+}
+repositories {
+    minecraft.mavenizer(it)
+    maven fg.forgeMaven
+    maven fg.minecraftLibsMaven
+    mavenCentral()
+}
+dependencies {
+    implementation minecraft.dependency("net.minecraftforge:forge:${minecraft_version}-${forge_version}")
+    annotationProcessor 'net.minecraftforge:eventbus-validator:7.0.5'
+    compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+sourceSets {
+    main { java.srcDir '../common/src/main/java'; resources.srcDir '../common/src/main/resources' }
+    test.java.srcDir '../src/test/java'
+}
+test {
+    useJUnitPlatform()
+    workingDir rootProject.file('..')
+    inputs.file('../tools/soundpack_maker.py')
+    inputs.dir('../common/src/main/resources')
+}
+tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8' }
+processResources {
+    def properties = [version:project.version, minecraft_version_range:minecraft_version_range,
+        forge_version_range:forge_version_range, forge_loader_version_range:forge_loader_version_range]
+    inputs.properties(properties)
+    filesMatching('META-INF/mods.toml') { expand(properties) }
+}
+jar {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    exclude '**/*.ogg', '**/gametest/**', '**/structure/ddz_table_place.nbt'
+    manifest.attributes('MixinConfigs': 'crafty_cards.forge.mixins.json')
+}
+if (project.hasProperty('pocSmoke')) apply from: '../versions/forge-modern-smoke.gradle'
+apply from: '../common/gradle/version-sources.gradle'

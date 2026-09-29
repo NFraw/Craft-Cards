@@ -1,0 +1,133 @@
+plugins {
+    id 'java-library'
+    id 'net.minecraftforge.gradle' version '6.0.54'
+}
+apply from: '../common/gradle/minecraft-target.gradle'
+if (!forge_version) throw new GradleException("Forge did not publish a release for Minecraft ${minecraft_version}; choose another loader or version.")
+version = mod_version
+group = 'com.jokernan.craftycards'
+base.archivesName = "crafty_cards-forge${mcArtifactSuffix}"
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+minecraft {
+    mappings channel: 'official', version: minecraft_version
+    reobf = false
+    runs {
+        configureEach {
+            workingDirectory project.file("run-${name}${mcRunSuffix}")
+            mods { crafty_cards { source sourceSets.main } }
+            args '--mixin', 'crafty_cards.forge.mixins.json'
+        }
+        client { }
+        client2 { parent project.minecraft.runs.client; args '--username', 'Player2' }
+        client3 { parent project.minecraft.runs.client; args '--username', 'Player3' }
+        server { args '--nogui' }
+    }
+}
+repositories {
+    maven { url = 'https://maven.aliyun.com/repository/public' }
+    mavenCentral()
+}
+dependencies {
+    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+    if (minecraft_version == '1.21') {
+        // Forge 51's official MDK pins this: ModLauncher requires jopt.simple,
+        // while the transitive 6.x jar exposes a different module name.
+        implementation('net.sf.jopt-simple:jopt-simple:5.0.4') { version { strictly '5.0.4' } }
+    }
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+sourceSets {
+    main {
+        java.srcDir '../common/src/main/java'
+        resources.srcDir '../common/src/main/resources'
+    }
+    test.java.srcDir '../src/test/java'
+}
+// Forge 52 requires classes beside mods.toml. Keep compiler output separate:
+// overlapping task outputs can delete classes on an incremental resource edit.
+// Copy the compiled classes into the resource tree for the development module.
+sourceSets.configureEach {
+    def compilation = tasks.named(compileJavaTaskName)
+    tasks.named(processResourcesTaskName) { from(compilation.flatMap { it.destinationDirectory }) }
+    // Only expose the assembled directory to the module path (no split packages).
+    output.classesDirs.setFrom(output.resourcesDir)
+}
+test {
+    useJUnitPlatform()
+    workingDir rootProject.file('..')
+    inputs.file('../tools/soundpack_maker.py')
+    inputs.dir('../common/src/main/resources')
+}
+tasks.withType(JavaCompile).configureEach { options.encoding = 'UTF-8' }
+processResources {
+    inputs.property 'version', project.version
+    inputs.property 'minecraft_version_range', minecraft_version_range
+    inputs.property 'forge_version_range', forge_version_range
+    inputs.property 'forge_loader_version_range', forge_loader_version_range
+    filesMatching('META-INF/mods.toml') {
+        expand version: project.version, minecraft_version_range: minecraft_version_range,
+            forge_version_range: forge_version_range, forge_loader_version_range: forge_loader_version_range
+    }
+}
+jar {
+    from(tasks.named('compileJava').flatMap { it.destinationDirectory })
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    exclude '**/*.ogg', '**/gametest/**', '**/structure/ddz_table_place.nbt'
+    // Also protect incremental workspaces assembled before the copy was narrowed.
+    exclude '**/previous-compilation-data.bin'
+    manifest.attributes('MixinConfigs': 'crafty_cards.forge.mixins.json')
+}
+
+if (project.hasProperty('pocSmoke')) {
+    sourceSets {
+        smoke {
+            java.srcDir '../common/src/smoke/java'
+            compileClasspath += sourceSets.main.output + sourceSets.main.compileClasspath
+            runtimeClasspath += sourceSets.main.output + sourceSets.main.runtimeClasspath
+        }
+    }
+    minecraft.runs {
+        smokeServer {
+            parent project.minecraft.runs.server
+            workingDirectory project.file("run-smoke-server${mcRunSuffix}")
+            mods { crafty_cards_smoke { source sourceSets.smoke } }
+            jvmArgs '-Xmx768m'
+            args '--nogui', '--port', '25576'
+        }
+        (1..3).each { n ->
+            create("smokeClient${n}") {
+                parent project.minecraft.runs.client
+                workingDirectory project.file("run-smoke-client${n}${mcRunSuffix}")
+                mods { crafty_cards_smoke { source sourceSets.smoke } }
+                jvmArgs '-Xmx768m'
+                args '--username', "Smoke${n}", '--width', '960', '--height', '640'
+            }
+        }
+    }
+    // Resolve the same launch tokens as ForgeGradle's MinecraftRunTask before
+    // starting all four JVMs together. No Gradle compilation while they are alive.
+    ext.pocRunConfig = { name ->
+        def launch = tasks.getByName('run' + name.capitalize())
+        def config = launch.runConfig.get()
+        def generator = net.minecraftforge.gradle.common.util.runs.RunConfigGenerator
+        def tokens = generator.configureTokensLazy(project, config,
+            generator.mapModClassesToGradle(project, config),
+            launch.minecraftArtifacts, launch.runtimeClasspathArtifacts)
+        config.environment.each { key, value -> launch.environment(key, config.replace(tokens, value)) }
+        config.properties.each { key, value -> launch.systemProperty(key, config.replace(tokens, value)) }
+        config.allSources.each { launch.classpath(it.runtimeClasspath) }
+        def vmArgs = config.jvmArgs.collect { config.replace(tokens, it) }
+        if (config.isClient()) vmArgs.addAll(launch.additionalClientArgs.get().collect { config.replace(tokens, it) })
+        [runDir: config.workingDirectory, vmArgs: vmArgs, mainClass: config.main,
+         modClasses: tokens['source_roots']?.get() ?: (
+             "crafty_cards%%${sourceSets.main.output.resourcesDir.absolutePath}" + File.pathSeparator +
+             "crafty_cards_smoke%%${tasks.named('compileSmokeJava').get().destinationDirectory.get().asFile.absolutePath}"),
+         programArgs: generator.getArgsStream(config, tokens, false).toList()]
+    }
+    apply from: '../common/gradle/poc-smoke.gradle'
+}
+
+
+
+apply from: '../common/gradle/version-sources.gradle'

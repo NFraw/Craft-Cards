@@ -1,0 +1,60 @@
+// ForgeGradle 7 configures Slime Launcher inside JavaExec.exec(). Resolve the same
+// pinned FG 7.0.40 options before launching the four JVMs together (no nested Gradles).
+sourceSets {
+    smoke {
+        java.srcDir '../common/src/smoke/java'
+        compileClasspath += sourceSets.main.output + sourceSets.main.compileClasspath
+        runtimeClasspath += sourceSets.main.output + sourceSets.main.runtimeClasspath
+    }
+}
+minecraft.runs.configureEach {
+    mods {
+        crafty_cards { source sourceSets.main }
+        crafty_cards_smoke { source sourceSets.smoke }
+    }
+}
+['Server','Client1','Client2','Client3'].each { role ->
+    tasks.register("runSmoke${role}", JavaExec) {
+        def original = tasks.named(role == 'Server' ? 'runServer' : 'runClient')
+        dependsOn tasks.named('smokeClasses'), providers.provider { original.get().taskDependencies.getDependencies(original.get()) }
+        javaLauncher = javaToolchains.launcherFor { languageVersion = JavaLanguageVersion.of(21) }
+    }
+}
+ext.pocRunConfig = { name ->
+    boolean server = name == 'smokeServer'
+    def baseRun = tasks.named(server ? 'runServer' : 'runClient').get()
+    def launch = tasks.named('run' + name.capitalize()).get()
+    def loader = project.plugins.getPlugin('net.minecraftforge.gradle').class.classLoader
+    def jsonClass = loader.loadClass('net.minecraftforge.gradle.shadow.net.minecraftforge.util.data.json.RunConfig')
+    def gsonClass = loader.loadClass('net.minecraftforge.gradle.shadow.com.google.gson.Gson')
+    def tokenClass = loader.loadClass('net.minecraftforge.gradle.shadow.com.google.gson.reflect.TypeToken')
+    def mapType = tokenClass.getParameterized(Map, String, jsonClass).type
+    def runs = baseRun.runsJson.isPresent() ? gsonClass.getDeclaredConstructor().newInstance().fromJson(baseRun.runsJson.get().asFile.text, mapType) : [:]
+    def options = baseRun.options.get().inherit(runs, baseRun.sourceSetName.get())
+    def runDir = project.file("run-${name}${mcRunSuffix}")
+    options.workingDir.set(runDir)
+    def helper = loader.loadClass('net.minecraftforge.gradle.internal.SlimeLauncherRunHelper')
+    def outputs = helper.declaredMethods.find { it.name == 'getOutputs' }; outputs.accessible = true
+    def buildTokens = helper.declaredMethods.find { it.name == 'buildTokens' }; buildTokens.accessible = true
+    def tokens = buildTokens.invoke(null, baseRun, options, baseRun.defaultSourceSets.get(), { source -> outputs.invoke(null, source) } as java.util.function.Function)
+    def replace = { String value -> value.replaceAll(/\{([^}]+)\}/) { all, key ->
+        if (!tokens.containsKey(key)) throw new GradleException("Unresolved Forge run token ${key}")
+        tokens[key].get()
+    } }
+    launch.classpath(options.classpath.empty ? baseRun.classpath : options.classpath)
+    options.environment.get().each { key, value -> launch.environment(key, replace(value)) }
+    def vmArgs = options.jvmArgs.getOrElse([]).collect { replace(it) }
+    options.systemProperties.get().each { key, value -> vmArgs.add("-D${key}=${replace(value)}".toString()) }
+    vmArgs.add('-Xmx768m')
+    def args = ['--main', options.mainClass.get(), '--cache', baseRun.cacheDir.get().asFile.absolutePath,
+        '--metadata', baseRun.metadata.singleFile.absolutePath]
+    if (baseRun.mcpToSrg.isPresent()) args.addAll(['--to-srg', baseRun.mcpToSrg.get().asFile.absolutePath])
+    if (baseRun.mcpToObf.isPresent()) args.addAll(['--to-obf', baseRun.mcpToObf.get().asFile.absolutePath])
+    args.add('--')
+    args.addAll(options.args.getOrElse([]).collect { replace(it) })
+    if (server) args.addAll(['--port','25576'])
+    else args.addAll(['--username', 'Smoke' + name[-1], '--width','960','--height','640'])
+    [runDir:runDir.absolutePath, vmArgs:vmArgs,
+        mainClass:baseRun.mainClass.get(), programArgs:args]
+}
+apply from: '../common/gradle/poc-smoke.gradle'

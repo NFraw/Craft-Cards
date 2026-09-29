@@ -1,0 +1,109 @@
+// Modern Minecraft adapters are generated into the target's isolated build tree.
+// Keep the proven 1.21/1.21.1 sources untouched; overlays replace complete files,
+// and small, checked API migrations are applied afterwards.
+if (modernTarget) {
+    def repository = project.name == 'crafty-cards-fabric' || project.name == 'crafty-cards-forge'
+        ? project.file('..') : project.projectDir
+    def sourceRoots = sourceSets.main.java.srcDirs.toList()
+    def loader = project.name == 'crafty-cards-fabric' ? 'fabric' : project.name == 'crafty-cards-forge' ? 'forge' : 'neoforge'
+    ext.portLoader = loader
+    apply from: new File(repository, 'versions/api-adapters.gradle')
+    def overlays = [2, 4, 5, 6, 9, 11].findAll { it <= mcMinor }.collectMany { generation ->
+        [new File(repository, "versions/1.21.${generation}/common/java"),
+         new File(repository, "versions/1.21.${generation}/${loader}/java")]
+    }
+    def generated = layout.buildDirectory.dir('generated/versionJava')
+    def prepare = tasks.register('prepareVersionSources') {
+        inputs.files(sourceRoots.collect { fileTree(it) })
+        inputs.files(overlays.collect { fileTree(it) })
+        inputs.file(new File(repository, 'versions/api-adapters.gradle'))
+        inputs.property('minecraft', minecraft_version)
+        outputs.dir(generated)
+        doLast {
+            def files = [:]
+            (sourceRoots + overlays).each { root ->
+                if (root.exists()) fileTree(root).matching { include '**/*.java'; exclude '**/gametest/**' }.each { source ->
+                    files[root.toPath().relativize(source.toPath()).toString().replace('\\', '/')] = source
+                }
+            }
+            def destination = generated.get().asFile
+            if (!destination.canonicalPath.startsWith(layout.buildDirectory.get().asFile.canonicalPath + File.separator))
+                throw new GradleException('Version source output escaped the build directory')
+            destination.mkdirs()
+            fileTree(destination).each { stale ->
+                if (!files.containsKey(destination.toPath().relativize(stale.toPath()).toString().replace('\\', '/'))) stale.delete()
+            }
+            files.each { path, source ->
+                def target = new File(destination, path)
+                target.parentFile.mkdirs()
+                target.setText(adaptVersionSource(path, source.getText('UTF-8')), 'UTF-8')
+            }
+        }
+    }
+    sourceSets.main.java.setSrcDirs([generated])
+    if (sourceSets.findByName('smoke') != null) {
+        apply from: new File(repository, 'versions/smoke-adapters.gradle')
+        def smokeRoots = sourceSets.smoke.java.srcDirs.toList()
+        def smokeOutput = layout.buildDirectory.dir('generated/smokeJava')
+        def prepareSmoke = tasks.register('prepareVersionSmokeSources') {
+            inputs.files(smokeRoots.collect { fileTree(it) })
+            inputs.files(new File(repository, 'versions/api-adapters.gradle'), new File(repository, 'versions/smoke-adapters.gradle'))
+            inputs.property('minecraft', minecraft_version)
+            outputs.dir(smokeOutput)
+            doLast {
+                smokeRoots.each { root ->
+                    if (root.exists()) fileTree(root).matching { include '**/*.java' }.each { source ->
+                        def path = root.toPath().relativize(source.toPath()).toString().replace('\\', '/')
+                        def target = new File(smokeOutput.get().asFile, path)
+                        target.parentFile.mkdirs()
+                        target.setText(adaptSmokeSource(path, adaptVersionSource(path, source.getText('UTF-8'))), 'UTF-8')
+                    }
+                }
+            }
+        }
+        sourceSets.smoke.java.setSrcDirs([smokeOutput])
+        tasks.named('compileSmokeJava') { dependsOn prepareSmoke }
+    }
+    if (mcMinor >= 4) sourceSets.main.resources.srcDir(new File(repository, 'versions/1.21.4/common/resources'))
+    tasks.named('compileJava') { dependsOn prepare; options.compilerArgs += ['-Xmaxerrs', '300'] }
+    tasks.matching { it.name == 'sourcesJar' }.configureEach { dependsOn prepare }
+    if (loader != 'neoforge') apply from: new File(repository, 'versions/verify-mixins.gradle')
+    tasks.named('processResources') {
+        inputs.property('resourcePackFormat', resourcePackFormat)
+        inputs.property('dataPackFormat', dataPackFormat)
+        doLast {
+            def root = destinationDir
+            def pack = mcMinor >= 9
+                ? [description:'Crafty Cards resources', pack_format:resourcePackFormat, min_format:[resourcePackFormat,0], max_format:[dataPackFormat,mcMinor == 11 ? 1 : 0], supported_formats:[resourcePackFormat,81]]
+                : [description:'Crafty Cards resources', pack_format:resourcePackFormat, supported_formats:[resourcePackFormat,dataPackFormat]]
+            new File(root, 'pack.mcmeta').setText(groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson([pack:pack])), 'UTF-8')
+            fileTree(root).matching { include 'data/**/recipe/**/*.json' }.each { recipe ->
+                def json = new groovy.json.JsonSlurper().parse(recipe, 'UTF-8')
+                def ingredient
+                ingredient = { value ->
+                    if (value instanceof Map && value.item) return value.item
+                    if (value instanceof Map && value.tag) return "#${value.tag}"
+                    if (value instanceof List) return value.collect { ingredient(it) }
+                    value
+                }
+                if (json.key) json.key = json.key.collectEntries { key, value -> [key, ingredient(value)] }
+                if (json.ingredients) json.ingredients = json.ingredients.collect { ingredient(it) }
+                recipe.setText(groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(json)), 'UTF-8')
+            }
+        }
+    }
+    if (loader == 'forge' && project.hasProperty('pocSmoke')) {
+        // Forge treats the acceptance harness as a separate development mod.
+        // Its resource root needs pack metadata or Forge leaves a blocking load-warning screen open.
+        tasks.named('processSmokeResources') {
+            dependsOn tasks.named('processResources')
+            doLast {
+                def smokeDir = destinationDir
+                copy {
+                    from new File(sourceSets.main.output.resourcesDir, 'pack.mcmeta')
+                    into smokeDir
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,240 @@
+{
+  "version": 2,
+  "name": "经典包（双语音）",
+  "author": "JokerNan / Crafty Cards",
+  "description": "经典斗地主语音；有不同录音的非BGM键各两条且等权重。",
+  "sounds": {
+    "deal": [
+      "deal_1.ogg"
+    ],
+    "bid": [
+      "bid_1.ogg"
+    ],
+    "play": [
+      "play_1.ogg"
+    ],
+    "bomb": [
+      "bomb_1.ogg",
+      "bomb_2.ogg"
+    ],
+    "pass": [
+      "pass_1.ogg",
+      "pass_2.ogg"
+    ],
+    "win": [
+      "win_1.ogg"
+    ],
+    "lose": [
+      "lose_1.ogg"
+    ],
+    "bgm_waiting": [
+      "bgm_waiting.ogg"
+    ],
+    "bgm_playing": [
+      "bgm_playing.ogg"
+    ],
+    "bgm_clutch": [
+      "bgm_clutch.ogg"
+    ],
+    "bgm_rocket": [
+      "bgm_rocket.ogg"
+    ],
+    "bgm_win": [
+      "bgm_win.ogg"
+    ],
+    "bgm_lose": [
+      "bgm_lose.ogg"
+    ],
+    "dan1": [
+      "dan1_1.ogg",
+      "dan1_2.ogg"
+    ],
+    "dan2": [
+      "dan2_1.ogg",
+      "dan2_2.ogg"
+    ],
+    "dan3": [
+      "dan3_1.ogg",
+      "dan3_2.ogg"
+    ],
+    "dan4": [
+      "dan4_1.ogg",
+      "dan4_2.ogg"
+    ],
+    "dan5": [
+      "dan5_1.ogg",
+      "dan5_2.ogg"
+    ],
+    "dan6": [
+      "dan6_1.ogg",
+      "dan6_2.ogg"
+    ],
+    "dan7": [
+      "dan7_1.ogg",
+      "dan7_2.ogg"
+    ],
+    "dan8": [
+      "dan8_1.ogg",
+      "dan8_2.ogg"
+    ],
+    "dan9": [
+      "dan9_1.ogg",
+      "dan9_2.ogg"
+    ],
+    "dan10": [
+      "dan10_1.ogg",
+      "dan10_2.ogg"
+    ],
+    "dan11": [
+      "dan11_1.ogg",
+      "dan11_2.ogg"
+    ],
+    "dan12": [
+      "dan12_1.ogg",
+      "dan12_2.ogg"
+    ],
+    "dan13": [
+      "dan13_1.ogg",
+      "dan13_2.ogg"
+    ],
+    "dan14": [
+      "dan14_1.ogg",
+      "dan14_2.ogg"
+    ],
+    "dan15": [
+      "dan15_1.ogg",
+      "dan15_2.ogg"
+    ],
+    "dui1": [
+      "dui1_1.ogg",
+      "dui1_2.ogg"
+    ],
+    "dui2": [
+      "dui2_1.ogg",
+      "dui2_2.ogg"
+    ],
+    "dui3": [
+      "dui3_1.ogg",
+      "dui3_2.ogg"
+    ],
+    "dui4": [
+      "dui4_1.ogg",
+      "dui4_2.ogg"
+    ],
+    "dui5": [
+      "dui5_1.ogg",
+      "dui5_2.ogg"
+    ],
+    "dui6": [
+      "dui6_1.ogg",
+      "dui6_2.ogg"
+    ],
+    "dui7": [
+      "dui7_1.ogg",
+      "dui7_2.ogg"
+    ],
+    "dui8": [
+      "dui8_1.ogg",
+      "dui8_2.ogg"
+    ],
+    "dui9": [
+      "dui9_1.ogg",
+      "dui9_2.ogg"
+    ],
+    "dui10": [
+      "dui10_1.ogg",
+      "dui10_2.ogg"
+    ],
+    "dui11": [
+      "dui11_1.ogg",
+      "dui11_2.ogg"
+    ],
+    "dui12": [
+      "dui12_1.ogg",
+      "dui12_2.ogg"
+    ],
+    "dui13": [
+      "dui13_1.ogg",
+      "dui13_2.ogg"
+    ],
+    "tuple1": [
+      "tuple1_1.ogg",
+      "tuple1_2.ogg"
+    ],
+    "tuple2": [
+      "tuple2_1.ogg",
+      "tuple2_2.ogg"
+    ],
+    "tuple3": [
+      "tuple3_1.ogg",
+      "tuple3_2.ogg"
+    ],
+    "tuple4": [
+      "tuple4_1.ogg",
+      "tuple4_2.ogg"
+    ],
+    "tuple5": [
+      "tuple5_1.ogg",
+      "tuple5_2.ogg"
+    ],
+    "tuple6": [
+      "tuple6_1.ogg",
+      "tuple6_2.ogg"
+    ],
+    "tuple7": [
+      "tuple7_1.ogg",
+      "tuple7_2.ogg"
+    ],
+    "tuple8": [
+      "tuple8_1.ogg",
+      "tuple8_2.ogg"
+    ],
+    "tuple9": [
+      "tuple9_1.ogg",
+      "tuple9_2.ogg"
+    ],
+    "tuple10": [
+      "tuple10_1.ogg",
+      "tuple10_2.ogg"
+    ],
+    "tuple11": [
+      "tuple11_1.ogg",
+      "tuple11_2.ogg"
+    ],
+    "tuple12": [
+      "tuple12_1.ogg",
+      "tuple12_2.ogg"
+    ],
+    "tuple13": [
+      "tuple13_1.ogg",
+      "tuple13_2.ogg"
+    ],
+    "sandaiyi": [
+      "sandaiyi_1.ogg"
+    ],
+    "shunzi": [
+      "shunzi_1.ogg",
+      "shunzi_2.ogg"
+    ],
+    "liandui": [
+      "liandui_1.ogg",
+      "liandui_2.ogg"
+    ],
+    "feiji": [
+      "feiji_1.ogg",
+      "feiji_2.ogg"
+    ],
+    "sidaier": [
+      "sidaier_1.ogg",
+      "sidaier_2.ogg"
+    ],
+    "sidailiangdui": [
+      "sidailiangdui_1.ogg",
+      "sidailiangdui_2.ogg"
+    ],
+    "wangzha": [
+      "wangzha_1.ogg",
+      "wangzha_2.ogg"
+    ]
+  }
+}

@@ -1,0 +1,6 @@
+{
+	"parent": "crafty_cards:item/card_base",
+	"textures": {
+		"0": "crafty_cards:item/cards/card_jack_clubs"
+	}
+}

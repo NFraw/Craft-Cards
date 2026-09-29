@@ -1,0 +1,74 @@
+{
+  "textures": {
+    "table": "crafty_cards:block/ddz_table_top",
+    "leg": "crafty_cards:block/ddz_table_leg",
+    "particle": "crafty_cards:block/ddz_table_top"
+  },
+  "elements": [
+    {
+      "name": "tabletop",
+      "from": [0, 13, 0],
+      "to": [16, 16, 16],
+      "faces": {
+        "north": {"uv": [0, 0, 16, 3], "texture": "#table"},
+        "east": {"uv": [0, 0, 16, 3], "texture": "#table"},
+        "south": {"uv": [0, 0, 16, 3], "texture": "#table"},
+        "west": {"uv": [0, 0, 16, 3], "texture": "#table"},
+        "up": {"uv": [0, 0, 16, 16], "texture": "#table"},
+        "down": {"uv": [0, 0, 16, 16], "texture": "#table"}
+      }
+    },
+    {
+      "name": "leg1",
+      "from": [0, 0, 0],
+      "to": [3, 13, 3],
+      "faces": {
+        "north": {"uv": [0, 0, 3, 13], "texture": "#leg"},
+        "east": {"uv": [0, 0, 3, 13], "texture": "#leg"},
+        "south": {"uv": [0, 0, 3, 13], "texture": "#leg"},
+        "west": {"uv": [0, 0, 3, 13], "texture": "#leg"},
+        "up": {"uv": [0, 0, 3, 3], "texture": "#leg"},
+        "down": {"uv": [0, 0, 3, 3], "texture": "#leg"}
+      }
+    },
+    {
+      "name": "leg2",
+      "from": [13, 0, 0],
+      "to": [16, 13, 3],
+      "faces": {
+        "north": {"uv": [0, 0, 3, 13], "texture": "#leg"},
+        "east": {"uv": [0, 0, 3, 13], "texture": "#leg"},
+        "south": {"uv": [0, 0, 3, 13], "texture": "#leg"},
+        "west": {"uv": [0, 0, 3, 13], "texture": "#leg"},
+        "up": {"uv": [0, 0, 3, 3], "texture": "#leg"},
+        "down": {"uv": [0, 0, 3, 3], "texture": "#leg"}
+      }
+    },
+    {
+      "name": "leg3",
+      "from": [0, 0, 13],
+      "to": [3, 13, 16],
+      "faces": {
+        "north": {"uv": [0, 0, 3, 13], "texture": "#leg"},
+        "east": {"uv": [0, 0, 3, 13], "texture": "#leg"},
+        "south": {"uv": [0, 0, 3, 13], "texture": "#leg"},
+        "west": {"uv": [0, 0, 3, 13], "texture": "#leg"},
+        "up": {"uv": [0, 0, 3, 3], "texture": "#leg"},
+        "down": {"uv": [0, 0, 3, 3], "texture": "#leg"}
+      }
+    },
+    {
+      "name": "leg4",
+      "from": [13, 0, 13],
+      "to": [16, 13, 16],
+      "faces": {
+        "north": {"uv": [0, 0, 3, 13], "texture": "#leg"},
+        "east": {"uv": [0, 0, 3, 13], "texture": "#leg"},
+        "south": {"uv": [0, 0, 3, 13], "texture": "#leg"},
+        "west": {"uv": [0, 0, 3, 13], "texture": "#leg"},
+        "up": {"uv": [0, 0, 3, 3], "texture": "#leg"},
+        "down": {"uv": [0, 0, 3, 3], "texture": "#leg"}
+      }
+    }
+  ]
+}

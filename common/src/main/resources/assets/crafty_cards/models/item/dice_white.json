@@ -1,0 +1,7 @@
+{
+	"parent": "crafty_cards:item/dice_base",
+	"textures": {
+		"0": "crafty_cards:item/dice_white",
+		"particle": "crafty_cards:item/dice_white"
+	}
+}

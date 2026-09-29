@@ -1,0 +1,73 @@
+{
+	"parent": "crafty_cards:item/card_base",
+	"overrides": [
+
+		{"predicate": {"crafty_cards:value": 0},  "model": "crafty_cards:item/card_ace_spades"},
+		{"predicate": {"crafty_cards:value": 1},  "model": "crafty_cards:item/card_ace_clubs"},
+		{"predicate": {"crafty_cards:value": 2},  "model": "crafty_cards:item/card_ace_diamonds"},
+		{"predicate": {"crafty_cards:value": 3},  "model": "crafty_cards:item/card_ace_hearts"},
+
+		{"predicate": {"crafty_cards:value": 4},  "model": "crafty_cards:item/card_2_spades"},
+		{"predicate": {"crafty_cards:value": 5},  "model": "crafty_cards:item/card_2_clubs"},
+		{"predicate": {"crafty_cards:value": 6},  "model": "crafty_cards:item/card_2_diamonds"},
+		{"predicate": {"crafty_cards:value": 7},  "model": "crafty_cards:item/card_2_hearts"},
+
+		{"predicate": {"crafty_cards:value": 8},  "model": "crafty_cards:item/card_3_spades"},
+		{"predicate": {"crafty_cards:value": 9},  "model": "crafty_cards:item/card_3_clubs"},
+		{"predicate": {"crafty_cards:value": 10}, "model": "crafty_cards:item/card_3_diamonds"},
+		{"predicate": {"crafty_cards:value": 11}, "model": "crafty_cards:item/card_3_hearts"},
+
+		{"predicate": {"crafty_cards:value": 12}, "model": "crafty_cards:item/card_4_spades"},
+		{"predicate": {"crafty_cards:value": 13}, "model": "crafty_cards:item/card_4_clubs"},
+		{"predicate": {"crafty_cards:value": 14}, "model": "crafty_cards:item/card_4_diamonds"},
+		{"predicate": {"crafty_cards:value": 15}, "model": "crafty_cards:item/card_4_hearts"},
+
+		{"predicate": {"crafty_cards:value": 16}, "model": "crafty_cards:item/card_5_spades"},
+		{"predicate": {"crafty_cards:value": 17}, "model": "crafty_cards:item/card_5_clubs"},
+		{"predicate": {"crafty_cards:value": 18}, "model": "crafty_cards:item/card_5_diamonds"},
+		{"predicate": {"crafty_cards:value": 19}, "model": "crafty_cards:item/card_5_hearts"},
+
+		{"predicate": {"crafty_cards:value": 20}, "model": "crafty_cards:item/card_6_spades"},
+		{"predicate": {"crafty_cards:value": 21}, "model": "crafty_cards:item/card_6_clubs"},
+		{"predicate": {"crafty_cards:value": 22}, "model": "crafty_cards:item/card_6_diamonds"},
+		{"predicate": {"crafty_cards:value": 23}, "model": "crafty_cards:item/card_6_hearts"},
+
+		{"predicate": {"crafty_cards:value": 24}, "model": "crafty_cards:item/card_7_spades"},
+		{"predicate": {"crafty_cards:value": 25}, "model": "crafty_cards:item/card_7_clubs"},
+		{"predicate": {"crafty_cards:value": 26}, "model": "crafty_cards:item/card_7_diamonds"},
+		{"predicate": {"crafty_cards:value": 27}, "model": "crafty_cards:item/card_7_hearts"},
+
+		{"predicate": {"crafty_cards:value": 28}, "model": "crafty_cards:item/card_8_spades"},
+		{"predicate": {"crafty_cards:value": 29}, "model": "crafty_cards:item/card_8_clubs"},
+		{"predicate": {"crafty_cards:value": 30}, "model": "crafty_cards:item/card_8_diamonds"},
+		{"predicate": {"crafty_cards:value": 31}, "model": "crafty_cards:item/card_8_hearts"},
+
+		{"predicate": {"crafty_cards:value": 32}, "model": "crafty_cards:item/card_9_spades"},
+		{"predicate": {"crafty_cards:value": 33}, "model": "crafty_cards:item/card_9_clubs"},
+		{"predicate": {"crafty_cards:value": 34}, "model": "crafty_cards:item/card_9_diamonds"},
+		{"predicate": {"crafty_cards:value": 35}, "model": "crafty_cards:item/card_9_hearts"},
+
+		{"predicate": {"crafty_cards:value": 36}, "model": "crafty_cards:item/card_10_spades"},
+		{"predicate": {"crafty_cards:value": 37}, "model": "crafty_cards:item/card_10_clubs"},
+		{"predicate": {"crafty_cards:value": 38}, "model": "crafty_cards:item/card_10_diamonds"},
+		{"predicate": {"crafty_cards:value": 39}, "model": "crafty_cards:item/card_10_hearts"},
+
+		{"predicate": {"crafty_cards:value": 40}, "model": "crafty_cards:item/card_jack_spades"},
+		{"predicate": {"crafty_cards:value": 41}, "model": "crafty_cards:item/card_jack_clubs"},
+		{"predicate": {"crafty_cards:value": 42}, "model": "crafty_cards:item/card_jack_diamonds"},
+		{"predicate": {"crafty_cards:value": 43}, "model": "crafty_cards:item/card_jack_hearts"},
+
+		{"predicate": {"crafty_cards:value": 44}, "model": "crafty_cards:item/card_queen_spades"},
+		{"predicate": {"crafty_cards:value": 45}, "model": "crafty_cards:item/card_queen_clubs"},
+		{"predicate": {"crafty_cards:value": 46}, "model": "crafty_cards:item/card_queen_diamonds"},
+		{"predicate": {"crafty_cards:value": 47}, "model": "crafty_cards:item/card_queen_hearts"},
+
+		{"predicate": {"crafty_cards:value": 48}, "model": "crafty_cards:item/card_king_spades"},
+		{"predicate": {"crafty_cards:value": 49}, "model": "crafty_cards:item/card_king_clubs"},
+		{"predicate": {"crafty_cards:value": 50}, "model": "crafty_cards:item/card_king_diamonds"},
+		{"predicate": {"crafty_cards:value": 51}, "model": "crafty_cards:item/card_king_hearts"},
+
+		{"predicate": {"crafty_cards:value": 52}, "model": "crafty_cards:item/card_joker_small"},
+		{"predicate": {"crafty_cards:value": 53}, "model": "crafty_cards:item/card_joker_big"}
+	]
+}

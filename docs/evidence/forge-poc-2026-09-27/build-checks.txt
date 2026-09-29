@@ -1,0 +1,11 @@
+2026-09-27
+Forge 1.21.1 / 52.1.0; Java 21; ForgeGradle 6.0.54
+Forge release build: PASS; 122 tests, 0 failures/errors/skips.
+Forge resource-only version change and incremental build: PASS.
+Forge dedicated server + 3 real clients: PASS, all JVMs exited 0.
+NeoForge build: PASS; 122 tests, 0 failures/errors/skips; 35/35 required GameTests.
+Forge jar contains entrypoint, shared engine/resources and client mixin manifest.
+Forge jar contains no audio, smoke harness, Fabric metadata or NeoForge metadata.
+Forge release SHA256: F09B3A92045F092D695BFA3CE7F1391D5C1EF0A070BFAFEABDBE6BDB48902AE3
+Audio pack loading/reloading verified; actual playback/ear checks not verified.
+Fabric regression: build and 122 unit tests PASS; server + 3 clients PASS; all JVMs exited 0 (2m12s).

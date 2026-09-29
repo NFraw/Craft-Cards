@@ -1,0 +1,68 @@
+[
+  {
+    "Minecraft": "1.21",
+    "Loader": "neoforge",
+    "Artifact": ".\\build\\mc-1.21\\libs\\crafty_cards-neoforge-mc1.21-1.0.0.jar",
+    "SHA256": "F1B4436AD81B34BA417C4F80F995FD5A9144ADE21B888327AEAAD2C744156E7F",
+    "UnitTests": 122,
+    "Failures": 0,
+    "Errors": 0,
+    "ForbiddenEntries": 0,
+    "Metadata": "# This is an example mods.toml file. It contains the data relating to the loading mods.\n# There are several mandatory fields (#mandatory), and many more that are optional (#optional).\n# The overall format is standard TOML format, v0.5.0.\n# Note that there are a couple of TOML lists in this file.\n# Find more information on toml format here:  https://github.com/toml-lang/toml\n# The name of the mod loader type to load - for regular FML @Mod mods it should be javafml\nmodLoader = \"javafml\" #mandatory\n# A version range to match for said mod loader - for regular FML @Mod it will be the the FML version. This is currently 47.\nloaderVersion = \"[4,)\" #mandatory\n# The license for you mod. This is mandatory metadata and allows for easier comprehension of your redistributive properties.\n# Review your options at https://choosealicense.com/. All rights reserved is the default copyright stance, and is thus the default here.\nlicense = \"GPL-3.0-only\"\n# A URL to refer people to when problems occur with this mod\n#issueTrackerURL=\"https://change.me.to.your.issue.tracker.example.invalid/\" #optional\n# A list of mods - how many allowed here is determined by the individual mod loader\n[[mods]] #mandatory\n# The modid of the mod\nmodId = \"crafty_cards\" #mandatory\n# The version number of the mod\nversion = \"1.0.0\" #mandatory\n# A display name for the mod\ndisplayName = \"Crafty Cards\" #mandatory\n# A URL to query for updates for this mod. See the JSON update specification https://docs.neoforge.net/docs/misc/updatechecker/\n#updateJSONURL=\"https://change.me.example.invalid/updates.json\" #optional\n# A URL for the \"homepage\" for this mod, displayed in the mod UI\n#displayURL=\"https://change.me.to.your.mods.homepage.example.invalid/\" #optional\n# A file name (in the root of the mod JAR) containing a logo for display\nlogoFile=\"logo.png\" #optional\n# A text field displayed in the mod UI\n#credits=\"\" #optional\n# A text field displayed in the mod UI\nauthors = \"JokerNan\" #optional\n\n# The description text for the mod (multi line!) (#mandatory)\ndescription = '''Play Dou Dizhu (Chinese poker) with friends in Minecraft: craft a table, join, bid, play, settle. HUD hand control, in-world card rendering, spectator view.\n在 Minecraft 里和朋友玩斗地主：合成牌桌、入局、叫地主、出牌、结算，含 HUD 手牌操作、世界内牌面渲染与旁观视角。'''\n\n# The [[accessTransformers]] block allows you to declare where your AT file is.\n# If this block is omitted, a fallback attempt will be made to load an AT from META-INF/accesstransformer.cfg\n#[[accessTransformers]]\n#file=\"META-INF/accesstransformer.cfg\"\n\n# The coremods config file path is not configurable and is always loaded from META-INF/coremods.json\n\n# A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.\n[[dependencies.\"crafty_cards\"]] #optional\n# the modid of the dependency\nmodId = \"neoforge\" #mandatory\n# The type of the dependency. Can be one of \"required\", \"optional\", \"incompatible\" or \"discouraged\" (case insensitive).\n# 'required' requires the mod to exist, 'optional' does not\n# 'incompatible' will prevent the game from loading when the mod exists, and 'discouraged' will show a warning\ntype = \"required\" #mandatory\n# Optional field describing why the dependency is required or why it is incompatible\n# reason=\"...\"\n# The version range of the dependency\nversionRange = \"[21.0.167,21.1)\" #mandatory\n# An ordering relationship for the dependency.\n# BEFORE - This mod is loaded BEFORE the dependency\n# AFTER - This mod is loaded AFTER the dependency\nordering = \"NONE\"\n# Side this dependency is applied on - BOTH, CLIENT, or SERVER\nside = \"BOTH\"\n# Here's another dependency\n[[dependencies.\"crafty_cards\"]]\nmodId = \"minecraft\"\ntype = \"required\"\n# This version range declares a minimum of the current minecraft version up to but not including the next major version\nversionRange = \"[1.21,1.21.1)\"\nordering = \"NONE\"\nside = \"BOTH\"\n\n# Features are specific properties of the game environment, that you may want to declare you require. This example declares\n# that your mod requires GL version 3.2 or higher. Other features will be added. They are side aware so declaring this won't\n# stop your mod loading on the server for example.\n#[features.\"crafty_cards\"]\n#openGLVersion=\"[3.2,)\"\n"
+  },
+  {
+    "Minecraft": "1.21",
+    "Loader": "fabric",
+    "Artifact": ".\\fabric\\build\\mc-1.21\\libs\\crafty_cards-fabric-mc1.21-1.0.0.jar",
+    "SHA256": "571A997D02F35B2DEDB7DE4D9200F622451E6FB8327A23FB4BE7D42245E991A0",
+    "UnitTests": 122,
+    "Failures": 0,
+    "Errors": 0,
+    "ForbiddenEntries": 0,
+    "Metadata": "{\n  \"schemaVersion\": 1,\n  \"id\": \"crafty_cards\",\n  \"version\": \"1.0.0\",\n  \"name\": \"Crafty Cards\",\n  \"description\": \"Play Dou Dizhu (Chinese poker) with friends in Minecraft. Fabric port, POC stage.\",\n  \"authors\": [\n    \"JokerNan\"\n  ],\n  \"license\": \"GPL-3.0-only\",\n  \"environment\": \"*\",\n  \"mixins\": [\n    \"crafty_cards.mixins.json\"\n  ],\n  \"entrypoints\": {\n    \"main\": [\n      \"com.jokernan.craftycards.fabric.CraftyCardsFabric\"\n    ],\n    \"client\": [\n      \"com.jokernan.craftycards.fabric.CraftyCardsFabricClient\"\n    ]\n  },\n  \"depends\": {\n    \"fabricloader\": \">=0.16.0\",\n    \"fabric-api\": \"*\",\n    \"minecraft\": \"1.21\",\n    \"java\": \">=21\"\n  }\n}\n"
+  },
+  {
+    "Minecraft": "1.21",
+    "Loader": "forge",
+    "Artifact": ".\\forge\\build\\mc-1.21\\libs\\crafty_cards-forge-mc1.21-1.0.0.jar",
+    "SHA256": "4E1617F19DF1BE329A8EAE4B3FE1EC6813C8FFFA6C46E10912914DBB4E5BE450",
+    "UnitTests": 122,
+    "Failures": 0,
+    "Errors": 0,
+    "ForbiddenEntries": 0,
+    "Metadata": "modLoader=\"javafml\"\nloaderVersion=\"[51,)\"\nlicense=\"GPL-3.0-only\"\n[[mods]]\nmodId=\"crafty_cards\"\nversion=\"1.0.0\"\ndisplayName=\"Crafty Cards\"\nauthors=\"JokerNan\"\nlogoFile=\"logo.png\"\ndescription='''Multiplayer card tables.'''\n[[dependencies.crafty_cards]]\nmodId=\"forge\"\nmandatory=true\nversionRange=\"[51.0.33,52)\"\nordering=\"NONE\"\nside=\"BOTH\"\n[[dependencies.crafty_cards]]\nmodId=\"minecraft\"\nmandatory=true\nversionRange=\"[1.21,1.21.1)\"\nordering=\"NONE\"\nside=\"BOTH\"\n"
+  },
+  {
+    "Minecraft": "1.21.1",
+    "Loader": "neoforge",
+    "Artifact": ".\\build\\libs\\crafty_cards-1.0.0.jar",
+    "SHA256": "7C1BCCBE26F31F1988A9552521AD3C1F8BC262A42449920F277DE8EC2305C254",
+    "UnitTests": 122,
+    "Failures": 0,
+    "Errors": 0,
+    "ForbiddenEntries": 0,
+    "Metadata": "# This is an example mods.toml file. It contains the data relating to the loading mods.\n# There are several mandatory fields (#mandatory), and many more that are optional (#optional).\n# The overall format is standard TOML format, v0.5.0.\n# Note that there are a couple of TOML lists in this file.\n# Find more information on toml format here:  https://github.com/toml-lang/toml\n# The name of the mod loader type to load - for regular FML @Mod mods it should be javafml\nmodLoader = \"javafml\" #mandatory\n# A version range to match for said mod loader - for regular FML @Mod it will be the the FML version. This is currently 47.\nloaderVersion = \"[4,)\" #mandatory\n# The license for you mod. This is mandatory metadata and allows for easier comprehension of your redistributive properties.\n# Review your options at https://choosealicense.com/. All rights reserved is the default copyright stance, and is thus the default here.\nlicense = \"GPL-3.0-only\"\n# A URL to refer people to when problems occur with this mod\n#issueTrackerURL=\"https://change.me.to.your.issue.tracker.example.invalid/\" #optional\n# A list of mods - how many allowed here is determined by the individual mod loader\n[[mods]] #mandatory\n# The modid of the mod\nmodId = \"crafty_cards\" #mandatory\n# The version number of the mod\nversion = \"1.0.0\" #mandatory\n# A display name for the mod\ndisplayName = \"Crafty Cards\" #mandatory\n# A URL to query for updates for this mod. See the JSON update specification https://docs.neoforge.net/docs/misc/updatechecker/\n#updateJSONURL=\"https://change.me.example.invalid/updates.json\" #optional\n# A URL for the \"homepage\" for this mod, displayed in the mod UI\n#displayURL=\"https://change.me.to.your.mods.homepage.example.invalid/\" #optional\n# A file name (in the root of the mod JAR) containing a logo for display\nlogoFile=\"logo.png\" #optional\n# A text field displayed in the mod UI\n#credits=\"\" #optional\n# A text field displayed in the mod UI\nauthors = \"JokerNan\" #optional\n\n# The description text for the mod (multi line!) (#mandatory)\ndescription = '''Play Dou Dizhu (Chinese poker) with friends in Minecraft: craft a table, join, bid, play, settle. HUD hand control, in-world card rendering, spectator view.\n在 Minecraft 里和朋友玩斗地主：合成牌桌、入局、叫地主、出牌、结算，含 HUD 手牌操作、世界内牌面渲染与旁观视角。'''\n\n# The [[accessTransformers]] block allows you to declare where your AT file is.\n# If this block is omitted, a fallback attempt will be made to load an AT from META-INF/accesstransformer.cfg\n#[[accessTransformers]]\n#file=\"META-INF/accesstransformer.cfg\"\n\n# The coremods config file path is not configurable and is always loaded from META-INF/coremods.json\n\n# A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.\n[[dependencies.\"crafty_cards\"]] #optional\n# the modid of the dependency\nmodId = \"neoforge\" #mandatory\n# The type of the dependency. Can be one of \"required\", \"optional\", \"incompatible\" or \"discouraged\" (case insensitive).\n# 'required' requires the mod to exist, 'optional' does not\n# 'incompatible' will prevent the game from loading when the mod exists, and 'discouraged' will show a warning\ntype = \"required\" #mandatory\n# Optional field describing why the dependency is required or why it is incompatible\n# reason=\"...\"\n# The version range of the dependency\nversionRange = \"[21.1.236,21.2)\" #mandatory\n# An ordering relationship for the dependency.\n# BEFORE - This mod is loaded BEFORE the dependency\n# AFTER - This mod is loaded AFTER the dependency\nordering = \"NONE\"\n# Side this dependency is applied on - BOTH, CLIENT, or SERVER\nside = \"BOTH\"\n# Here's another dependency\n[[dependencies.\"crafty_cards\"]]\nmodId = \"minecraft\"\ntype = \"required\"\n# This version range declares a minimum of the current minecraft version up to but not including the next major version\nversionRange = \"[1.21.1,1.21.2)\"\nordering = \"NONE\"\nside = \"BOTH\"\n\n# Features are specific properties of the game environment, that you may want to declare you require. This example declares\n# that your mod requires GL version 3.2 or higher. Other features will be added. They are side aware so declaring this won't\n# stop your mod loading on the server for example.\n#[features.\"crafty_cards\"]\n#openGLVersion=\"[3.2,)\"\n"
+  },
+  {
+    "Minecraft": "1.21.1",
+    "Loader": "fabric",
+    "Artifact": ".\\fabric\\build\\libs\\crafty_cards-fabric-1.0.0.jar",
+    "SHA256": "E5983BDCFD2FF8F8FCDACF775D1D076B9CF5B4EBBF475C0CEA27DE15EC618703",
+    "UnitTests": 122,
+    "Failures": 0,
+    "Errors": 0,
+    "ForbiddenEntries": 0,
+    "Metadata": "{\n  \"schemaVersion\": 1,\n  \"id\": \"crafty_cards\",\n  \"version\": \"1.0.0\",\n  \"name\": \"Crafty Cards\",\n  \"description\": \"Play Dou Dizhu (Chinese poker) with friends in Minecraft. Fabric port, POC stage.\",\n  \"authors\": [\n    \"JokerNan\"\n  ],\n  \"license\": \"GPL-3.0-only\",\n  \"environment\": \"*\",\n  \"mixins\": [\n    \"crafty_cards.mixins.json\"\n  ],\n  \"entrypoints\": {\n    \"main\": [\n      \"com.jokernan.craftycards.fabric.CraftyCardsFabric\"\n    ],\n    \"client\": [\n      \"com.jokernan.craftycards.fabric.CraftyCardsFabricClient\"\n    ]\n  },\n  \"depends\": {\n    \"fabricloader\": \">=0.16.0\",\n    \"fabric-api\": \"*\",\n    \"minecraft\": \"1.21.1\",\n    \"java\": \">=21\"\n  }\n}\n"
+  },
+  {
+    "Minecraft": "1.21.1",
+    "Loader": "forge",
+    "Artifact": ".\\forge\\build\\libs\\crafty_cards-forge-1.0.0.jar",
+    "SHA256": "FD6ADAE833AE66B70BCB23C5F062D6A530E173BC4EC265D4FB8B5E1B45167196",
+    "UnitTests": 122,
+    "Failures": 0,
+    "Errors": 0,
+    "ForbiddenEntries": 0,
+    "Metadata": "modLoader=\"javafml\"\nloaderVersion=\"[52,)\"\nlicense=\"GPL-3.0-only\"\n[[mods]]\nmodId=\"crafty_cards\"\nversion=\"1.0.0\"\ndisplayName=\"Crafty Cards\"\nauthors=\"JokerNan\"\nlogoFile=\"logo.png\"\ndescription='''Multiplayer card tables.'''\n[[dependencies.crafty_cards]]\nmodId=\"forge\"\nmandatory=true\nversionRange=\"[52.1.0,53)\"\nordering=\"NONE\"\nside=\"BOTH\"\n[[dependencies.crafty_cards]]\nmodId=\"minecraft\"\nmandatory=true\nversionRange=\"[1.21.1,1.21.2)\"\nordering=\"NONE\"\nside=\"BOTH\"\n"
+  }
+]

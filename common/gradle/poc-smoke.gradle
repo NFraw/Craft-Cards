@@ -1,0 +1,270 @@
+// Optional desktop integration test. Uses separate directories and four real JVMs.
+tasks.register('pocSmokeConfig') {
+    group = 'verification'
+    description = 'Resolve four smoke launch configurations without starting Minecraft.'
+    dependsOn providers.provider {
+        ['runSmokeServer', 'runSmokeClient1', 'runSmokeClient2', 'runSmokeClient3'].collectMany { name ->
+            def launch = tasks.named(name).get()
+            launch.taskDependencies.getDependencies(launch).toList()
+        }
+    }
+    doLast {
+        ['smokeServer','smokeClient1','smokeClient2','smokeClient3'].each { name ->
+            def config = project.pocRunConfig(name)
+            if (!config.mainClass || !config.runDir) throw new GradleException("Incomplete ${name} launch configuration")
+            logger.lifecycle("Prepared ${name}: ${config.mainClass} in ${config.runDir}")
+        }
+    }
+}
+tasks.register('pocSmoke') {
+    notCompatibleWithConfigurationCache('Resolves loader launch configurations before starting four JVMs')
+    group = 'verification'
+    description = 'Play a complete game with three real clients; requires a graphics-capable desktop.'
+    def launchNames = ['runSmokeServer', 'runSmokeClient1', 'runSmokeClient2', 'runSmokeClient3']
+    dependsOn providers.provider {
+        launchNames.collectMany { name ->
+            def launch = tasks.named(name).get()
+            launch.taskDependencies.getDependencies(launch).toList()
+        }
+    }
+    doLast {
+        // Never accidentally connect to a user's existing server.
+        new ServerSocket(25576, 1, InetAddress.getByName('127.0.0.1')).close()
+        if (project.name == 'crafty-cards-forge') {
+            copy {
+                from tasks.named('compileJava').get().destinationDirectory.get().asFile
+                into sourceSets.main.output.resourcesDir
+            }
+        }
+        def launches = launchNames.collect { tasks.named(it).get() }
+        def configs = launches.collectEntries { launch ->
+            def name = launch.name.substring(3)
+            name = name.substring(0, 1).toLowerCase() + name.substring(1)
+            def config = project.pocRunConfig(name)
+            launch.workingDir = project.file(config.runDir)
+            [(launch.name): config]
+        }
+        def output = layout.buildDirectory.dir("poc/${project.pocRunId}").get().asFile
+        output.mkdirs()
+        def forgeStagedMod = null
+        if (project.name == 'crafty-cards-forge' && mcMinor >= 11) {
+            forgeStagedMod = new File(output, 'staged-mod')
+            copy { from sourceSets.main.output.resourcesDir; into forgeStagedMod }
+            copy { from tasks.named('compileJava').get().destinationDirectory.get().asFile; into forgeStagedMod }
+            copy { from tasks.named('compileSmokeJava').get().destinationDirectory.get().asFile; into forgeStagedMod }
+        }
+        launches.eachWithIndex { launch, index ->
+            def dir = launch.workingDir
+            dir.mkdirs()
+            new File(dir, 'poc-result.txt').delete()
+            if (index == 0) {
+                new File(dir, 'eula.txt').text = 'eula=true\n'
+                new File(dir, 'server.properties').text = '''online-mode=false
+server-ip=127.0.0.1
+server-port=25576
+gamemode=creative
+spawn-protection=0
+level-type=minecraft:flat
+generate-structures=false
+view-distance=3
+simulation-distance=3
+max-players=3
+'''
+            } else {
+                // A different client may become landlord on the next run.
+                // Do not retain its previous selected-card screenshot as evidence.
+                ['01-bidding.png', '02-playing.png', '02-selected.png', '03-settled.png',
+                 '04-config-home.png', '04-config-sound.png', '04-config-play.png',
+                 '04-config-play-bottom.png', '04-config-render.png',
+                 '04-config-render-bottom.png', '04-config-table.png'].each { name ->
+                    new File(dir, "screenshots/${name}").delete()
+                }
+                new File(dir, 'options.txt').text = '''version:3955
+lang:zh_cn
+onboardAccessibility:false
+pauseOnLostFocus:false
+maxFps:30
+renderDistance:3
+simulationDistance:5
+guiScale:2
+tutorialStep:none
+'''
+                def config = new File(dir, 'config/crafty_cards')
+                def repoRoot = project.findProperty('pocRepositoryRoot') ?: project.file('..')
+                copy { from new File(repoRoot, 'soundpacks/官方默认包'); into new File(config, 'soundpacks/官方默认包') }
+                new File(config, 'sounds.json').setText('{"enabled":true,"volume":0.1,"activePack":"官方默认包"}', 'UTF-8')
+            }
+        }
+        def processes = []
+        Throwable failure = null
+        try {
+            launches.eachWithIndex { launch, index ->
+                // Argument files avoid Windows' command-line length limit and preserve spaces.
+                def argsFile = new File(output, "${launch.name}.args")
+                def config = configs[launch.name]
+                // Loom may prepend its own @argfile. Java does not expand one @file
+                // nested inside ours; we supply the classpath/main class explicitly.
+                def vmArgs = (launch.allJvmArgs + config.vmArgs).findAll { !it.toString().startsWith('@') } + ['-Dcraftycards.smoke=true']
+                if (project.hasProperty('pocFullscreen') && index == 2) vmArgs += '-Dcraftycards.smoke.fullscreen=true'
+                if (project.name == 'crafty-cards-forge') vmArgs += '-Dnet.minecraftforge.launcher.skip.assets=true'
+                def cpFiles = launch.classpath.files
+                if (project.name == 'crafty-cards-forge') {
+                    def rawClasses = tasks.named('compileJava').get().destinationDirectory.get().asFile.canonicalFile
+                    cpFiles = cpFiles.findAll { it.canonicalFile != rawClasses }
+                    if (forgeStagedMod != null) {
+                        def rawResources = sourceSets.main.output.resourcesDir.canonicalFile
+                        cpFiles = cpFiles.findAll { it.canonicalFile != rawResources } + forgeStagedMod
+                    }
+                }
+                def gameArgs = config.programArgs
+                if (project.name == 'crafty-cards-forge' && !gameArgs.contains('--mixin'))
+                    gameArgs = gameArgs + ['--mixin', 'crafty_cards.forge.mixins.json']
+                if (project.name == 'crafty-cards-forge' && index > 0) {
+                    def assets = new File(gradle.gradleUserHomeDir, 'caches/fabric-loom/assets')
+                    def indexFile = new File(assets, 'indexes').listFiles()?.find { it.name.startsWith(minecraft_version + '-') && it.name.endsWith('.json') }
+                    if (indexFile == null) throw new GradleException("Missing local assets index for ${minecraft_version}")
+                    gameArgs = gameArgs.collect { it == '{assets_root}' ? assets.absolutePath : it == '{asset_index}' ? indexFile.name.replace('.json','') : it }
+                }
+                def args = vmArgs + ['-cp', cpFiles.join(File.pathSeparator), config.mainClass] + gameArgs
+                def rawVmArgs = config instanceof Map ? config.get('rawVmArgs', '') : ''
+                argsFile.setText(rawVmArgs + '\n' + args.collect { arg -> '"' + arg.toString().replace('\\', '\\\\').replace('"', '\\"') + '"' }.join('\n'), 'UTF-8')
+                def builder = new ProcessBuilder(launch.javaLauncher.get().executablePath.asFile.absolutePath, '@' + argsFile.absolutePath)
+                    .directory(launch.workingDir).redirectErrorStream(true)
+                    .redirectOutput(new File(output, "${launch.name}.log"))
+                launch.environment.each { key, value -> builder.environment().put(key, value.toString()) }
+                if (project.name == 'crafty-cards-forge' && config.modClasses)
+                    builder.environment().put('MOD_CLASSES', config.modClasses.toString())
+                if (forgeStagedMod != null)
+                    builder.environment().put('MOD_CLASSES', 'crafty_cards%%' + forgeStagedMod.absolutePath)
+                processes.add(builder.start())
+                if (index == 0) {
+                    def ready = false
+                    for (int attempt = 0; attempt < 120 && processes[0].isAlive(); attempt++) {
+                        if (new File(output, 'runSmokeServer.log').getText('UTF-8').contains('Done (')) { ready = true; break }
+                        Thread.sleep(1000)
+                    }
+                    if (!ready) throw new GradleException('POC server failed to start; see build/poc/runSmokeServer.log')
+                }
+            }
+            def deadline = System.nanoTime() + java.util.concurrent.TimeUnit.MINUTES.toNanos(10)
+            while (processes.any { it.isAlive() } && System.nanoTime() < deadline) {
+                processes.eachWithIndex { process, index ->
+                    if (!process.isAlive() && process.exitValue() != 0)
+                        throw new GradleException("${launches[index].name} exited with ${process.exitValue()}; see build/poc")
+                }
+                launches.drop(1).each { launch ->
+                    def log = new File(output, "${launch.name}.log")
+                    if (log.isFile() && log.getText('UTF-8').contains('---- Minecraft Crash Report ----'))
+                        throw new GradleException("${launch.name} crashed; see ${log}")
+                }
+                launches.each { launch ->
+                    def result = new File(launch.workingDir, 'poc-result.txt')
+                    if (result.exists() && result.getText('UTF-8').startsWith('FAIL'))
+                        throw new GradleException("${launch.name}: ${result.getText('UTF-8')}")
+                }
+                Thread.sleep(500)
+            }
+            launches.eachWithIndex { launch, index ->
+                def result = new File(launch.workingDir, 'poc-result.txt')
+                if (processes[index].isAlive() || processes[index].exitValue() != 0
+                    || !result.exists() || !result.getText('UTF-8').startsWith('PASS'))
+                    throw new GradleException("${launch.name} failed or timed out; see build/poc and ${launch.workingDir}")
+                logger.lifecycle("${launch.name}: ${result.getText('UTF-8')}")
+                copy { from result; into output; rename { "${launch.name}-result.txt" } }
+            }
+            launches.drop(1).eachWithIndex { launch, index ->
+                def shots = new File(launch.workingDir, 'screenshots')
+                ['01-bidding.png', '02-playing.png', '03-settled.png',
+                 '04-config-home.png', '04-config-sound.png', '04-config-play.png',
+                 '04-config-play-bottom.png', '04-config-render.png',
+                 '04-config-render-bottom.png'].each { name ->
+                    def shot = new File(shots, name)
+                    if (!shot.isFile() || shot.length() < 1000L) throw new GradleException("Missing or empty screenshot ${shot}")
+                    def header = new byte[8]
+                    shot.withInputStream { stream -> if (stream.read(header) != 8) throw new GradleException("Invalid PNG ${shot}") }
+                    if (!java.util.Arrays.equals(header, [(byte)137,80,78,71,13,10,26,10] as byte[]))
+                        throw new GradleException("Invalid PNG header ${shot}")
+                }
+                // A real screenshot guard: 1.21.11 initially drew buttons but no labels,
+                // because six-digit RGB text colors became transparent. Data-only checks missed it.
+                def playImage = javax.imageio.ImageIO.read(new File(shots, '04-config-play.png'))
+                if (playImage == null) throw new GradleException("Unreadable configuration screenshot in ${shots}")
+                def bright = { int x0, int y0, int x1, int y1 ->
+                    int count = 0
+                    for (int y = y0; y < y1; y++) for (int x = x0; x < x1; x++) {
+                        int rgb = playImage.getRGB(x, y)
+                        if (((rgb >> 16) & 255) > 170 && ((rgb >> 8) & 255) > 170 && (rgb & 255) > 170) count++
+                    }
+                    count
+                }
+                int w = playImage.width, h = playImage.height
+                if (bright((int)(w * 0.35), (int)(h * 0.01), (int)(w * 0.65), (int)(h * 0.10)) < 30
+                    || bright((int)(w * 0.05), (int)(h * 0.12), (int)(w * 0.65), (int)(h * 0.85)) < 100)
+                    throw new GradleException("Configuration title/labels are not visibly rendered in ${shots}")
+            }
+            if (!launches.drop(1).any { new File(it.workingDir, 'screenshots/02-selected.png').length() > 1000L })
+                throw new GradleException('No selected-card screenshot from the landlord')
+            if (mcMinor >= 5) {
+                // A bad blit UV can pass the full game flow while every face is a flat grey rectangle.
+                def faceImage = javax.imageio.ImageIO.read(new File(launches[2].workingDir, 'screenshots/02-playing.png'))
+                int brightFacePixels = 0
+                for (int y = 216; y < 287; y++) for (int x = 20; x < 165; x++) {
+                    int color = faceImage.getRGB(x, y)
+                    if (((color >> 16) & 255) > 190 && ((color >> 8) & 255) > 190 && (color & 255) > 190)
+                        brightFacePixels++
+                }
+                int brightHandPixels = 0
+                for (int y = 445; y < 590; y++) for (int x = 65; x < 900; x++) {
+                    int color = faceImage.getRGB(x, y)
+                    if (((color >> 16) & 255) > 190 && ((color >> 8) & 255) > 190 && (color & 255) > 190)
+                        brightHandPixels++
+                }
+                if (brightFacePixels < 500 || brightHandPixels < 2000)
+                    throw new GradleException("1.21.${mcMinor} HUD card faces are not visible: dipai=${brightFacePixels}, hand=${brightHandPixels}")
+            }
+            if (project.hasProperty('pocFullscreen')) {
+                def shots = new File(launches[2].workingDir, 'screenshots')
+                def windowed = javax.imageio.ImageIO.read(new File(shots, '02-hud-windowed.png'))
+                def fullscreen = javax.imageio.ImageIO.read(new File(shots, '02-hud-fullscreen.png'))
+                if (windowed == null || fullscreen == null || fullscreen.width <= windowed.width || fullscreen.height <= windowed.height)
+                    throw new GradleException('Fullscreen HUD capture did not increase the viewport size')
+            }
+            if (new File(launches[1].workingDir, 'screenshots/04-config-table.png').length() <= 1000L)
+                throw new GradleException('No table-configuration screenshot from the host')
+        } catch (Throwable error) {
+            failure = error
+            throw error
+        } finally {
+            // Only processes started by this test. No global java/Gradle process killing.
+            processes.findAll { it.isAlive() }.each { it.destroy() }
+            processes.findAll { it.isAlive() }.each { process ->
+                process.waitFor(5, java.util.concurrent.TimeUnit.SECONDS)
+                if (process.isAlive()) process.destroyForcibly()
+            }
+            def resultRows = []
+            launches.eachWithIndex { launch, index ->
+                def result = new File(launch.workingDir, 'poc-result.txt')
+                def targetShots = new File(output, "screenshots/${launch.name}")
+                targetShots.mkdirs()
+                def sourceShots = new File(launch.workingDir, 'screenshots')
+                if (sourceShots.isDirectory()) copy {
+                    from sourceShots
+                    include '*.png'
+                    into targetShots
+                }
+                resultRows.add([role:launch.name, result:result.isFile() ? result.getText('UTF-8') : 'NOT_RUN',
+                    exitCode:index < processes.size() && !processes[index].isAlive() ? processes[index].exitValue() : null,
+                    log:new File(output, "${launch.name}.log").absolutePath,
+                    screenshots:targetShots.listFiles()?.findAll { it.name.endsWith('.png') }?.collect { it.absolutePath } ?: []])
+            }
+            def report = [minecraft:project.minecraft_version, loader:project.findProperty('portLoader') ?: 'neoforge',
+                runId:project.pocRunId, status:failure == null ? 'PASS' : 'FAIL',
+                error:failure == null ? null : failure.toString(), roles:resultRows,
+                checks:[networkGame:failure == null, staticAudioPack:failure == null,
+                    hudFacesVisible:mcMinor >= 5 ? failure == null : null,
+                    configurationText:failure == null, actualAudioListening:false,
+                    visualReview:false, productionJar:false]]
+            new File(output, 'result.json').setText(groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(report)), 'UTF-8')
+        }
+    }
+}

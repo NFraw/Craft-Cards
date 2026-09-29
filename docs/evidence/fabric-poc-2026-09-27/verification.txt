@@ -1,0 +1,12 @@
+Verified 2026-09-27 on Java 21 / Minecraft 1.21.1
+NeoForge: clean build runGameTestServer --offline: exit 0
+NeoForge JUnit: 120 tests, 0 failures, 0 errors, 0 skipped
+NeoForge GameTest: All 35 required tests passed
+Fabric: clean build --offline (without pocSmoke property): exit 0
+Fabric JUnit: 120 tests, 0 failures, 0 errors, 0 skipped
+Fabric: -PpocSmoke build pocSmoke --offline: exit 0, 2m 42s
+Four real JVMs: server and three clients PASS; all exited normally
+Release jars: no .ogg, smoke classes, GameTest classes or structures
+SHA256:
+crafty_cards-1.0.0.jar 23FABBA2CB8547C7B6DAA35CD2BCD7B9233F30C249EA853264692C2F28F77B71
+crafty_cards-fabric-1.0.0.jar F82404DC83F0E16859C93D5D789DFF0352BF06A695E0C14C1906D66943FC07BA

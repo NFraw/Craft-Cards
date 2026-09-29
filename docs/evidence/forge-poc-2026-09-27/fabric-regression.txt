@@ -1,0 +1,37 @@
+
+> Configure project :
+Fabric Loom: 1.7.4
+
+> Task :compileJava UP-TO-DATE
+> Task :processResources UP-TO-DATE
+> Task :classes UP-TO-DATE
+> Task :jar UP-TO-DATE
+> Task :processIncludeJars UP-TO-DATE
+> Task :remapJar UP-TO-DATE
+> Task :sourcesJar UP-TO-DATE
+> Task :remapSourcesJar UP-TO-DATE
+> Task :assemble UP-TO-DATE
+> Task :compileTestJava UP-TO-DATE
+> Task :processTestResources NO-SOURCE
+> Task :testClasses UP-TO-DATE
+> Task :test UP-TO-DATE
+> Task :validateAccessWidener NO-SOURCE
+> Task :check UP-TO-DATE
+> Task :build UP-TO-DATE
+> Task :compileSmokeJava
+> Task :generateLog4jConfig UP-TO-DATE
+> Task :generateRemapClasspath UP-TO-DATE
+> Task :generateDLIConfig UP-TO-DATE
+> Task :configureLaunch UP-TO-DATE
+> Task :downloadAssets UP-TO-DATE
+> Task :configureClientLaunch UP-TO-DATE
+> Task :processSmokeResources
+> Task :smokeClasses
+> Task :pocSmoke
+runSmokeServer: PASS: three real players, normal settlement, emerald total=192
+runSmokeClient1: PASS: 54 distinct models, audio pack reload, 3-player snapshots, HUD input/countdown, world render, normal settlement
+runSmokeClient2: PASS: 54 distinct models, audio pack reload, 3-player snapshots, HUD input/countdown, world render, normal settlement
+runSmokeClient3: PASS: 54 distinct models, audio pack reload, 3-player snapshots, HUD input/countdown, world render, normal settlement
+
+BUILD SUCCESSFUL in 2m 12s
+16 actionable tasks: 3 executed, 13 up-to-date

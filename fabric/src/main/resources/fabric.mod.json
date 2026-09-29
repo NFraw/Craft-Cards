@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "${mod_id}",
+  "version": "${version}",
+  "name": "Crafty Cards",
+  "description": "Crafty Cards brings three-player Dou Dizhu into Minecraft, with HUD hands, in-world cards, opt-in spectating, and optional item stakes.",
+  "icon": "logo.png",
+  "authors": [
+    "JokerNan"
+  ],
+  "license": "GPL-3.0-only",
+  "environment": "*",
+  "mixins": [
+    "crafty_cards.mixins.json"
+  ],
+  "entrypoints": {
+    "main": [
+      "com.jokernan.craftycards.fabric.CraftyCardsFabric"
+    ],
+    "client": [
+      "com.jokernan.craftycards.fabric.CraftyCardsFabricClient"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.16.0",
+    "fabric-api": "*",
+    "minecraft": "${minecraft_version}",
+    "java": ">=21"
+  }
+}

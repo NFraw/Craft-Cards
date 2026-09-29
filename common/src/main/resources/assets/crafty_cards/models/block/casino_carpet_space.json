@@ -1,0 +1,7 @@
+{
+  "parent": "block/carpet",
+  "textures": {
+    "particle": "crafty_cards:block/casino_carpet_space",
+    "wool": "crafty_cards:block/casino_carpet_space"
+  }
+}

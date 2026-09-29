@@ -1,0 +1,170 @@
+{
+  "version": 2,
+  "name": "官方默认包",
+  "author": "Crafty Cards",
+  "description": "历史默认包；音频来源及公开再分发授权待核。",
+  "sounds": {
+    "bomb": [
+      "bomb.ogg"
+    ],
+    "pass": [
+      "pass.ogg"
+    ],
+    "bgm_waiting": [
+      "bgm_waiting.ogg"
+    ],
+    "bgm_playing": [
+      "bgm_playing.ogg"
+    ],
+    "bgm_win": [
+      "bgm_win.ogg"
+    ],
+    "bgm_lose": [
+      "bgm_lose.ogg"
+    ],
+    "dan1": [
+      "dan1.ogg"
+    ],
+    "dan2": [
+      "dan2.ogg"
+    ],
+    "dan3": [
+      "dan3.ogg"
+    ],
+    "dan4": [
+      "dan4.ogg"
+    ],
+    "dan5": [
+      "dan5.ogg"
+    ],
+    "dan6": [
+      "dan6.ogg"
+    ],
+    "dan7": [
+      "dan7.ogg"
+    ],
+    "dan8": [
+      "dan8.ogg"
+    ],
+    "dan9": [
+      "dan9.ogg"
+    ],
+    "dan10": [
+      "dan10.ogg"
+    ],
+    "dan11": [
+      "dan11.ogg"
+    ],
+    "dan12": [
+      "dan12.ogg"
+    ],
+    "dan13": [
+      "dan13.ogg"
+    ],
+    "dan14": [
+      "dan14.ogg"
+    ],
+    "dan15": [
+      "dan15.ogg"
+    ],
+    "dui1": [
+      "dui1.ogg"
+    ],
+    "dui2": [
+      "dui2.ogg"
+    ],
+    "dui3": [
+      "dui3.ogg"
+    ],
+    "dui4": [
+      "dui4.ogg"
+    ],
+    "dui5": [
+      "dui5.ogg"
+    ],
+    "dui6": [
+      "dui6.ogg"
+    ],
+    "dui7": [
+      "dui7.ogg"
+    ],
+    "dui8": [
+      "dui8.ogg"
+    ],
+    "dui9": [
+      "dui9.ogg"
+    ],
+    "dui10": [
+      "dui10.ogg"
+    ],
+    "dui11": [
+      "dui11.ogg"
+    ],
+    "dui12": [
+      "dui12.ogg"
+    ],
+    "dui13": [
+      "dui13.ogg"
+    ],
+    "tuple1": [
+      "tuple1.ogg"
+    ],
+    "tuple2": [
+      "tuple2.ogg"
+    ],
+    "tuple3": [
+      "tuple3.ogg"
+    ],
+    "tuple4": [
+      "tuple4.ogg"
+    ],
+    "tuple5": [
+      "tuple5.ogg"
+    ],
+    "tuple6": [
+      "tuple6.ogg"
+    ],
+    "tuple7": [
+      "tuple7.ogg"
+    ],
+    "tuple8": [
+      "tuple8.ogg"
+    ],
+    "tuple9": [
+      "tuple9.ogg"
+    ],
+    "tuple10": [
+      "tuple10.ogg"
+    ],
+    "tuple11": [
+      "tuple11.ogg"
+    ],
+    "tuple12": [
+      "tuple12.ogg"
+    ],
+    "tuple13": [
+      "tuple13.ogg"
+    ],
+    "sandaiyi": [
+      "sandaiyi.ogg"
+    ],
+    "shunzi": [
+      "shunzi.ogg"
+    ],
+    "liandui": [
+      "liandui.ogg"
+    ],
+    "feiji": [
+      "feiji.ogg"
+    ],
+    "sidaier": [
+      "sidaier.ogg"
+    ],
+    "sidailiangdui": [
+      "sidailiangdui.ogg"
+    ],
+    "wangzha": [
+      "wangzha.ogg"
+    ]
+  }
+}

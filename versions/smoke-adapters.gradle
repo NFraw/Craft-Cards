@@ -1,0 +1,65 @@
+// The acceptance mod is separate from release code; adapt its real client APIs too.
+ext.adaptSmokeSource = { String path, String source ->
+    if (path.endsWith('/PocClient.java')) {
+        source = source.replace('mc.player.input.shiftKeyDown = true;', 'mc.player.setShiftKeyDown(true);')
+            .replace('mc.player.input.shiftKeyDown = false;', 'mc.player.setShiftKeyDown(false);')
+            .replace('mc.getToasts()', 'mc.getToastManager()')
+            .replace('BuiltInRegistries.CREATIVE_MODE_TAB.get(', 'BuiltInRegistries.CREATIVE_MODE_TAB.getValue(')
+        if (mcMinor >= 4) {
+            source = source.replace('import net.minecraft.client.renderer.item.ItemProperties;', '')
+            int start = source.indexOf('        Set<Object> models =')
+            int end = source.indexOf('\n    private static void scroll', start)
+            source = source.substring(0, start) + '''        // Modern item dispatch is declarative. Validate the loaded definition,
+        // and render all faces during the game; visual correctness remains reviewable.
+        try {
+            var resource = mc.getResourceManager().getResourceOrThrow(com.jokernan.craftycards.CCReference.location("items/card.json"));
+            try (var reader = resource.openAsReader()) {
+                var entries = com.google.gson.JsonParser.parseReader(reader).getAsJsonObject().getAsJsonObject("model").getAsJsonArray("entries");
+                check(entries.size() == 54, "54 loaded face definitions");
+                Set<String> faces = new HashSet<>();
+                for (int i = 0; i < 54; i++) {
+                    var entry = entries.get(i).getAsJsonObject();
+                    check(entry.get("threshold").getAsInt() == i, "face threshold " + i);
+                    String model = entry.getAsJsonObject("model").get("model").getAsString();
+                    faces.add(model);
+                    check(mc.getResourceManager().getResource(com.jokernan.craftycards.CCReference.location("models/" + model.split(":")[1] + ".json")).isPresent(), "face resource " + i);
+                }
+                check(faces.size() == 54, "54 unique face resources");
+            }
+            for (int skin = 0; skin < 4; skin++)
+                check(mc.getResourceManager().getResource(com.jokernan.craftycards.CCReference.location("items/card_covered_" + skin + ".json")).isPresent(), "back definition " + skin);
+        } catch (java.io.IOException failure) { throw new AssertionError("Loaded model definitions", failure); }
+    }
+''' + source.substring(end)
+        }
+        if (mcMinor >= 5) source = source.replace('mc.player.getInventory().selected = i', 'mc.player.getInventory().setSelectedSlot(i)')
+        if (mcMinor >= 6) source = source.replace('name, mc.getMainRenderTarget(), message', 'name, mc.getMainRenderTarget(), 1, message')
+        if (mcMinor >= 9) source = source
+            .replace('mc.getWindow().getWindow()', 'mc.getWindow().handle()')
+            .replace('getDeclaredMethod("onPress", long.class, int.class, int.class, int.class)', 'getDeclaredMethod("onButton", long.class, net.minecraft.client.input.MouseButtonInfo.class, int.class)')
+            .replace('press.invoke(mc.mouseHandler, mc.getWindow().handle(), 0, 1, 0)', 'press.invoke(mc.mouseHandler, mc.getWindow().handle(), new net.minecraft.client.input.MouseButtonInfo(0, 0), 1)')
+    }
+    if (path.endsWith('/PocServer.java')) source = source
+        .replace('p.teleportTo(server.overworld(), seats[n-1][0], 65, seats[n-1][1], 0, 25)', 'p.teleportTo(server.overworld(), seats[n-1][0], 65, seats[n-1][1], java.util.Set.of(), 0, 25, true)')
+    if (mcMinor >= 6) source = source.replace('var server = p.getServer()', 'var server = p.level().getServer()')
+    if (portLoader == 'forge' && mcMinor >= 6) {
+        source = source.replace('var bus = MinecraftForge.EVENT_BUS;', '')
+        ['ServerStartedEvent','ServerStoppedEvent','PlayerEvent.PlayerLoggedInEvent','TickEvent.ServerTickEvent.Post'].each { type ->
+            source = source.replace("bus.addListener((${type} event)", "${type}.BUS.addListener((${type} event)")
+        }
+        source = source.replace('MinecraftForge.EVENT_BUS.addListener((TickEvent.ClientTickEvent.Post tick)', 'TickEvent.ClientTickEvent.Post.BUS.addListener((TickEvent.ClientTickEvent.Post tick)')
+        if (mcMinor >= 9) source = source.replace('callback.accept(event.getServer())));', 'callback.accept(event.server())));')
+        if (mcMinor >= 11 && path.endsWith('/ForgePoc.java'))
+            source = source.replace('@Mod("crafty_cards_smoke")', '')
+        if (path.endsWith('/ForgePocClient.java')) {
+            source = source.replace('@Mod.EventBusSubscriber(modid = "crafty_cards_smoke", value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)', '')
+            source = source.replace('\n}', '''
+    public static void bootstrap() {
+        new PocClient().initialize(callback ->
+            TickEvent.ClientTickEvent.Post.BUS.addListener((TickEvent.ClientTickEvent.Post tick) -> callback.accept(Minecraft.getInstance())));
+    }
+}''')
+        }
+    }
+    source
+}

@@ -1,0 +1,7 @@
+modLoader="javafml"
+loaderVersion="[51,)"
+license="GPL-3.0-only"
+[[mods]]
+modId="crafty_cards_smoke"
+version="1.0.0"
+displayName="Crafty Cards development acceptance"

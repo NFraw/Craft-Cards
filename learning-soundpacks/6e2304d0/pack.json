@@ -1,0 +1,223 @@
+{
+  "version": 2,
+  "name": "悠闲版本",
+  "author": "JokerNan",
+  "description": "",
+  "sounds": {
+    "bomb": [
+      "special_bomb.ogg",
+      "zhadan.ogg"
+    ],
+    "pass": [
+      "buyao1.ogg",
+      "buyao2.ogg",
+      "buyao3.ogg",
+      "buyao4.ogg"
+    ],
+    "win": [
+      "win.ogg"
+    ],
+    "lose": [
+      "lose.ogg"
+    ],
+    "bgm_waiting": [
+      "welcome.ogg"
+    ],
+    "bgm_playing": [
+      "normal.ogg"
+    ],
+    "dan1": [
+      "dan1.ogg",
+      "n1.ogg"
+    ],
+    "dan2": [
+      "n2.ogg",
+      "dan2.ogg"
+    ],
+    "dan3": [
+      "n3.ogg",
+      "dan3.ogg"
+    ],
+    "dan4": [
+      "n4.ogg",
+      "dan4.ogg"
+    ],
+    "dan5": [
+      "n5.ogg",
+      "dan5.ogg"
+    ],
+    "dan6": [
+      "n6.ogg",
+      "dan6.ogg"
+    ],
+    "dan7": [
+      "n7.ogg",
+      "dan7.ogg"
+    ],
+    "dan8": [
+      "n8.ogg",
+      "dan8.ogg"
+    ],
+    "dan9": [
+      "n9.ogg",
+      "dan9.ogg"
+    ],
+    "dan10": [
+      "n10.ogg",
+      "dan10.ogg"
+    ],
+    "dan11": [
+      "n11.ogg",
+      "dan11.ogg"
+    ],
+    "dan12": [
+      "n12.ogg",
+      "dan12.ogg"
+    ],
+    "dan13": [
+      "n13.ogg",
+      "dan13.ogg"
+    ],
+    "dan14": [
+      "n14.ogg",
+      "dan14.ogg"
+    ],
+    "dan15": [
+      "n15.ogg",
+      "dan15.ogg"
+    ],
+    "dui1": [
+      "ndui1.ogg",
+      "dui1.ogg"
+    ],
+    "dui2": [
+      "ndui2.ogg",
+      "dui2.ogg"
+    ],
+    "dui3": [
+      "ndui3.ogg",
+      "dui3.ogg"
+    ],
+    "dui4": [
+      "ndui4.ogg",
+      "dui4.ogg"
+    ],
+    "dui5": [
+      "ndui5.ogg",
+      "dui5.ogg"
+    ],
+    "dui6": [
+      "ndui6.ogg",
+      "dui6.ogg"
+    ],
+    "dui7": [
+      "ndui7.ogg",
+      "dui7.ogg"
+    ],
+    "dui8": [
+      "ndui8.ogg",
+      "dui8.ogg"
+    ],
+    "dui9": [
+      "ndui9.ogg",
+      "dui9.ogg"
+    ],
+    "dui10": [
+      "ndui10.ogg",
+      "dui10.ogg"
+    ],
+    "dui11": [
+      "ndui11.ogg",
+      "dan11.ogg"
+    ],
+    "dui12": [
+      "ndui12.ogg",
+      "dan12.ogg"
+    ],
+    "dui13": [
+      "ndui13.ogg",
+      "dui13.ogg"
+    ],
+    "tuple1": [
+      "ntuple1.ogg",
+      "tuple1.ogg"
+    ],
+    "tuple2": [
+      "ntuple2.ogg",
+      "tuple2.ogg"
+    ],
+    "tuple3": [
+      "ntuple3.ogg",
+      "tuple3.ogg"
+    ],
+    "tuple4": [
+      "ntuple4.ogg",
+      "tuple4.ogg"
+    ],
+    "tuple5": [
+      "ntuple5.ogg",
+      "tuple5.ogg"
+    ],
+    "tuple6": [
+      "ntuple6.ogg",
+      "tuple6.ogg"
+    ],
+    "tuple7": [
+      "ntuple7.ogg",
+      "tuple6.ogg",
+      "tuple7.ogg"
+    ],
+    "tuple8": [
+      "ntuple8.ogg",
+      "tuple8.ogg"
+    ],
+    "tuple9": [
+      "ntuple9.ogg",
+      "tuple9.ogg"
+    ],
+    "tuple10": [
+      "ntuple10.ogg",
+      "tuple10.ogg"
+    ],
+    "tuple11": [
+      "ntuple11.ogg",
+      "tuple11.ogg"
+    ],
+    "tuple12": [
+      "ntuple12.ogg",
+      "tuple12.ogg"
+    ],
+    "tuple13": [
+      "ntuple13.ogg",
+      "tuple13.ogg"
+    ],
+    "sandaiyi": [
+      "sandaiyi.ogg",
+      "Mansandaiyi.ogg"
+    ],
+    "shunzi": [
+      "nshunzi.ogg",
+      "shunzi.ogg"
+    ],
+    "liandui": [
+      "nliandui.ogg",
+      "liandui.ogg"
+    ],
+    "feiji": [
+      "special_plane.ogg",
+      "feiji.ogg"
+    ],
+    "sidaier": [
+      "nsidaier.ogg",
+      "sidaier.ogg"
+    ],
+    "sidailiangdui": [
+      "nsidailiangdui.ogg",
+      "sidailiangdui.ogg"
+    ],
+    "wangzha": [
+      "nwangzha.ogg",
+      "wangzha.ogg"
+    ]
+  }
+}

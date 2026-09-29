@@ -1,0 +1,28 @@
+{
+  "modId": "crafty_cards",
+  "modVersion": "1.0.0",
+  "displayName": "Crafty Cards",
+  "chineseListingTitle": "Crafty Cards — 首发玩法：斗地主",
+  "author": "JokerNan",
+  "upstream": [
+    {"name": "Playing Cards & Chips / PlayingCards", "author": "OmbreMoon", "url": "https://github.com/OmbreMoon/PlayingCards"},
+    {"name": "Playing Cards", "author": "Calemi", "url": "https://www.curseforge.com/minecraft/mc-mods/playing-cards"}
+  ],
+  "license": "GPL-3.0-only",
+  "upstreamArtworkRightsReviewRequired": true,
+  "icon": "logo.png",
+  "summary": {
+    "zh-CN": "在 Minecraft 中与两位朋友玩斗地主。",
+    "en-US": "Play three-player Dou Dizhu in Minecraft."
+  },
+  "currentPlayableGames": ["dou_dizhu"],
+  "minecraftTargets": ["1.21", "1.21.1", "1.21.2", "1.21.3", "1.21.4", "1.21.5", "1.21.6", "1.21.7", "1.21.8", "1.21.9", "1.21.10", "1.21.11"],
+  "loaders": ["neoforge", "fabric", "forge"],
+  "unsupported": ["forge:1.21.2"],
+  "javaVersion": 21,
+  "fabricApiRequired": true,
+  "douDizhuPlayerCount": 3,
+  "douDizhuHasAiOrSoloMode": false,
+  "audioIncludedInModJar": false,
+  "status": "local-review-draft-rights-check-required"
+}
