@@ -1,3 +1,5 @@
+> **Target branch: fabric / Minecraft 1.21.11.** This branch keeps the sources for this target. Run `.\build-target.ps1` from the repository root to build.
+
 # Crafty Cards · Multiplayer Dou Dizhu in Minecraft
 
 [简体中文（默认）](README.md) | English
