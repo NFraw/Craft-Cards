@@ -1,35 +1,27 @@
-> **褰撳墠鐩爣鍒嗘敮锛?Loader / Minecraft * 鏈垎鏀粎淇濈暀璇ョ洰鏍囨墍闇€婧愮爜锛涘湪浠撳簱鏍圭洰褰曡繍琛?`.\build-target.ps1` 鏋勫缓銆俙n
-# Crafty Cards · Minecraft 联机斗地主
+# Crafty Cards · fabric / Minecraft 1.21.2
 
 简体中文（默认） | [English](README.en.md)
 
-Crafty Cards 在 Minecraft 世界里提供**三人联机斗地主**：合成并放下一张牌桌，三人入局、叫地主、出牌、结算。
-当前斗地主不用全屏 GUI：手牌、桌面出牌、别人的牌都渲染在世界或 HUD 里，你能看到牌桌周围的一切。
+本分支是 **fabric + Minecraft 1.21.2** 的独立源码快照。它包含共用玩法代码和该目标需要的版本覆盖；较早版本号的覆盖目录是构建输入，不会生成那些版本的 JAR。
 
-> 本项目基于 [OmbreMoon 的 PlayingCards](https://github.com/OmbreMoon/PlayingCards) 改造；该项目又移植自 [Calemi 的 Playing Cards](https://www.curseforge.com/minecraft/mc-mods/playing-cards)。本项目不是两者的官方续作。继承的代码与美术、致谢及许可核对情况见 [CREDITS.md](CREDITS.md)。
+Crafty Cards 在 Minecraft 世界里提供三人联机斗地主。项目来源、素材致谢与许可说明见 [CREDITS.md](CREDITS.md)。
 
-## 环境要求
+## 本分支版本与构建
 
-| 项目 | 版本 |
-|---|---|
-| Minecraft | 1.21–1.21.11（默认构建目标 1.21.1，不含 26.x） |
-| NeoForge | 随 Minecraft 目标选择；版本表见 `common/gradle/minecraft-target.gradle` |
-| Fabric | Loader 0.19.5；Fabric API 随 Minecraft 目标选择 |
-| Forge | 除 1.21.2（无目标发行版）外按 Minecraft 目标选择 |
+| 项目 | 固定值 |
+| --- | --- |
+| Minecraft | 1.21.2 |
+| 加载器依赖 | Fabric Loader 0.19.5 / Fabric API 0.106.1+1.21.2 |
 | Java | 21 |
+| 安装用 JAR | `fabric/build/mc-1.21.2/libs/crafty_cards-fabric-mc1.21.2-1.0.0.jar` |
 
-斗地主只支持 3 人联机（服务端权威），没有单人/AI 对手。
+下载或解压本分支源码后，在仓库根目录使用 Windows PowerShell：
 
-Fabric 构建、三客户端自动验收与当前范围见 [Fabric POC 验收说明](docs/Fabric-POC.md)。
-Forge 构建与验收见 [Forge POC 说明](docs/Forge-POC.md)。三种加载器使用各自的 jar，客户端连接相同加载器的服务器；尚未验证跨加载器混服。
+```powershell
+powershell -ExecutionPolicy Bypass -File .\build-target.ps1
+```
 
-版本选择、构建命令与后续移植边界见 [版本兼容性说明](docs/Version-Compatibility.md)。
-
-**1.21.2—1.21.11 测试适配**见 [现代版本说明](versions/README.md)：覆盖 NeoForge、Fabric，以及有目标发行版的 Forge（Forge 无 1.21.2），不包含 26.x。安装包按版本和加载器分开；构建与单测通过不等于 HUD 观感和音乐听音均已人工确认。
-
-逐版本三客户端自动验收的运行命令、结果位置和人工复核边界见 [多版本自动化验收](docs/自动化验收.md)。
-
-发布资料见 [开源资料索引](docs/open-source/README.md)，项目介绍见 [单页预览](docs/open-source-preview.html)。
+该命令只构建并测试 **fabric / Minecraft 1.21.2**，同时核对安装用 JAR 的文件名。若同时看到 `-sources.jar`，那是同一目标的源码包，不能放入 `mods`。尝试传入其他 `-PmcTarget` 会在 Gradle 配置阶段报错。版本覆盖与路径说明见 [本分支版本说明](versions/README.md)；测试范围见 [验证与已知边界](docs/open-source/TESTING.md)。
 
 ## 快速上手
 
@@ -177,15 +169,9 @@ python tools/soundpack_maker.py --cli <音频目录> --name <显示名>         
 
 ## 开发
 
-```bash
-./gradlew build                # 编译 → build/libs/
-./gradlew test                 # 单元测试
-./gradlew runGameTestServer    # 游戏内测试（无头服务端）
-./gradlew runClient            # 开发客户端（联机再开 runClient2/3/4）
-```
+本分支的构建入口为 `powershell -ExecutionPolicy Bypass -File .\build-target.ps1`，产物为 `fabric/build/mc-1.21.2/libs/crafty_cards-fabric-mc1.21.2-1.0.0.jar`。测试已包含在 `build` 中。共享逻辑位于 `common/`，版本覆盖位于 `versions/`，加载器实现位于 `fabric/`。
 
-架构与实现细节见 [AGENTS.md](AGENTS.md)，功能说明见 [docs/斗地主玩法与实现介绍.md](docs/斗地主玩法与实现介绍.md)，
-测试范围与证据见 [验证与已知边界](docs/open-source/TESTING.md)。
+架构与实现细节见 [AGENTS.md](AGENTS.md)，功能说明见 [docs/斗地主玩法与实现介绍.md](docs/斗地主玩法与实现介绍.md)，测试范围与证据见 [验证与已知边界](docs/open-source/TESTING.md)。
 
 ## 素材声明
 
