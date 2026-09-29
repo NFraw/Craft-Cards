@@ -17,4 +17,4 @@
 
 **1.0.0 提供三人联机斗地主**，含 HUD 手牌、世界内牌面、旁观与可选筹码。当前没有 AI 单人模式，不承诺跨加载器混服；音乐需要客户端另装音乐包。自动验收与人工视觉/听音的界限见 [验证文档](../docs/open-source/TESTING.md)。
 
-音乐包制作工具以 `crafty-cards-soundpack-maker-1.0.0.zip` 附在同一个 GitHub Release，下载后解压并双击 Windows 启动器即可打开（需本机 Python）。模组 jar 不包含音频；源码仓库的 `learning-soundpacks/` 收录 1.21.1 的三个带音频学习样本，Release 另备可直接下载的压缩包。[音频权利说明](AUDIO-RIGHTS.md)记录第三方来源与授权风险。如有侵权，请联系下架。
+音乐包制作工具以 `crafty-cards-soundpack-maker-1.0.1.zip` 附在同一个 GitHub Release，下载后解压并双击 Windows 启动器即可打开（需本机 Python）。1.0.1 可导入现有包目录或单包 ZIP，再经审查后手动生成新包。模组 jar 不包含音频；源码仓库的 `learning-soundpacks/` 收录 1.21.1 的三个带音频学习样本，Release 另备可直接下载的压缩包。[音频权利说明](AUDIO-RIGHTS.md)记录第三方来源与授权风险。如有侵权，请联系下架。

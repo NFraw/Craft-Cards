@@ -8,7 +8,7 @@ from pathlib import Path
 from zipfile import ZIP_DEFLATED, ZipFile
 
 ROOT = Path(__file__).resolve().parent.parent
-OUTPUT = ROOT / "build" / "release-assets" / "crafty-cards-soundpack-maker-1.0.0.zip"
+OUTPUT = ROOT / "build" / "release-assets" / "crafty-cards-soundpack-maker-1.0.1.zip"
 FILES = {
     "soundpack_maker.py": ROOT / "tools" / "soundpack_maker.py",
     "启动音乐包制作工具.bat": ROOT / "tools" / "soundpack-maker-distribution" / "启动音乐包制作工具.bat",
@@ -27,6 +27,8 @@ def main() -> None:
             data = source.read_bytes()
             if name == "音乐包格式.md":
                 data = data.replace(b"../release-materials/AUDIO-RIGHTS.md", b"AUDIO-RIGHTS.md")
+                data = data.replace(b"../learning-soundpacks/README.md",
+                                    b"https://github.com/NFraw/Craft-Cards/tree/main/learning-soundpacks")
             if name == "README.md":
                 data = data.replace(b"../../release-materials/AUDIO-RIGHTS.md", b"AUDIO-RIGHTS.md")
             archive.writestr(name, data)

@@ -6,7 +6,7 @@
 
 从本 Release 下载**与你的 Minecraft 版本和加载器完全相同**的 jar，客户端和服务器都放入 `mods`。支持 Minecraft 1.21–1.21.11 的 NeoForge、Fabric、Forge，唯独 Forge 1.21.2 没有目标包。需要 Java 21；Fabric 另需对应版本的 Fabric API。`crafty-cards-1.0.0-all-loaders.zip` 集中收录 35 个 jar、版本依赖表、清单及 SHA-256；也可以直接下载单个 jar。
 
-要制作自己的音乐包，下载同一 Release 的 `crafty-cards-soundpack-maker-1.0.0.zip`，解压后阅读 README，在 Windows 双击启动器（本机需 Python 3.10+）。工具的“添加文件”只暂存映射；在审查窗口核对后亲自点击“生成音乐包”才写盘。模组 jar 不含音频。三个 1.21.1 的带音频学习样本可从仓库 `learning-soundpacks/` 查看，Release 另有单包与合集压缩包。它们的录音可能涉及第三方权利，授权尚未逐项确认；详见[音频权利说明](AUDIO-RIGHTS.md)。如有侵权，请联系下架。
+要制作或修改音乐包，下载同一 Release 的 `crafty-cards-soundpack-maker-1.0.1.zip`（1.0.0 未提供导入已有包功能），解压后阅读 README，在 Windows 双击启动器（本机需 Python 3.10+）。1.0.1 可导入包目录或单包 ZIP，读取映射和权重；“添加文件”也只暂存映射。在审查窗口核对后亲自点击“生成音乐包”才写入新包，原包保持不变。模组 jar 不含音频。三个 1.21.1 的带音频学习样本可从仓库 `learning-soundpacks/` 查看，Release 另有单包与合集压缩包。它们的录音可能涉及第三方权利，授权尚未逐项确认；详见[音频权利说明](AUDIO-RIGHTS.md)。如有侵权，请联系下架。
 
 ## 验证范围与限制
 

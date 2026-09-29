@@ -17,6 +17,7 @@ from __future__ import annotations
 import json
 import random
 import sys
+from zipfile import ZipFile
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -25,6 +26,103 @@ import pytest
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import soundpack_maker as m  # noqa: E402  （要先把它所在目录加进 sys.path）
+
+
+def test_import_existing_directory_preserves_mapping_without_writing_output(tmp_path: Path):
+    source = tmp_path / "existing"
+    source.mkdir()
+    (source / "pass_1.ogg").write_bytes(b"OggS-example")
+    (source / "pack.json").write_text(json.dumps({
+        "version": 2, "name": "旧包", "author": "作者", "description": "说明",
+        "sounds": {"pass": [{"file": "pass_1.ogg", "weight": 3}]},
+    }, ensure_ascii=False), encoding="utf-8")
+    output = tmp_path / "output"
+
+    meta, items = m.read_existing_pack(source)
+
+    assert meta == {"name": "旧包", "author": "作者", "description": "说明"}
+    assert items["pass"] == [{"name": "pass_1.ogg", "weight": 3,
+                               "src": str(source / "pass_1.ogg"), "dir": None}]
+    assert not output.exists()
+
+
+def test_import_release_zip_stages_only_referenced_audio(tmp_path: Path):
+    archive = tmp_path / "existing.zip"
+    with ZipFile(archive, "w") as z:
+        z.writestr("pack-id/pack.json", json.dumps({
+            "version": 2, "name": "压缩包", "sounds": {"pass": ["pass.ogg"]},
+        }, ensure_ascii=False))
+        z.writestr("pack-id/pass.ogg", b"OggS-example")
+        z.writestr("pack-id/unreferenced.ogg", b"OggS-unused")
+        z.writestr("AUDIO-RIGHTS.md", "note")
+    staged = tmp_path / "staged"
+    output = tmp_path / "output"
+
+    meta, items = m.read_existing_pack(archive, staged)
+
+    assert meta["name"] == "压缩包"
+    assert items["pass"][0]["src"] == str(staged / "pass.ogg")
+    assert (staged / "pass.ogg").read_bytes() == b"OggS-example"
+    assert not (staged / "unreferenced.ogg").exists()
+    assert not output.exists()
+
+
+def test_import_rejects_unsafe_manifest_file_name(tmp_path: Path):
+    source = tmp_path / "bad"
+    source.mkdir()
+    (source / "pack.json").write_text(json.dumps({
+        "version": 2, "name": "坏包", "sounds": {"pass": ["../escape.ogg"]},
+    }, ensure_ascii=False), encoding="utf-8")
+
+    with pytest.raises(ValueError, match="文件名"):
+        m.read_existing_pack(source)
+
+
+def test_gui_import_zip_populates_editor_without_generating(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
+    archive = tmp_path / "download.zip"
+    with ZipFile(archive, "w") as z:
+        z.writestr("pack-id/pack.json", json.dumps({
+            "version": 2, "name": "已下载的包", "sounds": {"pass": ["pass.ogg"]},
+        }, ensure_ascii=False))
+        z.writestr("pack-id/pass.ogg", b"OggS-example")
+    output = tmp_path / "output"
+    values: dict[str, str] = {}
+    app = m.SoundPackMakerApp.__new__(m.SoundPackMakerApp)
+    app.items = {key: [] for key in m.KEY_ORDER}
+    app._weight_vars = {}
+    app._import_tempdir = None
+    app._built_dir = None
+    app._out_root_path = lambda: output
+    app._refresh_all = lambda: None
+    app._apply_filter = lambda: None
+    app.log = lambda *args: None
+    app.pack_name = SimpleNamespace(set=lambda value: values.__setitem__("name", value))
+    app.pack_author = SimpleNamespace(set=lambda value: values.__setitem__("author", value))
+    app.pack_desc = SimpleNamespace(set=lambda value: values.__setitem__("description", value))
+    app.pack_id = SimpleNamespace(set=lambda value: values.__setitem__("id", value))
+    monkeypatch.setattr(m.filedialog, "askopenfilename", lambda **kwargs: str(archive))
+
+    app._on_import(True)
+
+    assert values["name"] == "已下载的包"
+    assert len(values["id"]) == 8
+    assert app.items["pass"][0]["name"] == "pass.ogg"
+    assert not output.exists()
+    app._import_tempdir.cleanup()
+
+
+def test_import_legacy_pack_migrates_to_editable_entries(tmp_path: Path):
+    source = tmp_path / "old"
+    source.mkdir()
+    (source / "pass.ogg").write_bytes(b"OggS-example")
+    (source / "pack.json").write_text(json.dumps({
+        "name": "旧格式", "soundEffects": {"pass": "pass.ogg"},
+    }, ensure_ascii=False), encoding="utf-8")
+
+    meta, items = m.read_existing_pack(source)
+
+    assert meta["name"] == "旧格式"
+    assert items["pass"][0]["weight"] == 1
 
 
 # --------------------------------------------------------------------------- #

@@ -4,7 +4,7 @@ Crafty Cards 1.0.0 发布包提供三人联机斗地主。发布说明与版本�
 
 ## 单源与目标分支
 
-当前仓库以一套公共源码覆盖多个目标，构建时用 `-PmcTarget=<Minecraft版本>` 选版本，工程目录选加载器。为方便逐目标开发与审查，采用 `codex/<加载器>-mc<版本>` 命名本地开发分支，例如 `codex/neoforge-mc1.21.1`。完整清单由 [分支脚本](../../tools/prepare-version-branches.ps1) 从 `common/gradle/minecraft-target.gradle` 的目标表与 `versions/targets.json` 生成；Forge 1.21.2 不创建分支。
+当前仓库以一套公共源码覆盖多个目标，构建时用 `-PmcTarget=<Minecraft版本>` 选版本，工程目录选加载器。为方便逐目标开发与审查，采用 `<加载器>-mc<版本>` 命名本地开发分支，例如 `neoforge-mc1.21.1`。完整清单由 [分支脚本](../../tools/prepare-version-branches.ps1) 从 `common/gradle/minecraft-target.gradle` 的目标表与 `versions/targets.json` 生成；Forge 1.21.2 不创建分支。
 
 分支初建于同一基础提交，**名称本身不是独立通过测试的证据**，也不会在分支里复制整套源码。后续某版本独有的修复进该目标分支并回合并至共享主线/适配层；公共逻辑先在集成分支验证再分发。分支默认不改变 `gradle.properties`，因此在某分支构建时仍须显式传 `-PmcTarget`。每个分支最终应记录目标 jar 的 SHA-256、构建日志、单测、客户端验收与人工检查结果。
 
@@ -18,7 +18,7 @@ Crafty Cards 1.0.0 发布包提供三人联机斗地主。发布说明与版本�
 
 ## 下载文件安排
 
-同一个 GitHub `v1.0.0` Release 附上按 Minecraft 版本与加载器命名的安装 jar、`crafty-cards-soundpack-maker-1.0.0.zip` 和三个带音频的 1.21.1 学习包（另有合集）。制作工具 zip 内有图形界面脚本、Windows 启动器、中文说明、音乐包格式与 Harness 提示词；玩家从 Release 附件直接下载，无需另开仓库。Python 与可选转码依赖不打包进源码仓库。音乐包的来源与授权风险见 [音频权利说明](../../release-materials/AUDIO-RIGHTS.md)。Release 附上 `SHA256SUMS.txt`，并明确指出每个 jar 的 Minecraft/加载器组合与验证级别。
+同一个 GitHub `v1.0.0` Release 附上按 Minecraft 版本与加载器命名的安装 jar、支持导入已有包的 `crafty-cards-soundpack-maker-1.0.1.zip` 和三个带音频的 1.21.1 学习包（另有合集）。制作工具 zip 内有图形界面脚本、Windows 启动器、中文说明、音乐包格式与 Harness 提示词；玩家从 Release 附件直接下载，无需另开仓库。Python 与可选转码依赖不打包进源码仓库。音乐包的来源与授权风险见 [音频权利说明](../../release-materials/AUDIO-RIGHTS.md)。Release 附上 `SHA256SUMS.txt`，并明确指出每个 jar 的 Minecraft/加载器组合与验证级别。
 
 GitHub 源码仓库保留三端源码、共用资源、构建脚本、测试、必要的 Gradle wrapper 启动 jar、文档和验收证据；不跟踪下载的依赖库、编译产物、测试实例、音频包及本机未来版本工作目录。统一源码提交打 `v1.0.0` 标签；各目标开发分支从这一提交建立，分支名不是独立测试通过的证明。
 

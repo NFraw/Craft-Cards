@@ -142,6 +142,7 @@ import sys
 import tempfile
 from collections.abc import Iterator
 from pathlib import Path
+from zipfile import BadZipFile, ZipFile
 
 try:
     import av
@@ -350,6 +351,114 @@ def manifest_name(pack_dir: Path) -> str | None:
         return None
     name = data.get("name") if isinstance(data, dict) else None
     return name.strip() if isinstance(name, str) and name.strip() else None
+
+
+def read_existing_pack(source: Path, staging_dir: Path | None = None) -> tuple[dict[str, str], dict[str, list[dict]]]:
+    """Read an existing pack directory or single-pack ZIP for GUI editing.
+
+    ZIP audio is extracted only to a temporary staging directory, never to the
+    configured output directory. The caller owns and cleans up that staging area.
+    """
+    source = Path(source)
+    archive: ZipFile | None = None
+    try:
+        if source.is_dir():
+            raw = (source / MANIFEST_NAME).read_bytes()
+            base = ""
+        elif source.is_file() and source.suffix.lower() == ".zip":
+            if staging_dir is None:
+                raise ValueError("导入 ZIP 需要临时暂存目录")
+            archive = ZipFile(source)
+            manifests = [name for name in archive.namelist()
+                         if name == MANIFEST_NAME or name.endswith("/" + MANIFEST_NAME)]
+            if len(manifests) != 1:
+                raise ValueError("ZIP 必须只包含一个音乐包；三包合集请先解压，逐个选择包目录")
+            base = manifests[0][:-len(MANIFEST_NAME)]
+            if archive.getinfo(manifests[0]).file_size > 1024 * 1024:
+                raise ValueError("pack.json 超过 1 MiB")
+            raw = archive.read(manifests[0])
+        else:
+            raise ValueError("请选择含 pack.json 的包目录或单包 ZIP")
+
+        manifest = json.loads(raw.decode("utf-8-sig"))
+        if not isinstance(manifest, dict):
+            raise ValueError("pack.json 必须是 JSON 对象")
+        sounds = manifest.get("sounds")
+        if sounds is None:
+            sounds = {}
+        if not isinstance(sounds, dict):
+            raise ValueError("sounds 必须是音频键到文件列表的映射")
+        mappings: dict[str, list[tuple[str, int]]] = {key: [] for key in KEY_ORDER}
+        for key, entries in sounds.items():
+            if key not in mappings:
+                continue
+            if not isinstance(entries, list):
+                raise ValueError(f"音频键 {key} 的条目必须是列表")
+            for entry in entries:
+                if isinstance(entry, str):
+                    filename, weight = entry, 1
+                elif isinstance(entry, dict):
+                    filename, weight = entry.get("file"), entry.get("weight", 1)
+                else:
+                    raise ValueError(f"音频键 {key} 含无效条目")
+                if not isinstance(filename, str) or not is_acceptable_file_name(filename):
+                    raise ValueError(f"音频键 {key} 的文件名不合法：{filename}")
+                if type(weight) is not int or not MIN_WEIGHT <= weight <= MAX_WEIGHT:
+                    raise ValueError(f"音频键 {key} 的权重不合法：{weight}")
+                mappings[key].append((filename, weight))
+        for section in ("soundEffects", "bgm"):
+            legacy = manifest.get(section) or {}
+            if not isinstance(legacy, dict):
+                raise ValueError(f"{section} 必须是映射")
+            for key, filename in legacy.items():
+                if key in mappings and not mappings[key]:
+                    if not isinstance(filename, str) or not is_acceptable_file_name(filename):
+                        raise ValueError(f"音频键 {key} 的文件名不合法：{filename}")
+                    mappings[key].append((filename, 1))
+        if not any(mappings.values()):
+            raise ValueError("包里没有可识别的音频映射")
+
+        items: dict[str, list[dict]] = {key: [] for key in KEY_ORDER}
+        copied: set[str] = set()
+        total_bytes = 0
+        for key in KEY_ORDER:
+            for filename, weight in mappings[key]:
+                if archive is None:
+                    audio = source / filename
+                    if not audio.is_file():
+                        raise ValueError(f"包内缺少音频文件：{filename}")
+                else:
+                    member = base + filename
+                    try:
+                        info = archive.getinfo(member)
+                    except KeyError:
+                        raise ValueError(f"ZIP 内缺少音频文件：{member}") from None
+                    if info.file_size > 64 * 1024 * 1024:
+                        raise ValueError(f"单个音频文件超过 64 MiB：{filename}")
+                    audio = Path(staging_dir) / filename
+                    if filename not in copied:
+                        total_bytes += info.file_size
+                        if total_bytes > 512 * 1024 * 1024:
+                            raise ValueError("音乐包总音频超过 512 MiB")
+                        audio.parent.mkdir(parents=True, exist_ok=True)
+                        audio.write_bytes(archive.read(info))
+                        copied.add(filename)
+                with audio.open("rb") as stream:
+                    header = stream.read(4)
+                if header != b"OggS":
+                    raise ValueError(f"不是有效的 Ogg 文件：{filename}")
+                items[key].append({"name": filename, "weight": weight,
+                                   "src": str(audio), "dir": None})
+        meta = {field: str(manifest.get(field) or "").strip()
+                for field in ("name", "author", "description")}
+        if not meta["name"]:
+            meta["name"] = source.stem
+        return meta, items
+    except (BadZipFile, UnicodeError, json.JSONDecodeError) as e:
+        raise ValueError(f"音乐包格式错误：{e}") from e
+    finally:
+        if archive is not None:
+            archive.close()
 
 
 def pick_free_pack_id(out_root: Path, log=print, rng: random.Random | None = None) -> str:
@@ -834,6 +943,7 @@ class SoundPackMakerApp:
         self.out_root = tk.StringVar(value=default_out_root())
         # 本次运行已经成功写过哪个包目录（写过的就是自己的，重新构建不再当成"别人的包"）
         self._built_dir: Path | None = None
+        self._import_tempdir: tempfile.TemporaryDirectory | None = None
 
         # 音频键 → [{"name": 包内文件名, "weight": 权重, "src": 源文件, "dir": 已放入的目录}]
         self.items: dict[str, list[dict]] = {key: [] for key in KEY_ORDER}
@@ -852,6 +962,7 @@ class SoundPackMakerApp:
         self.filter_text = tk.StringVar()
 
         self._build_ui()
+        self.root.protocol("WM_DELETE_WINDOW", self._on_close)
         self._on_meta_changed()
         self._refresh_all()
         self.log("这个程序把音频整理成「音乐包」——游戏里的音效与 BGM 全部来自音乐包。")
@@ -943,6 +1054,8 @@ class SoundPackMakerApp:
         bar = ttk.Frame(meta)
         bar.grid(row=4, column=0, columnspan=4, sticky="ew", pady=(8, 0))
         ttk.Button(bar, text="审查配置…", command=self._show_review).pack(side="left")
+        ttk.Button(bar, text="导入包目录…", command=lambda: self._on_import(False)).pack(side="left", padx=(8, 0))
+        ttk.Button(bar, text="导入 ZIP…", command=lambda: self._on_import(True)).pack(side="left", padx=(8, 0))
         ttk.Button(bar, text="新建包", command=self._on_new_pack).pack(side="left", padx=(8, 0))
         ttk.Button(bar, text="清空已选文件", command=self._on_clear_all).pack(side="left", padx=(8, 0))
 
@@ -1230,10 +1343,59 @@ class SoundPackMakerApp:
         self.pack_author.set("")
         self.pack_desc.set("")
         self._built_dir = None
+        if self._import_tempdir is not None:
+            self._import_tempdir.cleanup()
+            self._import_tempdir = None
         self.pack_id.set(pick_free_pack_id(self._out_root_path(), log=self.log))
         self._refresh_all()          # 文件都清空了：所有行的文件列表都要重画
         self._apply_filter()         # 顺带更新分组计数（"只看已配置的键"勾着时会全隐掉）
         self.log(f"已新建一个包（id {self.pack_id.get()}）：填「显示名」，再添加文件。", "ok")
+
+    def _on_import(self, from_zip: bool) -> None:
+        """Import a pack into editable GUI state without writing output files."""
+        try:
+            chosen = (filedialog.askopenfilename(
+                title="选择单个音乐包 ZIP", filetypes=[("ZIP 音乐包", "*.zip")])
+                if from_zip else filedialog.askdirectory(title="选择含 pack.json 的音乐包目录"))
+        except Exception as e:
+            self.log(f"打开导入选择框失败：{e}", "err")
+            return
+        if not chosen:
+            return
+        if any(self.items.values()) and not messagebox.askyesno(
+                "导入音乐包", "导入会替换当前界面的包信息和已选文件；磁盘上的包不会改变。继续吗？"):
+            return
+        temporary = tempfile.TemporaryDirectory(prefix="crafty-cards-import-") if from_zip else None
+        try:
+            meta, items = read_existing_pack(Path(chosen), Path(temporary.name) if temporary else None)
+            new_id = pick_free_pack_id(self._out_root_path(), log=self.log)
+        except (OSError, ValueError, RuntimeError) as e:
+            if temporary is not None:
+                temporary.cleanup()
+            self.log(f"导入音乐包失败：{e}", "err")
+            messagebox.showerror("导入音乐包", str(e))
+            return
+        old_temporary = self._import_tempdir
+        self._weight_vars.clear()
+        self.items = items
+        self.pack_name.set(meta["name"])
+        self.pack_author.set(meta["author"])
+        self.pack_desc.set(meta["description"])
+        self.pack_id.set(new_id)
+        self._built_dir = None
+        self._import_tempdir = temporary
+        self._refresh_all()
+        self._apply_filter()
+        if old_temporary is not None:
+            old_temporary.cleanup()
+        count = sum(len(entries) for entries in items.values())
+        self.log(f"已导入 {meta['name']}：{count} 条映射。原包不变；请审查后手动生成新包。", "ok")
+
+    def _on_close(self) -> None:
+        if self._import_tempdir is not None:
+            self._import_tempdir.cleanup()
+            self._import_tempdir = None
+        self.root.destroy()
 
     def _require_target(self) -> Path | None:
         """取出目标目录；不合法就记日志并返回 None（界面永不因此崩溃）。"""
@@ -1336,6 +1498,9 @@ class SoundPackMakerApp:
         self._commit_all_weights()
         for key in KEY_ORDER:
             self.items[key].clear()
+        if self._import_tempdir is not None:
+            self._import_tempdir.cleanup()
+            self._import_tempdir = None
         self._refresh_all()
         self._apply_filter()
         self.log("已清空界面上的全部条目（包目录里的文件未删除）。")
@@ -1620,7 +1785,9 @@ class SoundPackMakerApp:
 「使用说明」再看。"""),
 
             ("h", "四步操作"),
-            ("body", """① 填「包信息」：「显示名」必填——游戏里就按它认这个包；作者、说明随意填。
+            ("body", """① 新建包时填「包信息」；已有音乐包可点「导入包目录…」或「导入 ZIP…」，
+   导入后会生成新 id，原包不变。三包合集 ZIP 请先解压，再逐个导入包目录。
+   「显示名」必填——游戏里就按它认这个包；作者、说明随意填。
 ② 给「音频键」添加文件：想替换哪个声音就点那一行的「添加文件」（可一次选多个，不是 .ogg 的
    会在生成时自动转码），再给每个文件设「权重」；点「试听」可以用系统默认播放器先听一遍。
 ③ 点「审查配置…」，逐项核对包信息、输出目录、音频键、源文件和权重。
