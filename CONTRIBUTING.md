@@ -1,6 +1,6 @@
 # 贡献指南
 
-感谢关注 Crafty Cards。请先阅读 [安装与游玩](docs/open-source/INSTALL.md)、[开发与架构](docs/open-source/DEVELOPMENT.md) 和 [验证范围](docs/open-source/TESTING.md)。本版提供三人联机斗地主及 1.21–1.21.11 多加载器适配；Forge 1.21.2 不在支持矩阵。
+感谢关注 Crafty Cards。本分支固定为 fabric / Minecraft 1.21.10；构建入口与产物见 [README](README.md)。修改共用代码或版本覆盖时，请验证这个目标。
 
 提交问题时说明 Minecraft、加载器、模组版本和重现步骤；画面问题附 GUI 缩放、窗口/全屏分辨率与截图，音频问题附包 id 和 `latest.log` 相关行。上传前删去私人路径、账号、服务器地址和世界敏感数据。安全漏洞请按 [安全说明](SECURITY.md) 私密报告。
 

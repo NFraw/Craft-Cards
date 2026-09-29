@@ -1,15 +1,11 @@
-# AGENTS.md — Crafty Cards
+# AGENTS.md — Crafty Cards · fabric / Minecraft 1.21.10
 
-NeoForge / Fabric / Forge 的 Minecraft 斗地主模组。Java 21；版本目标由构建参数选择。
+本分支固定为 fabric / Minecraft 1.21.10，Java 21。运行 `powershell -ExecutionPolicy Bypass -File .\build-target.ps1`，安装用 JAR 为 `fabric/build/mc-1.21.10/libs/crafty_cards-fabric-mc1.21.10-1.0.0.jar`。下文中关于其他加载器的内容仅供移植背景参考，不是本分支的构建目标。
 
 ## 构建命令
 
-```
-./gradlew build              # 编译 → build/libs/
-./gradlew runClient          # 启动开发客户端
-./gradlew runServer          # 启动专用服务器
-./gradlew runGameTestServer  # 运行游戏测试
-./gradlew runData            # 数据生成 → src/generated/resources/
+```powershell
+powershell -ExecutionPolicy Bypass -File .\build-target.ps1
 ```
 
 ## 架构
