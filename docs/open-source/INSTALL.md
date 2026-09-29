@@ -1,12 +1,8 @@
-# 安装与游玩
+# 安装与游玩 · forge / Minecraft 1.21.9
 
-本说明对应 Crafty Cards 1.0.0 的三人联机斗地主。
+本分支对应 Crafty Cards 1.0.0 的 **forge / Minecraft 1.21.9** 安装包：`forge/build/mc-1.21.9/libs/crafty_cards-forge-mc1.21.9-1.0.0.jar`。客户端与服务器都必须使用 Minecraft 1.21.9 和 forge，将该 JAR 放入各自的 `mods` 目录。Fabric 还需要 Fabric API 0.134.1+1.21.9。`-sources.jar` 仅供阅读源码，不能安装。其他加载器和 MC 版本须下载对应分支。
 
-## 选择正确的安装包
-
-Crafty Cards 当前为 Minecraft Java 版 **1.21、1.21.1–1.21.11** 准备了 NeoForge、Fabric、Forge 的独立产物；**Forge 1.21.2 无目标包**。本轮公开预览尚非正式发行。每位玩家与专用服务器须使用**相同 Minecraft 版本、相同加载器**及对应的 Crafty Cards jar；Fabric 还要安装对应版本的 Fabric API。不能把三种 jar 互换，也不承诺跨加载器混服。Minecraft 26.x 不在范围内。
-
-安装时把对应 jar 放入客户端和服务器的 `mods` 目录，启动后检查模组列表或服务端日志中的 `crafty_cards`。不要将源代码构建产生的测试模块当成正式安装包。需要音乐时，另外下载音乐包，将整个包目录复制到**每位客户端**的 `config/crafty_cards/soundpacks/`；服务端无需此客户端音频包。选包、音量保存在 `config/crafty_cards/sounds.json`。NeoForge 可从模组配置入口打开“音乐包”页；Fabric/Forge POC 未接入 Mods 配置按钮，需要手改客户端文件后重启。模组 jar 本身没有 `.ogg`。
+需要音乐时，另将音乐包复制到每位客户端的 `config/crafty_cards/soundpacks/`；模组 JAR 本身不含 `.ogg`。
 
 ## 一局怎样开始
 
