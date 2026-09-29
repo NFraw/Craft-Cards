@@ -1,24 +1,27 @@
-> **Target branch: neoforge / Minecraft 1.21.8.** This branch keeps the sources for this target. Run `.\build-target.ps1` from the repository root to build.
-
-# Crafty Cards · Multiplayer Dou Dizhu in Minecraft
+# Crafty Cards · neoforge / Minecraft 1.21.8
 
 [简体中文（默认）](README.md) | English
 
-Crafty Cards brings three-player **Dou Dizhu** (Fight the Landlord) into Minecraft: place a table, gather three players, bid, play cards, and settle the round. The game stays in the world instead of taking over the screen; your hand and timer appear in the HUD while other players' cards are rendered in front of them.
+This branch is the independent source snapshot for **neoforge on Minecraft 1.21.8**. It includes shared game code and the overlays needed for this target. Older overlay directory names are build inputs; they do not produce JARs for those Minecraft versions.
 
-> Crafty Cards was adapted from [OmbreMoon's PlayingCards](https://github.com/OmbreMoon/PlayingCards), itself a port of [Calemi's Playing Cards](https://www.curseforge.com/minecraft/mc-mods/playing-cards). This is not an official continuation of either project. See [CREDITS.md](CREDITS.md) for provenance and unresolved redistribution questions.
+Crafty Cards brings three-player multiplayer Dou Dizhu into Minecraft. See [CREDITS.md](CREDITS.md) for provenance, artwork, and licensing notes.
 
-## Requirements and current scope
+## Fixed target and build
 
-| Item | Requirement |
+| Item | Value |
 | --- | --- |
-| Minecraft Java Edition | 1.21–1.21.11 targets; default development target: 1.21.1; no 26.x target |
-| Mod loader | Separate NeoForge, Fabric, and Forge builds; Forge has no 1.21.2 target |
-| Fabric | Fabric Loader 0.19.5 and the Fabric API matching the Minecraft target |
+| Minecraft | 1.21.8 |
+| Loader dependency | NeoForge 21.8.54 |
 | Java | 21 |
-| Dou Dizhu players | Exactly three real players; no AI or solo mode |
+| Installable JAR | `build/mc-1.21.8/libs/crafty_cards-neoforge-mc1.21.8-1.0.0.jar` |
 
-Install the jar that matches the **same Minecraft version and loader** on each client and the server. The three loader jars are not interchangeable, and mixed-loader servers have not been verified. The 1.21.1 NeoForge client is the visual comparison baseline; successful builds and automated matches for other targets do not by themselves confirm every HUD scale, card texture, or audio device. See the [version guide](docs/Version-Compatibility.md), [modern targets](versions/README.md), and [testing scope](docs/open-source/TESTING.md).
+After downloading this branch, run from the repository root in Windows PowerShell:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\build-target.ps1
+```
+
+This builds and tests only **neoforge / Minecraft 1.21.8** and verifies the release JAR name. A `-sources.jar`, when present, is a source archive for the same target, not an installable mod. Gradle rejects a different `-PmcTarget`. See the [branch version guide](versions/README.md) and [testing scope](docs/open-source/TESTING.md).
 
 ## Start a Dou Dizhu game
 
@@ -75,16 +78,9 @@ Add source files and assign keys and weights, then open **Review Configuration**
 
 ## Build and verify
 
-This repository has a root NeoForge project plus `fabric/` and `forge/` projects. They share `common/src/main/java` and `common/src/main/resources`, with Minecraft-version adaptations under `versions/`. On Windows, from the repository root:
+Run `powershell -ExecutionPolicy Bypass -File .\build-target.ps1` from the repository root. The only installable output is `build/mc-1.21.8/libs/crafty_cards-neoforge-mc1.21.8-1.0.0.jar`. Shared sources are in `common/`; loader sources are in `./`; required version overlays are in `versions/`.
 
-```powershell
-.\gradlew.bat '-PmcTarget=1.21.1' build
-.\fabric\gradlew.bat -p fabric '-PmcTarget=1.21.1' build
-.\forge\gradlew.bat -p forge '-PmcTarget=1.21.1' build
-.\gradlew.bat '-PmcTarget=1.21.1' test runGameTestServer
-```
-
-The [developer guide](docs/open-source/DEVELOPMENT.md) covers loader boundaries and version targeting. The [automated acceptance guide](docs/自动化验收.md) explains the dedicated-server/three-client Dou Dizhu scenario, screenshots, logs, and the local result page. The [testing scope](docs/open-source/TESTING.md) distinguishes unit tests, GameTests, automated matches, and manual visual/audio checks.
+The [developer guide](docs/open-source/DEVELOPMENT.md) covers this branch's source layout. The [testing scope](docs/open-source/TESTING.md) distinguishes build verification from client and audio checks.
 
 ## Artwork, credits, and license
 
