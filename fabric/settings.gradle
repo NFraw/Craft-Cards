@@ -3,7 +3,7 @@
 // 共用的是 ../common 里的源码/资源，不是 Gradle 配置。
 pluginManagement {
     plugins {
-        id 'fabric-loom' version (providers.gradleProperty('mcTarget').getOrElse('1.21.1') in ['1.21', '1.21.1'] ? '1.7.4' : '1.13.6')
+        id 'fabric-loom' version (providers.gradleProperty('mcTarget').getOrElse('1.21') in ['1.21', '1.21.1'] ? '1.7.4' : '1.13.6')
     }
     repositories {
         maven {
