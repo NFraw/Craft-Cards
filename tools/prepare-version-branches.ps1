@@ -19,7 +19,7 @@ try {
             [pscustomobject]@{
                 Minecraft = $version
                 Loader = $loader
-                Branch = "codex/$loader-mc$version"
+                Branch = "$loader-mc$version"
                 BuildTarget = "-PmcTarget=$version"
             }
         }
