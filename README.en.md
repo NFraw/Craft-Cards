@@ -8,7 +8,7 @@ Crafty Cards brings three-player **Dou Dizhu** (Fight the Landlord) into Minecra
 
 ## Download
 
-**Download mod JARs from [Crafty Cards on CurseForge](https://www.curseforge.com/minecraft/mc-mods/crafty-cards/files).** Choose the file matching your Minecraft version and NeoForge, Fabric, or Forge loader, then install it in the `mods` directory on both clients and the server. GitHub Releases no longer host the mod JARs; sound packs and the sound pack maker remain available there.
+**Download mod JARs from [Crafty Cards on CurseForge](https://www.curseforge.com/minecraft/mc-mods/crafty-cards/files).** Choose the file matching your Minecraft version and NeoForge, Fabric, or Forge loader, then install it in the `mods` directory on both clients and the server. Sound packs and the sound pack maker are available from GitHub Releases.
 
 ## Requirements and current scope
 
