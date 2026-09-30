@@ -9,7 +9,7 @@ Crafty Cards 在 Minecraft 世界里提供**三人联机斗地主**：合成并�
 
 ## 下载
 
-**模组安装包统一从 [CurseForge 的 Crafty Cards 页面](https://www.curseforge.com/minecraft/mc-mods/crafty-cards/files) 下载。**请选择与你的 Minecraft 版本及 NeoForge、Fabric 或 Forge 加载器相匹配的 JAR，并将其安装到客户端和服务器的 `mods` 目录。GitHub Release 不再提供模组 JAR；音乐包和制作工具仍可从 Release 获取。
+**模组安装包请从 [CurseForge 的 Crafty Cards 页面](https://www.curseforge.com/minecraft/mc-mods/crafty-cards/files) 下载。**请选择与你的 Minecraft 版本及 NeoForge、Fabric 或 Forge 加载器相匹配的 JAR，并将其安装到客户端和服务器的 `mods` 目录。音乐包和制作工具可从 GitHub Release 获取。
 
 ## 环境要求
 
