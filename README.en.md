@@ -6,6 +6,10 @@ Crafty Cards brings three-player **Dou Dizhu** (Fight the Landlord) into Minecra
 
 > Crafty Cards was adapted from [OmbreMoon's PlayingCards](https://github.com/OmbreMoon/PlayingCards), itself a port of [Calemi's Playing Cards](https://www.curseforge.com/minecraft/mc-mods/playing-cards). This is not an official continuation of either project. See [CREDITS.md](CREDITS.md) for provenance and unresolved redistribution questions.
 
+## Download
+
+**Download mod JARs from [Crafty Cards on CurseForge](https://www.curseforge.com/minecraft/mc-mods/crafty-cards/files).** Choose the file matching your Minecraft version and NeoForge, Fabric, or Forge loader, then install it in the `mods` directory on both clients and the server. GitHub Releases no longer host the mod JARs; sound packs and the sound pack maker remain available there.
+
 ## Requirements and current scope
 
 | Item | Requirement |
