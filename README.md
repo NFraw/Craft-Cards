@@ -40,6 +40,35 @@ Forge 构建与验收见 [Forge POC 说明](docs/Forge-POC.md)。三种加载器
 
 发布资料见 [开源资料索引](docs/open-source/README.md)，项目介绍见 [单页预览](docs/open-source-preview.html)。
 
+## 源码分支与参与贡献
+
+源码按 **`<加载器>-mc<版本>`** 命名，例如 `neoforge-mc1.21.1`、`fabric-mc1.21.11`；完整列表见 [Branches](https://github.com/NFraw/Craft-Cards/branches)。每个版本分支都是**可独立构建的完整快照**，只保留该目标需要的代码。
+
+- **只改某个版本**：Fork 后切到对应版本分支，PR 的 base 也选它，**不要选 `main`**。
+- **改公共逻辑**：PR 到 `main`，合并后再 `cherry-pick` 到需要的版本分支。
+- 版本分支之间只 cherry-pick、不 merge；**不要把版本分支 merge 回 `main`**——那会删掉 `fabric/`、`forge/` 和现代版本适配层。
+
+规则与构建方式见 [CONTRIBUTING.md](CONTRIBUTING.md)，发布流程见 [版本分支与发布流程](docs/open-source/RELEASE.md)。
+
+### 版本分支索引
+
+| Minecraft | NeoForge | Fabric | Forge |
+|---|---|---|---|
+| 1.21.11 | [neoforge-mc1.21.11](https://github.com/NFraw/Craft-Cards/tree/neoforge-mc1.21.11) | [fabric-mc1.21.11](https://github.com/NFraw/Craft-Cards/tree/fabric-mc1.21.11) | [forge-mc1.21.11](https://github.com/NFraw/Craft-Cards/tree/forge-mc1.21.11) |
+| 1.21.10 | [neoforge-mc1.21.10](https://github.com/NFraw/Craft-Cards/tree/neoforge-mc1.21.10) | [fabric-mc1.21.10](https://github.com/NFraw/Craft-Cards/tree/fabric-mc1.21.10) | [forge-mc1.21.10](https://github.com/NFraw/Craft-Cards/tree/forge-mc1.21.10) |
+| 1.21.9 | [neoforge-mc1.21.9](https://github.com/NFraw/Craft-Cards/tree/neoforge-mc1.21.9) | [fabric-mc1.21.9](https://github.com/NFraw/Craft-Cards/tree/fabric-mc1.21.9) | [forge-mc1.21.9](https://github.com/NFraw/Craft-Cards/tree/forge-mc1.21.9) |
+| 1.21.8 | [neoforge-mc1.21.8](https://github.com/NFraw/Craft-Cards/tree/neoforge-mc1.21.8) | [fabric-mc1.21.8](https://github.com/NFraw/Craft-Cards/tree/fabric-mc1.21.8) | [forge-mc1.21.8](https://github.com/NFraw/Craft-Cards/tree/forge-mc1.21.8) |
+| 1.21.7 | [neoforge-mc1.21.7](https://github.com/NFraw/Craft-Cards/tree/neoforge-mc1.21.7) | [fabric-mc1.21.7](https://github.com/NFraw/Craft-Cards/tree/fabric-mc1.21.7) | [forge-mc1.21.7](https://github.com/NFraw/Craft-Cards/tree/forge-mc1.21.7) |
+| 1.21.6 | [neoforge-mc1.21.6](https://github.com/NFraw/Craft-Cards/tree/neoforge-mc1.21.6) | [fabric-mc1.21.6](https://github.com/NFraw/Craft-Cards/tree/fabric-mc1.21.6) | [forge-mc1.21.6](https://github.com/NFraw/Craft-Cards/tree/forge-mc1.21.6) |
+| 1.21.5 | [neoforge-mc1.21.5](https://github.com/NFraw/Craft-Cards/tree/neoforge-mc1.21.5) | [fabric-mc1.21.5](https://github.com/NFraw/Craft-Cards/tree/fabric-mc1.21.5) | [forge-mc1.21.5](https://github.com/NFraw/Craft-Cards/tree/forge-mc1.21.5) |
+| 1.21.4 | [neoforge-mc1.21.4](https://github.com/NFraw/Craft-Cards/tree/neoforge-mc1.21.4) | [fabric-mc1.21.4](https://github.com/NFraw/Craft-Cards/tree/fabric-mc1.21.4) | [forge-mc1.21.4](https://github.com/NFraw/Craft-Cards/tree/forge-mc1.21.4) |
+| 1.21.3 | [neoforge-mc1.21.3](https://github.com/NFraw/Craft-Cards/tree/neoforge-mc1.21.3) | [fabric-mc1.21.3](https://github.com/NFraw/Craft-Cards/tree/fabric-mc1.21.3) | [forge-mc1.21.3](https://github.com/NFraw/Craft-Cards/tree/forge-mc1.21.3) |
+| 1.21.2 | [neoforge-mc1.21.2](https://github.com/NFraw/Craft-Cards/tree/neoforge-mc1.21.2) | [fabric-mc1.21.2](https://github.com/NFraw/Craft-Cards/tree/fabric-mc1.21.2) | — |
+| 1.21.1 | [neoforge-mc1.21.1](https://github.com/NFraw/Craft-Cards/tree/neoforge-mc1.21.1) | [fabric-mc1.21.1](https://github.com/NFraw/Craft-Cards/tree/fabric-mc1.21.1) | [forge-mc1.21.1](https://github.com/NFraw/Craft-Cards/tree/forge-mc1.21.1) |
+| 1.21 | [neoforge-mc1.21](https://github.com/NFraw/Craft-Cards/tree/neoforge-mc1.21) | [fabric-mc1.21](https://github.com/NFraw/Craft-Cards/tree/fabric-mc1.21) | [forge-mc1.21](https://github.com/NFraw/Craft-Cards/tree/forge-mc1.21) |
+
+`main` 只负责公共代码、文档和 `.github` 配置（Issue/PR 模板、可复用 CI），**不直接发布 jar**；每个版本分支负责该目标的源码、构建与发布。文件归属、新增分支步骤和 GitHub 设置清单见 [仓库结构与维护职责](docs/open-source/REPO-STRUCTURE.md)。
+
 ## 快速上手
 
 1. **合成牌桌**：绿地毯 ×1 + 木板 ×3 + 木棍 ×2

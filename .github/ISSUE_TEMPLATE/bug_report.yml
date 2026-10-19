@@ -1,0 +1,100 @@
+name: Bug 报告
+description: 游戏内报错、崩溃或行为不符合预期
+title: "[Bug] "
+labels: ["bug", "needs-info"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢反馈。提交前请先确认：用的是与 Minecraft 版本、加载器匹配的 jar，并且已经搜索过现有 Issue。
+        **安全漏洞请不要发公开 Issue**，按 [SECURITY.md](https://github.com/NFraw/Craft-Cards/blob/main/SECURITY.md) 私密报告。
+
+  - type: dropdown
+    id: minecraft
+    attributes:
+      label: Minecraft 版本
+      options:
+        - "1.21.11"
+        - "1.21.10"
+        - "1.21.9"
+        - "1.21.8"
+        - "1.21.7"
+        - "1.21.6"
+        - "1.21.5"
+        - "1.21.4"
+        - "1.21.3"
+        - "1.21.2"
+        - "1.21.1"
+        - "1.21"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: loader
+    attributes:
+      label: 加载器
+      options:
+        - NeoForge
+        - Fabric
+        - Forge
+    validations:
+      required: true
+
+  - type: input
+    id: mod-version
+    attributes:
+      label: Crafty Cards 版本
+      placeholder: "1.0.0"
+    validations:
+      required: true
+
+  - type: input
+    id: source
+    attributes:
+      label: 获取方式
+      description: CurseForge 下载 / 自己从某个分支构建 / 整合包
+      placeholder: "CurseForge，或 neoforge-mc1.21.1 自己构建"
+    validations:
+      required: true
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: 发生了什么
+      description: 现象、期望结果、实际结果
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: 复现步骤
+      placeholder: |
+        1. 放置牌桌
+        2. 三人入局
+        3. ……
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: 日志
+      description: 贴 run/logs/latest.log 中相关行；上传前删除私人路径、账号和服务器地址
+      render: shell
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: 截图或录像
+      description: 画面问题请同时说明 GUI 缩放、窗口/全屏分辨率
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: 自查
+      options:
+        - label: 我确认 jar 的 Minecraft 版本和加载器与上面选择的一致
+          required: true
+        - label: 我已经搜索过现有 Issue，这不是重复报告
+          required: true
