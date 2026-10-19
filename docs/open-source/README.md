@@ -8,6 +8,7 @@
 | [开发与架构](DEVELOPMENT.md) | 贡献者 | 模块边界、构建、版本适配、联机与测试入口 |
 | [验证与已知边界](TESTING.md) | 审阅者、维护者 | 自动化范围、证据、人工复核项目 |
 | [版本分支与发布](RELEASE.md) | 维护者 | 分支命名、单源维护、构建产物、发布门槛 |
+| [仓库结构与维护职责](REPO-STRUCTURE.md) | 维护者、贡献者 | main 与版本分支各放什么、cherry-pick 规则、新增分支步骤、GitHub 设置清单 |
 | [素材与许可清单](ASSETS.md) | 审阅者 | 代码/贴图/音乐包来源与发布前核对 |
 | [来源与致谢](../../CREDITS.md) | 所有人 | Calemi → OmbreMoon → Crafty Cards 的继承关系与许可疑点 |
 | [贡献指南](../../CONTRIBUTING.md) | 贡献者 | 提交、测试、问题报告 |

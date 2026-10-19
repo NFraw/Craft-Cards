@@ -88,8 +88,12 @@ This repository has a root NeoForge project plus `fabric/` and `forge/` projects
 
 The [developer guide](docs/open-source/DEVELOPMENT.md) covers loader boundaries and version targeting. The [automated acceptance guide](docs/自动化验收.md) explains the dedicated-server/three-client Dou Dizhu scenario, screenshots, logs, and the local result page. The [testing scope](docs/open-source/TESTING.md) distinguishes unit tests, GameTests, automated matches, and manual visual/audio checks.
 
+### Version branches and contributions
+
+Source branches are named `<loader>-mc<version>` (for example `neoforge-mc1.21.1`); see [Branches](https://github.com/NFraw/Craft-Cards/branches). Each version branch is a standalone, buildable snapshot. Target a version branch when your change only affects that version; target `main` for shared logic, then cherry-pick it to the version branches. Never merge a version branch back into `main` — the trimmed snapshot would delete `fabric/`, `forge/`, and the modern-version adaptations. See [CONTRIBUTING.md](CONTRIBUTING.md) and the [release process](docs/open-source/RELEASE.md).
+
 ## Artwork, credits, and license
 
 Some card faces, backs, chips, and block textures were inherited from PlayingCards; 69 PNGs in this repository match the local upstream reference byte-for-byte. The current mod icon also combines inherited artwork. Read [CREDITS.md](CREDITS.md) and the [asset review](docs/open-source/ASSETS.md) before publishing code, a jar, an icon, or the default sound pack. The repository's [GPL-3.0-only license](LICENSE) does not by itself resolve upstream artwork or audio redistribution rights.
 
-The [publication materials](docs/open-source/README.md) are still a local review draft. Nothing has been uploaded to GitHub yet.
+The [publication materials](docs/open-source/README.md) describe the process; branch, tag, and release state live on GitHub.

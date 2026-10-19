@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 安装、配置与音乐包问题
+    url: https://github.com/NFraw/Craft-Cards/blob/main/README.md
+    about: 先读 README 的安装、配置与音乐包章节；仍然解决不了再开 Issue
+  - name: 安全漏洞
+    url: https://github.com/NFraw/Craft-Cards/blob/main/SECURITY.md
+    about: 请按安全说明私密报告，不要公开发 Issue
