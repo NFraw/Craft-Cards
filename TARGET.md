@@ -7,6 +7,6 @@ This branch contains the neoforge source snapshot for Minecraft 1.21.1. It keeps
 | Minecraft | 1.21.1 |
 | Loader dependency | NeoForge 21.1.236 |
 | Java | 21 |
-| Release JAR | `build/mc-1.21.1/libs/crafty_cards-neoforge-mc1.21.1-1.0.0.jar` |
+| Release JAR | `build/mc-1.21.1/libs/crafty_cards-neoforge-mc1.21.1-<mod_version>.jar` |
 
 From a fresh download on Windows, run `powershell -ExecutionPolicy Bypass -File .\build-target.ps1` at the repository root. The script builds and tests only this target, then checks the release JAR filename. A `-sources.jar` file, when produced, is source code and is not a mod to install. A different `-PmcTarget` is rejected during Gradle configuration.

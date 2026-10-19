@@ -7,16 +7,14 @@
 ## 自动验证
 
 ```powershell
-# 先运行基准：公共规则、NeoForge GameTest、一个服务端与三个真实客户端
-.\gradlew.bat test runGameTestServer
+# 本分支只验证 neoforge / Minecraft 1.21.1
+.\gradlew.bat test
+.\gradlew.bat -PmcTarget=1.21.1 runGameTestServer
 .\tools\run-acceptance-matrix.ps1 -Versions 1.21.1 -Loaders neoforge -Fullscreen
-
-# 再对指定版本的三种加载器运行完整对局；Forge 1.21.2 会标记不支持
-.\tools\run-acceptance-matrix.ps1 -Versions 1.21.11 -Loaders neoforge,fabric,forge -Fullscreen
-
-# 最后重新生成本地单页结果
 .\tools\generate-acceptance-dashboard.ps1
 ```
+
+1.21.2 – 1.21.11 的验收只在各自的版本分支执行；本分支裁剪掉了那些版本的适配目录，不能构建它们。
 
 自动流程每组启动一个专用服务器、三个真实客户端，检查放桌、配置筹码、三人入局、叫分、选牌、出牌/过牌、地主正常胜利和筹码守恒；检查私有手牌快照、倒计时、模型、世界渲染回调、音乐包事件资源及资源重载。截图覆盖叫分、HUD、选牌、结算和多个配置页；`-Fullscreen` 额外采集窗口/全屏对比。失败、超时和未运行在结果页独立标出。
 
