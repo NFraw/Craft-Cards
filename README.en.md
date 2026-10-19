@@ -13,12 +13,18 @@ Crafty Cards brings three-player multiplayer Dou Dizhu into Minecraft. See [CRED
 | Minecraft | 1.21.1 |
 | Loader dependency | NeoForge 21.1.236 |
 | Java | 21 |
-| Installable JAR | `build/mc-1.21.1/libs/crafty_cards-neoforge-mc1.21.1-1.0.0.jar` |
+| Installable JAR | `build/mc-1.21.1/libs/crafty_cards-neoforge-mc1.21.1-<mod_version>.jar` (currently `1.0.0`) |
 
-After downloading this branch, run from the repository root in Windows PowerShell:
+After downloading this branch, run from the repository root. On Windows PowerShell:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\build-target.ps1
+```
+
+On Linux, macOS, or any platform:
+
+```bash
+./gradlew build -PmcTarget=1.21.1
 ```
 
 This builds and tests only **neoforge / Minecraft 1.21.1** and verifies the release JAR name. A `-sources.jar`, when present, is a source archive for the same target, not an installable mod. Gradle rejects a different `-PmcTarget`. See the [branch version guide](versions/README.md) and [testing scope](docs/open-source/TESTING.md).
@@ -78,12 +84,16 @@ Add source files and assign keys and weights, then open **Review Configuration**
 
 ## Build and verify
 
-Run `powershell -ExecutionPolicy Bypass -File .\build-target.ps1` from the repository root. The only installable output is `build/mc-1.21.1/libs/crafty_cards-neoforge-mc1.21.1-1.0.0.jar`. Shared sources are in `common/`; loader sources are in `./`; required version overlays are in `versions/`.
+Run `powershell -ExecutionPolicy Bypass -File .\build-target.ps1` (or `./gradlew build -PmcTarget=1.21.1`) from the repository root. The only installable output is `build/mc-1.21.1/libs/crafty_cards-neoforge-mc1.21.1-<mod_version>.jar`. Shared sources are in `common/`; loader sources are in `./`; required version overlays are in `versions/`.
 
 The [developer guide](docs/open-source/DEVELOPMENT.md) covers this branch's source layout. The [testing scope](docs/open-source/TESTING.md) distinguishes build verification from client and audio checks.
+
+### Version branch and contributions
+
+This branch is an independent product line for **neoforge / Minecraft 1.21.1**. Open pull requests against `neoforge-mc1.21.1`, **not `main`** — this branch is a trimmed snapshot, so a PR based on `main` shows many deleted files. Keep one logical change per PR (merged with squash) so it can be cherry-picked to other version branches. Never merge version branches into each other or back into `main`. See [CONTRIBUTING.md](CONTRIBUTING.md) and the [release process](docs/open-source/RELEASE.md).
 
 ## Artwork, credits, and license
 
 Some card faces, backs, chips, and block textures were inherited from PlayingCards; 69 PNGs in this repository match the local upstream reference byte-for-byte. The current mod icon also combines inherited artwork. Read [CREDITS.md](CREDITS.md) and the [asset review](docs/open-source/ASSETS.md) before publishing code, a jar, an icon, or the default sound pack. The repository's [GPL-3.0-only license](LICENSE) does not by itself resolve upstream artwork or audio redistribution rights.
 
-The [publication materials](docs/open-source/README.md) are still a local review draft. Nothing has been uploaded to GitHub yet.
+The [publication materials](docs/open-source/README.md) describe the process; branch, tag, and release state live on GitHub.

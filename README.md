@@ -13,12 +13,18 @@ Crafty Cards 在 Minecraft 世界里提供三人联机斗地主。项目来源�
 | Minecraft | 1.21.1 |
 | 加载器依赖 | NeoForge 21.1.236 |
 | Java | 21 |
-| 安装用 JAR | `build/mc-1.21.1/libs/crafty_cards-neoforge-mc1.21.1-1.0.0.jar` |
+| 安装用 JAR | `build/mc-1.21.1/libs/crafty_cards-neoforge-mc1.21.1-<mod_version>.jar`（当前 `1.0.0`） |
 
-下载或解压本分支源码后，在仓库根目录使用 Windows PowerShell：
+下载或解压本分支源码后，在仓库根目录构建。Windows PowerShell：
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\build-target.ps1
+```
+
+Linux / macOS 或任意平台：
+
+```bash
+./gradlew build -PmcTarget=1.21.1
 ```
 
 该命令只构建并测试 **neoforge / Minecraft 1.21.1**，同时核对安装用 JAR 的文件名。若同时看到 `-sources.jar`，那是同一目标的源码包，不能放入 `mods`。尝试传入其他 `-PmcTarget` 会在 Gradle 配置阶段报错。版本覆盖与路径说明见 [本分支版本说明](versions/README.md)；测试范围见 [验证与已知边界](docs/open-source/TESTING.md)。
@@ -169,9 +175,20 @@ python tools/soundpack_maker.py --cli <音频目录> --name <显示名>         
 
 ## 开发
 
-本分支的构建入口为 `powershell -ExecutionPolicy Bypass -File .\build-target.ps1`，产物为 `build/mc-1.21.1/libs/crafty_cards-neoforge-mc1.21.1-1.0.0.jar`。测试已包含在 `build` 中。共享逻辑位于 `common/`，版本覆盖位于 `versions/`，加载器实现位于 `./`。
+本分支的构建入口为 `powershell -ExecutionPolicy Bypass -File .\build-target.ps1`（或 `./gradlew build -PmcTarget=1.21.1`），产物为 `build/mc-1.21.1/libs/crafty_cards-neoforge-mc1.21.1-<mod_version>.jar`。测试已包含在 `build` 中。共享逻辑位于 `common/`，版本覆盖（如有）位于 `versions/`，加载器实现位于 `./`。
 
 架构与实现细节见 [AGENTS.md](AGENTS.md)，功能说明见 [docs/斗地主玩法与实现介绍.md](docs/斗地主玩法与实现介绍.md)，测试范围与证据见 [验证与已知边界](docs/open-source/TESTING.md)。
+
+## 参与贡献
+
+本分支是一个**独立的版本产品线**，只接受针对 neoforge / Minecraft 1.21.1 的改动：
+
+- **PR 的 base 必须是 `neoforge-mc1.21.1`，不要提到 `main`**——本分支是从主线裁剪出的快照，提到 `main` 会显示大量文件被删除。
+- 一个 PR 只做一件事，合并时用 Squash，方便 `cherry-pick` 到其它版本分支。
+- 版本分支之间只 cherry-pick，不互相 merge，也不 merge 回 `main`。
+- Issue/PR 模板由 `main` 统一维护（GitHub 只读默认分支）；本分支只保留一个调用 main 可复用 CI 的 `.github/workflows/build.yml`。
+
+完整规则与构建方式见 [CONTRIBUTING.md](CONTRIBUTING.md)，发布与跨版本同步规则见 [版本分支与发布流程](docs/open-source/RELEASE.md)；仓库分工与文件归属见 main 的 [仓库结构与维护职责](https://github.com/NFraw/Craft-Cards/blob/main/docs/open-source/REPO-STRUCTURE.md)。
 
 ## 素材声明
 
