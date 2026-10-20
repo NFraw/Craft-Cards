@@ -52,14 +52,12 @@
   "message.ddz.too_far": "Too far from the table",
   "message.ddz.nothing_to_watch": "No game here to spectate",
   "message.ddz.bet_unpaid": "Not enough chips; %s short this settlement",
-  "message.ddz.chip_not_set": "This table has no chip set yet: the host should Shift+right-click it and pick one",
+  "message.ddz.chip_not_set": "No chip is configured: anyone nearby can Shift+right-click an empty table to choose one",
   "message.ddz.chip_invalid": "This table's chip config is invalid; contact an admin",
   "message.ddz.chip_not_enough": "Not enough chips: this table needs %s, you have %s",
   "message.ddz.chip_not_enough_any": "No chip item found in your inventory",
   "message.ddz.config_no_table": "No table config data here (block entity missing)",
   "message.ddz.config_in_game": "The game has started or someone has joined; this table's chip config can no longer be changed",
-  "message.ddz.config_host_taken": "You are now the host of this table: the config screen is open",
-  "message.ddz.config_not_host": "The host of this table is %s; only they can change the config (spectating toggled for you)",
   "message.ddz.config_busy": "%s is configuring this table; try again later",
   "message.ddz.config_timeout": "Config timed out: Shift+right-click the table to open it again"
 }

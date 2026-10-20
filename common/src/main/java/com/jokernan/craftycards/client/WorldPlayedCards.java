@@ -36,7 +36,7 @@ import java.util.List;
 public class WorldPlayedCards {
     private static final WorldPlayedCards INSTANCE = new WorldPlayedCards();
 
-    /** 牌桌方块顶面高度（方块基座上方）：桌面模型占 y 13..16，故顶面在 +1.0。 */
+    /** 整张牌桌顶面高度（方块基座上方）：+1.0。 */
     private static final float TABLE_SURFACE_HEIGHT = 16.0F / 16.0F;
 
     private WorldPlayedCards() {}
@@ -57,10 +57,10 @@ public class WorldPlayedCards {
 
         BlockPos pos = snap.table().pos();
         // 视锥体粗剔除：背对牌桌时整段跳过（与立牌渲染同一判定，保证两者要么都画要么都不画）
-        if (!TableRenderBounds.visible(ctx.frustum(), pos)) return;
-        double cx = pos.getX() + 0.5;
+        if (!TableRenderBounds.visible(ctx.frustum(), pos, snap.tableWidth(), snap.tableDepth())) return;
+        double cx = snap.tableCenterX();
         double cy = pos.getY() + TABLE_SURFACE_HEIGHT;
-        double cz = pos.getZ() + 0.5;
+        double cz = snap.tableCenterZ();
 
         // 牌落在出牌那一刻定格的方位上：朝向角由服务端在出牌瞬间算好并随快照下发
         // （见 DDZSession.lastPlayedYaw）。早先按出牌者实时位置算，玩家一走动牌就绕桌转圈，
@@ -90,7 +90,8 @@ public class WorldPlayedCards {
         float faceYaw = snap.lastPlayedYaw();
 
         // 循环不变量提到循环外：光照值查询与渲染器/缓冲源每帧相同，避免逐张重复获取
-        int light = LevelRenderer.getLightColor(mc.level, pos);
+        // Sample above the table at the displayed group, not inside its opaque controller block.
+        int light = LevelRenderer.getLightColor(mc.level, BlockPos.containing(cx, cy, cz));
         ItemRenderer itemRenderer = mc.getItemRenderer();
         MultiBufferSource.BufferSource buffers = mc.renderBuffers().bufferSource();
 

@@ -6,6 +6,7 @@ import com.jokernan.craftycards.game.DDZEngine;
 import com.jokernan.craftycards.game.DDZGamePhase;
 import com.jokernan.craftycards.init.InitItems;
 import com.jokernan.craftycards.network.payload.GameStatePayload;
+import com.jokernan.craftycards.network.payload.TableKey;
 import com.jokernan.craftycards.CCReference;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
@@ -107,6 +108,8 @@ public class DDZGameHud {
         GameStatePayload snap = ClientDDZData.getInstance().getSnapshot();
         Minecraft mc = Minecraft.getInstance();
         if (snap == null || mc.player == null || mc.level == null) return;
+        // Hide the whole idle panel, including its title/phase; active games keep their normal HUD.
+        if (snap.phase() == DDZGamePhase.WAITING && !ClientDDZData.getInstance().shouldShowWaitingHud()) return;
 
         int width = viewport().width();
         int height = viewport().height();
@@ -159,22 +162,20 @@ public class DDZGameHud {
                     width / 2, 58, 0xFFAAAAAA);
                 return;
             }
-            // 本桌筹码由房主在配置界面里定（存在这张桌子上）：没配时明确告诉玩家找谁配，
+            // 本桌筹码由临时编辑者配置，没配时提示空桌上的公共编辑入口，
             // 否则右键入局只会"没反应"
             if (snap.betItem().isEmpty()) {
                 guiGraphics.drawCenteredString(mc.font, "本桌筹码还没配",
                     width / 2, 46, 0xFFFF5555);
                 guiGraphics.drawCenteredString(mc.font,
-                    "房主 Shift+右键牌桌 → 在配置界面里选筹码物品",
+                    "空桌时 Shift+右键牌桌 → 在配置界面里选筹码物品",
                     width / 2, 58, 0xFFAAAAAA);
             } else {
                 guiGraphics.drawCenteredString(mc.font,
                     "筹码: " + chipName(snap) + "（入局需备 " + snap.chipRequired() + " 个）",
                     width / 2, 46, 0xFF55FF55);
-                boolean host = snap.iAmHost();
                 guiGraphics.drawCenteredString(mc.font,
-                    host ? "Shift+右键牌桌可改本桌配置（筹码/底注/门槛）· 右键牌桌入局"
-                         : "右键牌桌入局 · 房主可 Shift+右键改本桌配置",
+                    "右键牌桌入局 · 空桌时任何人可 Shift+右键配置",
                     width / 2, 58, 0xFFAAAAAA);
             }
             return;
@@ -489,7 +490,9 @@ public class DDZGameHud {
     /** 准星是否指向牌桌方块（指向牌桌时右键放行走方块交互出牌/过牌）。 */
     private boolean pointingAtTable(Minecraft mc) {
         if (mc.hitResult instanceof BlockHitResult hit && mc.level != null) {
-            return mc.level.getBlockState(hit.getBlockPos()).getBlock() instanceof BlockDDZTable;
+            GameStatePayload snap = ClientDDZData.getInstance().getSnapshot();
+            return snap != null && snap.contains(new TableKey(mc.level.dimension(), hit.getBlockPos()))
+                && mc.level.getBlockState(hit.getBlockPos()).getBlock() instanceof BlockDDZTable;
         }
         return false;
     }

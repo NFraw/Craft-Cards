@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 本桌筹码配置界面（房主专用）：筹码类型 / 底注 / 入局门槛 / 本桌启用筹码。
+ * 本桌筹码配置界面（公共编辑）：筹码类型 / 底注 / 入局门槛 / 本桌启用筹码。
  *
  * <p><b>为什么是"服务端说了算"</b>：这个界面开不开，由服务端快照里的
  * {@code configOpen}（= 那把互斥锁在不在你手上）决定，客户端只负责显示。所以：</p>
@@ -25,7 +25,7 @@ import java.util.List;
  * </ul>
  *
  * <p>四项的取值先放在本地编辑，点「保存」才发 {@code SAVE_TABLE_CONFIG}；服务端<b>全量重校验</b>
- * （房主身份、锁、是否还有人入局、筹码物品是否在白名单里），回执写在快照的 {@code feedback} 里，
+ * （编辑者身份、锁、是否还有人入局、筹码物品是否在白名单里），回执写在快照的 {@code feedback} 里，
  * 由本界面当状态行显示——配置界面开着的时候聊天栏是看不见的（HUD 整个不画）。</p>
  *
  * <p>候选筹码物品读的是<b>本机</b> {@code server.json} 的 {@code chipItems}：连专用服务器时
@@ -46,13 +46,13 @@ public class TableConfigScreen extends ConfigScreenBase {
     private String lastFeedback;
 
     public TableConfigScreen() {
-        super(null, "本桌筹码配置", "房主可改 · 只影响这一张桌子");
+        super(null, "本桌筹码配置", "公共牌桌 · 编辑期间由一人临时锁定");
         GameStatePayload snap = ClientDDZData.getInstance().getSnapshot();
         if (snap != null) {
             this.chipItem = snap.betItem();
             this.stake = Math.max(1, snap.betCount());
             // 门槛用本桌的**原始**值（0 = 自动），不是实际生效值：否则"自动"与"手动填了正好等于
-            // 派生值"分不出来，房主不改这一项点保存也会把手动值改成自动
+            // 派生值"分不出来，编辑者不改这一项点保存也会把手动值改成自动
             this.entryCount = Math.max(0, snap.tableEntryCount());
             this.chipsEnabled = snap.tableChipsEnabled();
             this.lastFeedback = snap.feedback();
@@ -70,7 +70,7 @@ public class TableConfigScreen extends ConfigScreenBase {
         GameStatePayload snap = ClientDDZData.getInstance().getSnapshot();
         list.header("筹码");
         if (!ServerGameConfig.chipsRequired) {
-            // 闸门关掉时"本桌启用筹码"这一项怎么点都没用，必须说清楚，否则房主会以为界面坏了
+            // 闸门关掉时"本桌启用筹码"这一项怎么点都没用，必须说清楚，否则编辑者会以为界面坏了
             list.note("服务器总闸门已关（server.json 的 chipsRequired）：全世界都不玩筹码，本桌开关不生效");
         }
         list.row(choiceRow("筹码类型", "本桌用它结算；候选来自本机 server.json 的 chipItems，服务器会再校验",
@@ -88,7 +88,7 @@ public class TableConfigScreen extends ConfigScreenBase {
     /**
      * 门槛那一行的说明：讲清"自动值"以及手动值是否低于它。
      *
-     * <p>手动值低于派生值<b>不做拒绝</b>（低额桌是房主的自由，接受"赔不出时少赔"），但必须提示，
+     * <p>手动值低于派生值<b>不做拒绝</b>（低额桌是编辑者的自由，接受"赔不出时少赔"），但必须提示，
      * 否则玩家要到结算时才发现有人赔不出来。</p>
      */
     private String entryNote() {
@@ -101,7 +101,7 @@ public class TableConfigScreen extends ConfigScreenBase {
         return "手动 " + entryCount + " 个（≥ 自动值 " + auto + " 个，赔得起）";
     }
 
-    /** 筹码那一行的补充说明：还没选筹码时明确告诉房主"不选就没人入得了局"。 */
+    /** 筹码那一行的补充说明：还没选筹码时明确告诉编辑者"不选就没人入得了局"。 */
     private String chipNote(GameStatePayload snap) {
         if (!chipsEnabled || !ServerGameConfig.chipsRequired) return "";
         if (chipItem.isEmpty()) return "还没选筹码：玩家右键牌桌会被拒绝（本桌需要筹码）";
@@ -110,7 +110,7 @@ public class TableConfigScreen extends ConfigScreenBase {
 
     @Override
     protected void buildFooter() {
-        addFooterButton("保存", () -> {
+        addFooterButton("保存并关闭", () -> {
             GameStatePayload snap = ClientDDZData.getInstance().getSnapshot();
             if (snap == null) {
                 status = "牌局状态已丢失，请重新打开";
@@ -125,7 +125,7 @@ public class TableConfigScreen extends ConfigScreenBase {
 
     @Override
     protected String hint() {
-        return "点档位按钮换档 · 保存后立即生效（只影响这一张桌）";
+        return "保存并关闭后释放编辑锁 · 其他玩家可继续编辑";
     }
 
     @Override
@@ -175,7 +175,7 @@ public class TableConfigScreen extends ConfigScreenBase {
 
     /**
      * 筹码候选项：{@code ""}（未选择）+ 本机白名单；当前值不在白名单里时也保留它，
-     * 否则房主一进界面点一下就把服务器上的值换掉了，而他根本没想改。
+     * 否则编辑者一进界面点一下就把服务器上的值换掉了，而他根本没想改。
      */
     private static String[] chipChoices(String current) {
         List<String> ids = new ArrayList<>();

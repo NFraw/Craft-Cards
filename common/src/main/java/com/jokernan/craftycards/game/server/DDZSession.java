@@ -16,7 +16,6 @@ import net.minecraft.server.level.ServerPlayer;
 import com.jokernan.craftycards.init.InitItems;
 import com.jokernan.craftycards.platform.Network;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -34,6 +33,8 @@ import java.util.UUID;
  */
 public class DDZSession {
     private final TableKey key;
+    private final DDZTableStructure structure;
+    private final ServerLevel tableLevel;
     private final ServerPlayer[] seats = new ServerPlayer[DDZEngine.PLAYER_COUNT];
     private final DDZEngine engine = new DDZEngine();
     private boolean closed = false;
@@ -70,6 +71,10 @@ public class DDZSession {
      * 持续收到只读快照。存 UUID 而不是玩家引用，掉线后不会留住实体。
      */
     private final java.util.Set<UUID> watchers = new java.util.HashSet<>();
+    /** Includes former editors: releasing the edit lock does not remove a preview already sent. */
+    private final java.util.Set<UUID> snapshotViewers = new java.util.HashSet<>();
+
+    public void forgetSnapshotViewer(UUID uuid) { snapshotViewers.remove(uuid); }
 
     /**
      * 上一位出牌者出牌那一刻，"牌桌中心 → 他"的朝向角（度）。
@@ -81,10 +86,15 @@ public class DDZSession {
     /** 最近一次有效操作的服务器刻；超过 {@link ServerGameConfig#idleTimeoutTicks} 未操作即销毁牌局。 */
     private long lastActivityTick;
 
-    public DDZSession(TableKey key, long nowTick) {
-        this.key = key;
+    public DDZSession(DDZTableStructure structure, ServerLevel level, long nowTick) {
+        this.structure = structure;
+        this.key = structure.key();
+        this.tableLevel = level;
+        this.be = structure.prepareConfig(level);
         this.lastActivityTick = nowTick;
     }
+
+    public DDZTableStructure structure() { return structure; }
 
     // === 本桌配置（都走方块实体；拿不到就退回全局默认，绝不崩） ===
 
@@ -100,10 +110,11 @@ public class DDZSession {
      */
     @Nullable
     private DDZTableBlockEntity tableConfig(@Nullable ServerPlayer any) {
-        ServerLevel level = any != null ? any.serverLevel() : serverLevel();
-        if (level != null && level.dimension().equals(key.dimension())
+        ServerLevel level = tableLevel;
+        if (level != null && level.hasChunkAt(key.pos()) && level.dimension().equals(key.dimension())
             && level.getBlockEntity(key.pos()) instanceof DDZTableBlockEntity table) {
             table.ensureSeeded();
+            structure.replicateConfig(level, table);
             be = table;
             return table;
         }
@@ -245,11 +256,17 @@ public class DDZSession {
             sendSnapshot(player);
             return;
         }
-        // 本桌的筹码配置在方块实体里（房主用 Shift+右键的配置界面改）：先把它读出来（顺带种入默认值），
+        // 本桌的筹码配置在方块实体里（空桌时任意玩家申请编辑锁后修改）：先读取并种入默认值，
         // 后面所有审核与实收都以本桌为准。
         // 这一步**必须先做**：此刻还没人入座，没有玩家就定位不到关卡（{@code serverLevel()} 返回 null），
         // 后面按"本桌"读到的会是全局默认值——而"每桌独立"正是要避免这件事。
         tableConfig(player);
+        // Keep rules stable while a public editor is choosing them. Save/close releases this lock.
+        tickConfigLock(player.server.getTickCount(), player.server);
+        if (be != null && be.configLocker() != null) {
+            sendFeedback(player, "message.ddz.config_busy", lockerName(player, be));
+            return;
+        }
         // need == 0 表示本桌不玩筹码（全局闸门关掉，或本桌自己关了）：整个筹码环节跳过
         int need = requiredChips();
         net.minecraft.world.item.Item chip = null;
@@ -334,20 +351,14 @@ public class DDZSession {
         }
     }
 
-    // === 房主与配置界面（Shift+右键牌桌） ===
+    // === 公共配置界面与临时编辑锁（Shift+右键牌桌） ===
 
     /** 配置锁的闲置上限（游戏刻）：界面开着人走了，超过它就自动释放，别人才能配这张桌。 */
     private static final int CONFIG_LOCK_TIMEOUT_TICKS = 120 * 20;
 
     /**
-     * Shift+右键牌桌 = 打开本桌配置界面（只对房主开放）。
-     *
-     * <p>房主 = <b>第一个</b> Shift+右键这张桌的玩家（记在方块实体里，随桌子持久化）。
-     * 原房主<b>离线</b>时允许后来的玩家接管——否则房主一走，这张桌子就再没人配得了
-     * （筹码没配的桌子谁都入不了局，等于砖了）。</p>
-     *
-     * <p>已有在线房主且不是本人时，Shift+右键退回它原来的用途——观战开关
-     * （见 {@link #handleWatch}）：观战没有别的入口，不能因为多了配置界面就把它挤掉。</p>
+     * 空桌时 Shift+右键申请临时编辑锁，任何附近玩家均可操作。
+     * 已有人入局时，未参局玩家的该操作切换观战，参局玩家不能改配置。
      *
      * <p>只有局外（还没人入座）能改配置：入局时就按当时的底注收了押注，中途改底注会让
      * 先入局的人吃亏。</p>
@@ -367,21 +378,11 @@ public class DDZSession {
             return;
         }
         if (engine.getPhase() != DDZGamePhase.WAITING || playerCount() > 0) {
-            sendFeedback(player, "message.ddz.config_in_game");
+            if (!contains(player)) handleWatch(player);
+            else sendFeedback(player, "message.ddz.config_in_game");
             return;
         }
         long tick = player.serverLevel().getServer().getTickCount();
-        if (!table.isHost(player.getUUID())) {
-            if (table.host() == null || hostOffline(player, table)) {
-                table.setHost(player.getUUID(), player.getGameProfile().getName());
-                sendFeedback(player, "message.ddz.config_host_taken");
-            } else {
-                sendFeedback(player, "message.ddz.config_not_host", hostDisplayName(table));
-                // 不是房主：Shift+右键回到"观战开关"这个原有用途
-                handleWatch(player);
-                return;
-            }
-        }
         // 锁被别人握着（且人还在、没走远、没超时）就拒绝：同一时间只允许一个人开界面。
         // 陈旧锁就地收回——否则一把没人持有的锁能把这张桌锁到天荒地老（会话可能早已被摘掉，
         // 清扫也就不再跑了，这里必须自己兜住）
@@ -392,6 +393,7 @@ public class DDZSession {
                 return;
             }
             table.clearConfigLocker();
+            if (other != null) sendQuietly(other, buildSnapshot(other, "编辑锁已释放，请重新打开配置界面"));
         }
         table.setConfigLocker(player.getUUID(), tick);
         sendSnapshot(player);
@@ -400,7 +402,7 @@ public class DDZSession {
     /**
      * 保存本桌配置（配置界面的「保存」）。
      *
-     * <p>服务端<b>全量重校验</b>：房主身份、是否还握着锁、是否还有人在局中、筹码物品是否在
+     * <p>服务端<b>全量重校验</b>：是否持有未过期的编辑锁、是否还有人在局中、筹码物品是否在
      * 服务端白名单里。客户端读的是它自己那份 {@code server.json}，连专用服务器时与服端无关，
      * 所以白名单必须在服务端再验一遍——否则改过的客户端能把任意物品设成本桌筹码。</p>
      *
@@ -422,12 +424,13 @@ public class DDZSession {
             sendFeedback(player, "message.ddz.config_no_table");
             return;
         }
-        if (!table.isHost(player.getUUID())) {
-            sendFeedback(player, "message.ddz.config_not_host", hostDisplayName(table));
-            return;
-        }
         if (!table.isConfigLocker(player.getUUID())) {
             sendFeedback(player, "message.ddz.config_timeout");
+            return;
+        }
+        if (configLockExpired(player, table, player.serverLevel().getServer().getTickCount())) {
+            table.clearConfigLocker();
+            sendQuietly(player, buildSnapshot(player, "编辑已超时，请重新打开配置界面"));
             return;
         }
         if (engine.getPhase() != DDZGamePhase.WAITING || playerCount() > 0) {
@@ -443,7 +446,7 @@ public class DDZSession {
         table.setStake(Math.max(1, stake));
         table.setEntryCount(Math.max(0, entryCount));
         table.setChipsEnabled(chipsEnabled);
-        table.setConfigLocker(player.getUUID(), player.serverLevel().getServer().getTickCount());
+        table.clearConfigLocker();
         // 桌边的人（观战者/后续入局者）也要看到新的底注与门槛
         broadcast();
         sendConfigResult(player, "已保存：" + describeConfig(table));
@@ -454,6 +457,7 @@ public class DDZSession {
         DDZTableBlockEntity table = tableConfig(player);
         if (table != null && table.isConfigLocker(player.getUUID())) {
             table.clearConfigLocker();
+            sendSnapshot(player);
         }
     }
 
@@ -485,18 +489,6 @@ public class DDZSession {
     private boolean configLockExpired(ServerPlayer locker, DDZTableBlockEntity table, long tick) {
         if (tick - table.configLockTick() > CONFIG_LOCK_TIMEOUT_TICKS) return true;
         return !withinReach(locker);
-    }
-
-    /** 房主是否已经不在服务器上（允许别人接管这张桌）。 */
-    private static boolean hostOffline(ServerPlayer any, DDZTableBlockEntity table) {
-        UUID host = table.host();
-        return host != null && any.server.getPlayerList().getPlayer(host) == null;
-    }
-
-    /** 房主的显示名（离线时也能显示：名字随 UUID 一起存在桌子上）。 */
-    private static String hostDisplayName(DDZTableBlockEntity table) {
-        String name = table.hostName();
-        return name.isEmpty() ? "另一名玩家" : name;
     }
 
     /** 正在配置本桌的玩家名（锁的持有者按定义在线，查得到）。 */
@@ -580,6 +572,7 @@ public class DDZSession {
     private void endGame() {
         distributeBets();
         reclaimAllCards();
+        closeRemainingSnapshotViewers("牌局已结束");
         Arrays.fill(seats, null);
         DDZTableManager.getInstance().remove(key);
     }
@@ -894,7 +887,7 @@ public class DDZSession {
         // 走到这里一定是"等待中离开"（局中离开在上面已按判负收场、整桌解散），
         // 所以只剩两件事：没人了就摘桌，还有人就把新的座位状态广播出去
         if (playerCount() == 0) {
-            manager.remove(key);
+            disband("牌桌已无人参与，牌局已结束", manager);
         } else {
             broadcast();
         }
@@ -929,7 +922,9 @@ public class DDZSession {
             if (locker != null && !contains(locker) && !watchers.contains(locker.getUUID())) {
                 sendQuietly(locker, buildSnapshot(locker, reason));
             }
+            closeRemainingSnapshotViewers(reason);
         } finally {
+            snapshotViewers.clear();
             // 必须在 finally 里摘桌：单个玩家连接异常不能把清理跳过，否则管理器里会残留
             // 一张 closed=true 的桌子——之后任何人右键这张桌都只会得到"牌局已解散"
             manager.remove(key);
@@ -941,6 +936,10 @@ public class DDZSession {
      * 玩家掉线瞬间连接可能已不可用，逐个隔离比让整条广播中断更合理。
      */
     private void sendQuietly(ServerPlayer player, GameStatePayload payload) {
+        // Terminal deliveries remove active viewers before the remaining preview holders are notified.
+        if (payload.sessionClosed() || payload.phase() == DDZGamePhase.SETTLED)
+            snapshotViewers.remove(player.getUUID());
+        else snapshotViewers.add(player.getUUID());
         try {
             // 平台接缝：具体用哪个网络的管道由加载器决定（见 platform/Network）
             Network.sendToPlayer(player, payload);
@@ -950,10 +949,18 @@ public class DDZSession {
         }
     }
 
+    private void closeRemainingSnapshotViewers(String reason) {
+        for (UUID uuid : java.util.Set.copyOf(snapshotViewers)) {
+            ServerPlayer viewer = tableLevel.getServer().getPlayerList().getPlayer(uuid);
+            if (viewer != null) sendQuietly(viewer, buildSnapshot(viewer, reason, true, false));
+        }
+        snapshotViewers.clear();
+    }
+
     /** 玩家是否在牌桌跟前（同维度 + 距离在 {@link ServerGameConfig#joinRadius} 内）。 */
     private boolean withinReach(ServerPlayer player) {
         if (!player.serverLevel().dimension().equals(key.dimension())) return false;
-        return player.distanceToSqr(Vec3.atCenterOf(key.pos()))
+        return structure.layout().distanceSquared(player.getX(), player.getY(), player.getZ(), key.pos().getY())
             <= ServerGameConfig.joinRadius * ServerGameConfig.joinRadius;
     }
 
@@ -1017,31 +1024,28 @@ public class DDZSession {
         // 否则把半径设成 0 追求安全时会把观战功能一起关掉
         boolean autoShare = ServerGameConfig.spectateRadius > 0;
         double r2 = autoShare ? ServerGameConfig.spectateRadius * ServerGameConfig.spectateRadius : 0;
-        Vec3 center = Vec3.atCenterOf(key.pos());
         for (ServerPlayer p : level.players()) {
             if (contains(p)) continue;
-            boolean near = autoShare && p.distanceToSqr(center) <= r2;
+            boolean near = autoShare && structure.layout().distanceSquared(
+                p.getX(), p.getY(), p.getZ(), key.pos().getY()) <= r2;
             if (!DDZVisibility.spectatorReceives(watchers.contains(p.getUUID()), near, autoShare)) continue;
             sendQuietly(p, buildSnapshot(p, reason));
         }
     }
 
     private ServerLevel serverLevel() {
-        for (ServerPlayer p : seats) {
-            if (p != null) return p.serverLevel();
-        }
-        return null;
+        return tableLevel;
     }
 
     /** 玩家相对牌桌中心的水平朝向角（牌桌中心 → 玩家）。 */
     private float facingOf(ServerPlayer player) {
-        double dx = player.getX() - (key.pos().getX() + 0.5);
-        double dz = player.getZ() - (key.pos().getZ() + 0.5);
+        double dx = player.getX() - structure.layout().centerX();
+        double dz = player.getZ() - structure.layout().centerZ();
         if (Math.hypot(dx, dz) < 1e-4) return lastPlayedYaw; // 正好站在桌心：保持上一次朝向，避免突然翻转
         return DDZGeom.facingYaw(dx, dz);
     }
 
-    /** 给玩家回一句提示（可带格式化参数，如"本桌房主是 %s"）。 */
+    /** 给玩家回一句提示（可带格式化参数，如正在编辑的玩家名）。 */
     private void sendFeedback(ServerPlayer player, String key, Object... args) {
         player.sendSystemMessage(Component.translatable(key, args));
     }
@@ -1062,6 +1066,11 @@ public class DDZSession {
      *                    而不必真的把牌局关掉
      */
     private GameStatePayload buildSnapshot(ServerPlayer viewer, String reason, boolean forceClosed) {
+        return buildSnapshot(viewer, reason, forceClosed, true);
+    }
+
+    /** Preview-only recipients need a terminal signal, never the private contents of a later game. */
+    private GameStatePayload buildSnapshot(ServerPlayer viewer, String reason, boolean forceClosed, boolean includeFaces) {
         int myIndex = seatOf(viewer.getUUID());
         List<String> names = new ArrayList<>(DDZEngine.PLAYER_COUNT);
         List<Integer> counts = new ArrayList<>(DDZEngine.PLAYER_COUNT);
@@ -1075,37 +1084,38 @@ public class DDZSession {
         List<Integer> lastCards = engine.getLastPlayedCards() == null
             ? List.of()
             : new ArrayList<>(engine.getLastPlayedCards());
-        List<Integer> myHand = myIndex < 0
+        List<Integer> myHand = !includeFaces || myIndex < 0
             ? List.of()
             : new ArrayList<>(engine.getPlayerHand(myIndex));
         // 结算阶段牌局已结束：把三家剩余手牌都放进快照供客户端结算界面展示（不涉密）
         boolean settled = engine.getPhase() == DDZGamePhase.SETTLED;
         List<List<Integer>> allHands = new ArrayList<>(DDZEngine.PLAYER_COUNT);
         for (int i = 0; i < DDZEngine.PLAYER_COUNT; i++) {
-            allHands.add(settled ? new ArrayList<>(engine.getPlayerHand(i)) : List.of());
+            allHands.add(includeFaces && settled ? new ArrayList<>(engine.getPlayerHand(i)) : List.of());
         }
         // 底牌在叫分阶段**不下发**：它决定叫几分的判断，而下发是"谁都能读"的——
         // 若照发，改过的客户端在决定叫分前就能看到 3 张底牌（HUD 只在出牌阶段画它，
         // 那只是"画不画"，数据已经在包里）。出牌阶段底牌已归地主、属于公开信息。
-        boolean dipaiPublic = engine.getPhase() == DDZGamePhase.PLAYING;
+        boolean dipaiPublic = includeFaces && engine.getPhase() == DDZGamePhase.PLAYING;
         List<Integer> dipai = dipaiPublic ? new ArrayList<>(engine.getDipai()) : List.of();
         // 世界内各玩家持牌的可见性：自己的牌 HUD 已有（世界内不重复渲染）；
         // 旁观者看牌面走 spectatorsSeeCards，参与者看他人牌面走 participantsSeeFaces（默认关，防作弊）
         List<List<Integer>> visibleHands = new ArrayList<>(DDZEngine.PLAYER_COUNT);
         for (int i = 0; i < DDZEngine.PLAYER_COUNT; i++) {
-            boolean maySee = DDZVisibility.canSeeHand(myIndex >= 0, i == myIndex,
+            boolean maySee = includeFaces && DDZVisibility.canSeeHand(myIndex >= 0, i == myIndex,
                 ServerGameConfig.spectatorsSeeCards, ServerGameConfig.participantsSeeFaces);
             visibleHands.add(maySee ? new ArrayList<>(engine.getPlayerHand(i)) : List.of());
         }
         // 每桌配置的视图字段（都按接收者算）：
-        //   iAmHost = 我是不是本桌房主（只有房主能改配置）
+        //   canEditTable = 公共桌是否空闲、在附近且没有别人的编辑锁
         //   configOpen = 配置界面现在是不是开在我这儿（服务端持有那把锁，客户端只认它）
         //   tableChipsEnabled = 本桌自己的筹码开关（原始值，不受全局闸门影响）——
         //     闸门关掉时 chipRequired 也是 0，只看那个数字分不清"服务器不让用"还是"这桌自己关了"
         //   tableEntryCount = 本桌门槛的<b>原始</b>值（0 = 自动）：配置界面要拿它回填，
-        //     只看实际生效值会把"自动"和"手动"混成一种，一保存就把房主的手动值改掉
+        //     只看实际生效值会把"自动"和"手动"混成一种，一保存就把原来的手动值改掉
         DDZTableBlockEntity table = tableConfig(viewer);
-        boolean iAmHost = table != null && table.isHost(viewer.getUUID());
+        boolean canEditTable = !forceClosed && engine.getPhase() == DDZGamePhase.WAITING && playerCount() == 0
+            && withinReach(viewer) && table != null && !table.isLockedByOther(viewer.getUUID());
         boolean configOpen = !forceClosed && table != null && table.isConfigLocker(viewer.getUUID());
         boolean tableChips = table == null || table.chipsEnabled();
         int tableEntry = table == null ? 0 : table.entryCount();
@@ -1135,7 +1145,7 @@ public class DDZSession {
             reason,
             // 本桌配置的筹码物品（原始值，可能配了但本桌/全局把筹码关着）。
             // "这桌到底玩不玩筹码"看的是 chipRequired，不看这个字段非空：
-            // 把配置界面里的筹码类型藏着不发，房主一进界面就显示"未选择"，
+            // 把配置界面里的筹码类型藏着不发，编辑者一进界面就显示"未选择"，
             // 顺手点个保存就把自己选过的筹码类型抹掉了——静默改配置。
             // 画不画筹码图标之类的展示由客户端按 chipRequired 判断（WorldTableChip / 结算界面）。
             chipItemName(),
@@ -1144,10 +1154,12 @@ public class DDZSession {
             stake(),
             engine.getMultiplier(),
             requiredChips(),
-            iAmHost,
+            canEditTable,
             configOpen,
             tableChips,
             tableEntry,
-            turnLeft);
+            turnLeft,
+            structure.layout().width(),
+            structure.layout().depth());
     }
 }

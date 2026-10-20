@@ -1,0 +1,28 @@
+{
+  "textures": {
+    "atlas": "crafty_cards:block/ddz_table_atlas",
+    "particle": "crafty_cards:block/ddz_table_particle"
+  },
+  "elements": [
+    {
+      "name": "body",
+      "from": [0, 0, 0],
+      "to": [16, 16, 16],
+      "faces": {
+        "north": {"uv":[0,0,8,8],"texture":"#atlas","cullface":"north"},
+        "east": {"uv":[0,0,8,8],"texture":"#atlas","cullface":"east"},
+        "south": {"uv":[0,0,8,8],"texture":"#atlas","cullface":"south"},
+        "west": {"uv":[0,0,8,8],"texture":"#atlas","cullface":"west"},
+        "down": {"uv":[0,8,8,16],"texture":"#atlas","cullface":"down"}
+      }
+    },
+    {
+      "name": "cloth",
+      "from": [2, 16, 2],
+      "to": [14, 16, 14],
+      "faces": {
+        "up": {"uv":[9,1,15,7],"texture":"#atlas","cullface":"up"}
+      }
+    }
+  ]
+}

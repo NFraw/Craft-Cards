@@ -43,7 +43,7 @@ public class ConfigHomeScreen extends ConfigScreenBase {
         list.header("玩法（房主设置）");
         list.row(customRow("玩法设置", playSummary(), enter(new ServerPlayConfigScreen(this))));
         list.note("是否需要筹码、入局距离、观战可见性等；专用服务器请在服务端改");
-        list.note("每张桌子还有自己的筹码/底注/门槛：站到桌前 Shift+右键（房主）即可改");
+        list.note("每桌的筹码/底注/门槛：空桌时任何人都可在桌前 Shift+右键编辑");
 
         list.header("渲染");
         list.row(customRow("渲染参数", renderSummary(), enter(new RenderConfigScreen(this))));

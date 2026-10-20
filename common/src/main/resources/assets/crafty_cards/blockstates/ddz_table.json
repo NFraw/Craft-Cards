@@ -1,5 +1,185 @@
 {
-  "variants": {
-    "": {"model": "crafty_cards:block/ddz_table"}
-  }
+  "multipart": [
+    {
+      "apply": {
+        "model": "crafty_cards:block/ddz_table_base"
+      }
+    },
+    {
+      "when": {
+        "north": "false"
+      },
+      "apply": {
+        "model": "crafty_cards:block/ddz_table_edge_wood",
+        "y": 0
+      }
+    },
+    {
+      "when": {
+        "north": "true"
+      },
+      "apply": {
+        "model": "crafty_cards:block/ddz_table_edge_cloth",
+        "y": 0
+      }
+    },
+    {
+      "when": {
+        "north": "true",
+        "west": "true"
+      },
+      "apply": {
+        "model": "crafty_cards:block/ddz_table_corner_cloth",
+        "y": 0
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          {
+            "north": "false"
+          },
+          {
+            "west": "false"
+          }
+        ]
+      },
+      "apply": {
+        "model": "crafty_cards:block/ddz_table_corner_wood",
+        "y": 0
+      }
+    },
+    {
+      "when": {
+        "east": "false"
+      },
+      "apply": {
+        "model": "crafty_cards:block/ddz_table_edge_wood",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "east": "true"
+      },
+      "apply": {
+        "model": "crafty_cards:block/ddz_table_edge_cloth",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "east": "true",
+        "north": "true"
+      },
+      "apply": {
+        "model": "crafty_cards:block/ddz_table_corner_cloth",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          {
+            "east": "false"
+          },
+          {
+            "north": "false"
+          }
+        ]
+      },
+      "apply": {
+        "model": "crafty_cards:block/ddz_table_corner_wood",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "south": "false"
+      },
+      "apply": {
+        "model": "crafty_cards:block/ddz_table_edge_wood",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "south": "true"
+      },
+      "apply": {
+        "model": "crafty_cards:block/ddz_table_edge_cloth",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "south": "true",
+        "east": "true"
+      },
+      "apply": {
+        "model": "crafty_cards:block/ddz_table_corner_cloth",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          {
+            "south": "false"
+          },
+          {
+            "east": "false"
+          }
+        ]
+      },
+      "apply": {
+        "model": "crafty_cards:block/ddz_table_corner_wood",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "west": "false"
+      },
+      "apply": {
+        "model": "crafty_cards:block/ddz_table_edge_wood",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "west": "true"
+      },
+      "apply": {
+        "model": "crafty_cards:block/ddz_table_edge_cloth",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "west": "true",
+        "south": "true"
+      },
+      "apply": {
+        "model": "crafty_cards:block/ddz_table_corner_cloth",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "OR": [
+          {
+            "west": "false"
+          },
+          {
+            "south": "false"
+          }
+        ]
+      },
+      "apply": {
+        "model": "crafty_cards:block/ddz_table_corner_wood",
+        "y": 270
+      }
+    }
+  ]
 }

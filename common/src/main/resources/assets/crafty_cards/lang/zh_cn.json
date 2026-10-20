@@ -52,14 +52,12 @@
   "message.ddz.too_far": "离牌桌太远了",
   "message.ddz.nothing_to_watch": "这里还没有牌局，无法观战",
   "message.ddz.bet_unpaid": "筹码不足，本次少赔 %s 个（用实物结算倍数赌注的固有限制）",
-  "message.ddz.chip_not_set": "本桌筹码还没配：请房主 Shift+右键牌桌，在配置界面里选好筹码物品",
+  "message.ddz.chip_not_set": "本桌筹码还没配：空桌时任何人都可 Shift+右键牌桌选好筹码物品",
   "message.ddz.chip_invalid": "本桌筹码配置有误，请联系管理员",
   "message.ddz.chip_not_enough": "筹码不足：本桌需要 %s 个，你只有 %s 个",
   "message.ddz.chip_not_enough_any": "背包里找不到筹码物品",
   "message.ddz.config_no_table": "这里没有牌桌的配置数据（方块实体缺失）",
   "message.ddz.config_in_game": "牌局已开始或已有人入局，本桌筹码配置不能再改",
-  "message.ddz.config_host_taken": "你已成为本桌房主：配置界面已打开",
-  "message.ddz.config_not_host": "本桌房主是 %s，只有他能改配置（已为你切换观战）",
   "message.ddz.config_busy": "%s 正在配置本桌，请稍后再试",
   "message.ddz.config_timeout": "配置已超时：请重新 Shift+右键牌桌打开配置界面"
 }

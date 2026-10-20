@@ -30,7 +30,7 @@ public record PlayerActionPayload(TableKey table, Action action, int score, List
      */
     public enum Action {
         JOIN, BID, PLAY, PASS, LEAVE, WATCH,
-        /** Shift+右键牌桌：打开/接管本桌配置界面（房主限定，见 {@code DDZSession#handleOpenConfig}）。 */
+        /** Shift+右键：空桌申请编辑锁；有人入局时未参局者切换观战。 */
         OPEN_TABLE_CONFIG,
         /** 配置界面的「保存」：底注在 {@code score}、门槛在 {@code cards[0]}、筹码类型与开关在末尾两个字段。 */
         SAVE_TABLE_CONFIG,

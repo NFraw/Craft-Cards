@@ -14,7 +14,7 @@ import net.neoforged.neoforge.network.registration.PayloadRegistrar;
  * 斗地主网络包注册中心。
  * <p>
  * 在 {@link RegisterPayloadHandlersEvent} 中注册 C2S（客户端→服务端）和 S2C（服务端→客户端）载荷类型。
- * 注册版本号为 {@code "1"}，用于网络协议版本校验。
+ * 注册版本号为 {@code "3"}：公共编辑权限快照，需要客户端和服务端同步更新。
  * </p>
  *
  * <h3>网络包类型</h3>
@@ -34,7 +34,7 @@ public class DDZNetworking {
      * @param event 载荷注册事件
      */
     public static void registerPayloads(RegisterPayloadHandlersEvent event) {
-        PayloadRegistrar registrar = event.registrar("1");
+        PayloadRegistrar registrar = event.registrar("3");
         // C2S：客户端发送玩家操作到服务端
         registrar.playToServer(PlayerActionPayload.TYPE, PlayerActionPayload.STREAM_CODEC, new ServerPayloadHandler());
         // S2C：服务端广播游戏状态快照到客户端

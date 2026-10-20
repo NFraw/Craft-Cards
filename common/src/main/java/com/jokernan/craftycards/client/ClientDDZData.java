@@ -1,6 +1,7 @@
 package com.jokernan.craftycards.client;
 
 import com.jokernan.craftycards.game.DDZCardType;
+import com.jokernan.craftycards.block.BlockDDZTable;
 import com.jokernan.craftycards.game.DDZEngine;
 import com.jokernan.craftycards.game.DDZGamePhase;
 import com.jokernan.craftycards.network.payload.GameStatePayload;
@@ -22,6 +23,7 @@ public class ClientDDZData {
     private static final ClientDDZData INSTANCE = new ClientDDZData();
 
     private GameStatePayload snapshot;
+    private final WaitingHudTimeout waitingHudTimeout = new WaitingHudTimeout();
     private final List<Integer> selectedCards = new ArrayList<>();
     private String message = "";
     private long messageUntil = 0;
@@ -45,6 +47,22 @@ public class ClientDDZData {
     }
 
     public GameStatePayload getSnapshot() {
+        // Also handles previews cached by older versions that missed a terminal server snapshot.
+        Minecraft mc = Minecraft.getInstance();
+        if (snapshot != null && snapshot.phase() != DDZGamePhase.SETTLED && mc.level != null) {
+            boolean sameDimension = mc.level.dimension().equals(snapshot.table().dimension());
+            for (int x = 0; x < snapshot.tableWidth(); x++) {
+                for (int z = 0; z < snapshot.tableDepth(); z++) {
+                    var pos = snapshot.table().pos().offset(x, 0, z);
+                    boolean loaded = sameDimension && mc.level.hasChunkAt(pos);
+                    boolean exists = loaded && mc.level.getBlockState(pos).getBlock() instanceof BlockDDZTable;
+                    if (ClientSnapshotPolicy.shouldClearMissingTable(sameDimension, loaded, exists)) {
+                        reset();
+                        return null;
+                    }
+                }
+            }
+        }
         return snapshot;
     }
 
@@ -57,7 +75,9 @@ public class ClientDDZData {
         // 这类快照之后服务端不会再下发，若把状态留着就会永久占屏（全屏结算遮罩曾因此卡死旁观者）。
         // 决策规则见 ClientSnapshotPolicy（纯函数，有单测）。
         ClientSnapshotPolicy.Action action = ClientSnapshotPolicy.decide(
-            payload.sessionClosed(), payload.phase() == DDZGamePhase.SETTLED, payload.myIndex() >= 0);
+            payload.sessionClosed(), payload.phase() == DDZGamePhase.SETTLED, payload.myIndex() >= 0,
+            snapshot == null || snapshot.table().equals(payload.table()));
+        if (action == ClientSnapshotPolicy.Action.IGNORE) return;
         if (action == ClientSnapshotPolicy.Action.NOTIFY_AND_CLEAR) {
             String reason = payload.feedback().isEmpty() ? "牌局已解散" : payload.feedback();
             reset();
@@ -77,6 +97,9 @@ public class ClientDDZData {
         // 必须在覆盖 snapshot 之前比较，且首次快照不发声——否则一入局就响一串
         if (snapshot != null) playTransitionSounds(snapshot, payload);
 
+        // Periodic identical snapshots must not keep an idle table's hint on screen forever.
+        waitingHudTimeout.update(List.of(payload.table(), payload.online(), payload.betItem(), payload.chipRequired()),
+            payload.phase() == DDZGamePhase.WAITING, net.minecraft.Util.getMillis());
         this.snapshot = payload;
         // 倒计时基准：以这份快照里的剩余量为起点，之后本地续算（见 turnRemainingTicks）
         this.turnCountdownBaseTicks = payload.turnRemainingTicks();
@@ -84,7 +107,7 @@ public class ClientDDZData {
         // 服务端把配置界面的锁给了我（configOpen）就打开界面。关不关由界面自己盯着快照决定
         // （见 TableConfigScreen#tick）：锁被收回时服务端会补一份 configOpen=false 的快照，
         // 这里就不必再写一套"主动关闭"的对称逻辑。
-        if (payload.configOpen() && payload.iAmHost()
+        if (payload.configOpen()
             && !(Minecraft.getInstance().screen instanceof TableConfigScreen)) {
             Minecraft.getInstance().setScreen(new TableConfigScreen());
         }
@@ -103,19 +126,22 @@ public class ClientDDZData {
 
     /**
      * 右键牌桌（方块交互客户端分支）：
-     * Shift+右键 = 参局者离开牌局 / 未入局者打开本桌配置界面（不是房主时服务端把它当作观战开关）；
+     * Shift+右键 = 参局者离开 / 空桌申请编辑 / 未参局且有人入局时切换观战；
      * 未入局 → JOIN；叫分阶段轮到我 → 按滚轮所选发 BID；
      * 出牌阶段轮到我 → 有选中牌出牌（本地牌型预检），无选中牌过牌。
      *
      * <p>筹码类型不再由玩家手持物品声明（那条路已下线）：它和底注、门槛一起属于<b>本桌</b>配置，
-     * 由房主在配置界面里定，存在牌桌方块实体上。</p>
+     * 由持有临时编辑锁的玩家配置，存在牌桌方块实体上。</p>
      */
     public void onTableRightClicked(TableKey key, boolean sneaking) {
         GameStatePayload snap = snapshot;
+        // A member tile is the same logical table; another table must not reuse this game's turn/selection.
+        if (snap != null && snap.contains(key)) key = snap.table();
+        else snap = null;
+        if (snap != null && snap.phase() == DDZGamePhase.WAITING)
+            waitingHudTimeout.showAgain(net.minecraft.Util.getMillis());
         if (sneaking) {
-            // 参局者 = 离开牌局；其余人交给服务端判：本桌还没房主（或房主离线）→ 我成为房主并开配置界面，
-            // 已经有在线房主 → 退回原用途"观战开关"。客户端不猜自己是哪种身份：
-            // 快照里的 iAmHost 是"我已是房主"，分不出"还没有房主"，猜错就会把观战入口弄丢。
+            // 服务端决定空桌编辑/非空桌观战，客户端不自行授予编辑权限。
             boolean participant = snap != null && snap.myIndex() >= 0 && !snap.sessionClosed();
             send(new PlayerActionPayload(key,
                 participant ? PlayerActionPayload.Action.LEAVE : PlayerActionPayload.Action.OPEN_TABLE_CONFIG,
@@ -158,6 +184,11 @@ public class ClientDDZData {
 
     public int getScrollFocus() {
         return scrollFocus;
+    }
+
+    /** Display-only timeout: keep the snapshot/subscription so dealing still opens the active HUD. */
+    public boolean shouldShowWaitingHud() {
+        return waitingHudTimeout.visible(net.minecraft.Util.getMillis());
     }
 
     public int getBidChoice() {
@@ -290,6 +321,7 @@ public class ClientDDZData {
     }
 
     public void reset() {
+        waitingHudTimeout.reset();
         this.snapshot = null;
         selectedCards.clear();
         message = "";
