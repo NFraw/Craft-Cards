@@ -31,7 +31,7 @@ import net.minecraft.world.phys.Vec3;
 public class WorldTableChip {
     private static final WorldTableChip INSTANCE = new WorldTableChip();
 
-    /** 牌桌方块顶面高度（方块基座上方）：桌面模型占 y 13..16，故顶面在 +1.0。 */
+    /** 牌桌顶面位于基座上方 +1.0。 */
     private static final double TABLE_SURFACE_HEIGHT = 16.0 / 16.0;
 
     /** 缓存避免每帧构造 ItemStack（筹码只在声明/更换时变，故按 id 缓存一份即可）。 */
@@ -58,10 +58,10 @@ public class WorldTableChip {
 
         BlockPos pos = snap.table().pos();
         Vec3 cam = ctx.camera().getPosition();
-        double cx = pos.getX() + 0.5;
+        double cx = snap.tableCenterX();
         double cy = pos.getY() + TABLE_SURFACE_HEIGHT + RenderConfig.chipDisplayHeight
             + bob(ctx);
-        double cz = pos.getZ() + 0.5;
+        double cz = snap.tableCenterZ();
 
         // 视锥体剔除 + 距离上限：为远处根本看不清的桌白做模型渲染
         double dist = cam.distanceToSqr(cx, cy, cz);
@@ -75,7 +75,8 @@ public class WorldTableChip {
         if (chip.isEmpty()) return;
 
         float scale = RenderConfig.chipDisplayScale;
-        int light = LevelRenderer.getLightColor(mc.level, pos);
+        // The table is opaque: sample the floating item's position, never the solid anchor block.
+        int light = LevelRenderer.getLightColor(mc.level, BlockPos.containing(cx, cy, cz));
         ItemRenderer itemRenderer = mc.getItemRenderer();
         MultiBufferSource.BufferSource buffers = mc.renderBuffers().bufferSource();
 

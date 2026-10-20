@@ -15,7 +15,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Consumer;
 
 /**
  * 全局斗地主牌桌管理器：每张桌（TableKey=维度+坐标）一个 {@link DDZSession}。
@@ -60,6 +59,11 @@ public class DDZTableManager {
         // 每轮限时：轮到的玩家超时没动作就判负（独立于下面的空闲销毁，后者是「整桌没人动」的兜底）
         if (tick % TIMEOUT_CHECK_INTERVAL == 0) {
             for (DDZSession s : List.copyOf(sessions.values())) {
+                var level = server.getLevel(s.getKey().dimension());
+                if (level == null || !s.structure().intact(level)) {
+                    s.disband("牌桌结构变化或区块卸载，牌局已结束，押注已退还", this);
+                    continue;
+                }
                 s.tickTurnTimeout(tick, this);
                 // 配置锁：界面开着人走了/超时了就放锁，否则别人永远打不开这张桌
                 s.tickConfigLock(tick, server);
@@ -94,15 +98,22 @@ public class DDZTableManager {
             if (s.contains(player) || s.isWatching(player) || s.isConfigLocker(player)) {
                 s.handleLeave(player, this);
             }
+            s.forgetSnapshotViewer(player.getUUID());
         }
     }
 
-    /** 牌桌方块被拆：以被拆位置为桌标识解散牌局（1×1 单方块，不需要搜多方块结构）。 */
+    /** Compatibility entry point for tests/adapters; real removal is handled by the block callback. */
     public void handleBlockBreak(Level level, BlockPos pos, BlockState state) {
         if (!(state.getBlock() instanceof BlockDDZTable)) return;
-        TableKey key = new TableKey(level.dimension(), pos);
-        DDZSession session = sessions.get(key);
-        if (session != null) session.disband("牌桌被拆除了", this);
+        handleStructureChanged(level, pos);
+    }
+
+    /** Called after actual placement/removal, including explosions and commands, not cancellable break events. */
+    public void handleStructureChanged(Level level, BlockPos pos) {
+        for (DDZSession s : List.copyOf(sessions.values())) {
+            if (s.structure().touches(level, pos))
+                s.disband("牌桌结构已改变，牌局已结束，押注已退还", this);
+        }
     }
 
     /**
@@ -124,36 +135,66 @@ public class DDZTableManager {
     }
 
     public void handle(ServerPlayer player, PlayerActionPayload payload) {
+        DDZTableStructure structure;
+        try {
+            if (!player.serverLevel().dimension().equals(payload.table().dimension()))
+                throw new IllegalArgumentException("不能操作其他维度的牌桌");
+            structure = DDZTableStructure.resolve(player.serverLevel(), payload.table().pos());
+            boolean needsReach = switch (payload.action()) {
+                case JOIN, WATCH, OPEN_TABLE_CONFIG, SAVE_TABLE_CONFIG -> true;
+                default -> false;
+            };
+            if (needsReach && structure.layout().distanceSquared(player.getX(), player.getY(), player.getZ(),
+                structure.key().pos().getY()) > ServerGameConfig.joinRadius * ServerGameConfig.joinRadius)
+                throw new IllegalArgumentException("离牌桌太远了，请靠近后操作");
+        } catch (IllegalArgumentException error) {
+            player.sendSystemMessage(Component.literal(error.getMessage()));
+            return;
+        }
+        TableKey key = structure.key();
+        DDZSession old = sessions.get(key);
+        if (old != null && !old.structure().equals(structure))
+            old.disband("牌桌结构已改变，押注已退还", this);
+        // Every action, including SAVE/WATCH/PASS, uses the same server-resolved table identity.
         // 记一次活跃：推迟空闲超时。只认**牌局中玩家**的操作——否则任何路人反复
         // 开关观战就能把"空闲销毁"无限推迟，局内三人挂机时牌局（以及每个客户端的
         // 牌面渲染）永远回收不掉，这正是 idleTimeoutTicks 要防的事。
-        DDZSession session = sessions.get(payload.table());
+        DDZSession session = sessions.get(key);
         if (session != null && session.contains(player)) session.touch(player);
         switch (payload.action()) {
-            case JOIN -> join(player, payload.table());
-            case BID -> withSession(payload.table(), s -> s.handleBid(player, payload.score()));
-            case PLAY -> withSession(payload.table(), s -> s.handlePlay(player, payload.cards()));
-            case PASS -> withSession(payload.table(), s -> s.handlePass(player));
-            case LEAVE -> withSession(payload.table(), s -> s.handleLeave(player, this));
-            case WATCH -> watch(player, payload.table());
-            case OPEN_TABLE_CONFIG -> configSession(payload.table(), player).handleOpenConfig(player, this);
-            // 保存与关闭都**先建会话**：配置界面开着的时候会话可能已被空闲销毁摘掉，
+            case JOIN -> {
+                for (DDZSession other : sessions.values()) {
+                    if (!other.getKey().equals(key) && other.contains(player)) {
+                        player.sendSystemMessage(Component.literal("请先离开当前牌桌再加入另一桌"));
+                        return;
+                    }
+                }
+                DDZSession target = configSession(structure, player);
+                target.touch(player);
+                target.handleJoin(player);
+            }
+            case BID -> { if (session != null) session.handleBid(player, payload.score()); }
+            case PLAY -> { if (session != null) session.handlePlay(player, payload.cards()); }
+            case PASS -> { if (session != null) session.handlePass(player); }
+            case LEAVE -> { if (session != null) session.handleLeave(player, this); }
+            case WATCH -> watch(player, key);
+            case OPEN_TABLE_CONFIG -> configSession(structure, player).handleOpenConfig(player, this);
+            // 保存时可以重建会话：配置界面开着的时候会话可能已被空闲销毁摘掉，
             // 用"找不到会话就静默什么都不做"处理，玩家点了保存却毫无反应，是最难排查的一种失败
-            case SAVE_TABLE_CONFIG -> configSession(payload.table(), player).handleSaveConfig(player,
+            case SAVE_TABLE_CONFIG -> configSession(structure, player).handleSaveConfig(player,
                 payload.chipItem(), payload.score(), firstOr(payload.cards(), 0), payload.chipsEnabled(), this);
-            case CLOSE_TABLE_CONFIG -> configSession(payload.table(), player).handleCloseConfig(player);
+            case CLOSE_TABLE_CONFIG -> { if (session != null) session.handleCloseConfig(player); }
         }
     }
 
     /**
      * 取本桌会话，不存在就建一个。
      *
-     * <p>配置动作（打开/保存/关闭）都走这里：打开时本来就还没有任何人入局、会话可能还不存在，
-     * 而保存/关闭时可能刚被空闲销毁摘掉。建出来的空会话不占资源，空闲超时会照常回收。</p>
+     * <p>加入、打开/保存配置时使用。关闭不会创建新会话。</p>
      */
-    private DDZSession configSession(TableKey key, ServerPlayer player) {
+    private DDZSession configSession(DDZTableStructure structure, ServerPlayer player) {
         long now = player.serverLevel().getServer().getTickCount();
-        return sessions.computeIfAbsent(key, k -> new DDZSession(k, now));
+        return sessions.computeIfAbsent(structure.key(), k -> new DDZSession(structure, player.serverLevel(), now));
     }
 
     /** 列表的第一个元素，空表取默认值（配置包的"门槛"塞在 cards 里）。 */
@@ -172,14 +213,12 @@ public class DDZTableManager {
     }
 
     public void join(ServerPlayer player, TableKey key) {
-        long now = player.serverLevel().getServer().getTickCount();
-        DDZSession session = sessions.computeIfAbsent(key, k -> new DDZSession(k, now));
-        session.touch(player);
-        session.handleJoin(player);
+        handle(player, new PlayerActionPayload(key, PlayerActionPayload.Action.JOIN, 0, List.of()));
     }
 
     public void remove(TableKey key) {
-        sessions.remove(key);
+        DDZSession session = session(key);
+        if (session != null) sessions.remove(session.getKey());
     }
 
     /**
@@ -198,11 +237,9 @@ public class DDZTableManager {
 
     /** 取某张桌的会话；不存在返回 null。供测试与调试查询牌局状态。 */
     public DDZSession session(TableKey key) {
-        return sessions.get(key);
-    }
-
-    private void withSession(TableKey key, Consumer<DDZSession> consumer) {
-        DDZSession session = sessions.get(key);
-        if (session != null) consumer.accept(session);
+        for (DDZSession session : sessions.values()) {
+            if (session.structure().contains(key)) return session;
+        }
+        return null;
     }
 }

@@ -16,7 +16,9 @@ final class ClientSnapshotPolicy {
         /** 牌局已解散：提示一句然后清空状态。 */
         NOTIFY_AND_CLEAR,
         /** 旁观者看到别人的牌局结束：只提示结果，不弹全屏结算遮罩。 */
-        NOTIFY_RESULT_AND_CLEAR
+        NOTIFY_RESULT_AND_CLEAR,
+        /** A late closure of an older table must not erase the currently viewed table. */
+        IGNORE
     }
 
     private ClientSnapshotPolicy() {}
@@ -27,10 +29,20 @@ final class ClientSnapshotPolicy {
      * @param viewerIsParticipant  接收者自己是否在牌局中（{@code myIndex >= 0}）
      */
     static Action decide(boolean sessionClosed, boolean settled, boolean viewerIsParticipant) {
+        return decide(sessionClosed, settled, viewerIsParticipant, true);
+    }
+
+    static Action decide(boolean sessionClosed, boolean settled, boolean viewerIsParticipant, boolean sameTable) {
+        if (sessionClosed && !sameTable) return Action.IGNORE;
         // 解散优先：无论身份，牌局都没了，提示一句即可
         if (sessionClosed) return Action.NOTIFY_AND_CLEAR;
         // 结算遮罩是给参局者的：旁观者看到的不是"他的牌局结束"，弹全屏会把世界挡住且无从关闭
         if (settled && !viewerIsParticipant) return Action.NOTIFY_RESULT_AND_CLEAR;
         return Action.APPLY;
+    }
+
+    /** Unknown/unloaded chunks are not evidence that a table was destroyed. */
+    static boolean shouldClearMissingTable(boolean sameDimension, boolean chunkLoaded, boolean tableExists) {
+        return !sameDimension || (chunkLoaded && !tableExists);
     }
 }

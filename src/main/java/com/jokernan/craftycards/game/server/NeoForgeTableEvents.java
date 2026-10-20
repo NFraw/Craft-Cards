@@ -2,12 +2,10 @@ package com.jokernan.craftycards.game.server;
 
 import com.jokernan.craftycards.CCReference;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.common.util.TriState;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
-import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +26,6 @@ public final class NeoForgeTableEvents {
     public static void register(IEventBus bus) {
         bus.addListener(NeoForgeTableEvents::onServerTick);
         bus.addListener(NeoForgeTableEvents::onPlayerLoggedOut);
-        bus.addListener(NeoForgeTableEvents::onBlockBreak);
         bus.addListener(NeoForgeTableEvents::onRightClickBlock);
     }
 
@@ -39,12 +36,6 @@ public final class NeoForgeTableEvents {
     private static void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
         if (event.getEntity() instanceof ServerPlayer player) {
             DDZTableManager.getInstance().handleLogout(player);
-        }
-    }
-
-    private static void onBlockBreak(BlockEvent.BreakEvent event) {
-        if (event.getLevel() instanceof Level level) {
-            DDZTableManager.getInstance().handleBlockBreak(level, event.getPos(), event.getState());
         }
     }
 

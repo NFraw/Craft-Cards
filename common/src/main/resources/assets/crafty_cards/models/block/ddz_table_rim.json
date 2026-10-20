@@ -1,0 +1,72 @@
+{
+  "textures": {
+    "atlas": "crafty_cards:block/ddz_table_atlas",
+    "particle": "crafty_cards:block/ddz_table_particle"
+  },
+  "elements": [
+    {
+      "name": "edge_north",
+      "from": [2, 16, 0],
+      "to": [14, 16, 2],
+      "faces": {
+        "up": {"uv":[1,8,7,9],"texture":"#atlas","rotation":0,"cullface":"up"}
+      }
+    },
+    {
+      "name": "edge_east",
+      "from": [14, 16, 2],
+      "to": [16, 16, 14],
+      "faces": {
+        "up": {"uv":[1,8,7,9],"texture":"#atlas","rotation":90,"cullface":"up"}
+      }
+    },
+    {
+      "name": "edge_south",
+      "from": [2, 16, 14],
+      "to": [14, 16, 16],
+      "faces": {
+        "up": {"uv":[1,8,7,9],"texture":"#atlas","rotation":180,"cullface":"up"}
+      }
+    },
+    {
+      "name": "edge_west",
+      "from": [0, 16, 2],
+      "to": [2, 16, 14],
+      "faces": {
+        "up": {"uv":[1,8,7,9],"texture":"#atlas","rotation":270,"cullface":"up"}
+      }
+    },
+    {
+      "name": "corner_nw",
+      "from": [0, 16, 0],
+      "to": [2, 16, 2],
+      "faces": {
+        "up": {"uv":[8,8,9,9],"texture":"#atlas","rotation":0,"cullface":"up"}
+      }
+    },
+    {
+      "name": "corner_ne",
+      "from": [14, 16, 0],
+      "to": [16, 16, 2],
+      "faces": {
+        "up": {"uv":[8,8,9,9],"texture":"#atlas","rotation":90,"cullface":"up"}
+      }
+    },
+    {
+      "name": "corner_se",
+      "from": [14, 16, 14],
+      "to": [16, 16, 16],
+      "faces": {
+        "up": {"uv":[8,8,9,9],"texture":"#atlas","rotation":180,"cullface":"up"}
+      }
+    },
+    {
+      "name": "corner_sw",
+      "from": [0, 16, 14],
+      "to": [2, 16, 16],
+      "faces": {
+        "up": {"uv":[8,8,9,9],"texture":"#atlas","rotation":270,"cullface":"up"}
+      }
+    }
+  ]
+}

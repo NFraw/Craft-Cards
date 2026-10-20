@@ -3,6 +3,7 @@ package com.jokernan.craftycards.network.payload;
 import com.jokernan.craftycards.CCReference;
 import com.jokernan.craftycards.game.DDZCardType;
 import com.jokernan.craftycards.game.DDZGamePhase;
+import com.jokernan.craftycards.game.DDZTableLayout;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntArrayTag;
 import net.minecraft.nbt.ListTag;
@@ -57,8 +58,8 @@ public record GameStatePayload(
      * 客户端不能读自己那份 {@code server.json} 来判断——连专用服务器时它与服务端的配置无关。</p>
      */
     int chipRequired,
-    /** 接收者是不是<b>本桌房主</b>（第一个 Shift+右键这张桌的人）。只有房主能改配置。 */
-    boolean iAmHost,
+    /** 接收者现在能否编辑这张公共牌桌（空桌、在附近、无人持有其他编辑锁）。 */
+    boolean canEditTable,
     /**
      * 本桌配置界面现在是不是开在<b>接收者</b>这儿。
      *
@@ -73,7 +74,7 @@ public record GameStatePayload(
      * 本桌<b>原始</b>的入局门槛，{@code 0} = 自动（底注 × 6）。
      *
      * <p>为什么不复用 {@link #chipRequired}：那是<b>实际生效值</b>，"自动"和"手动填了正好等于派生值"
-     * 在它上面长得一模一样。配置界面要是分不出来，房主打开界面、什么都不改点一下保存，
+     * 在它上面长得一模一样。配置界面要是分不出来，编辑者打开界面、什么都不改点一下保存，
      * 就会把他自己设的手动门槛悄悄变成"自动"——静默改配置是最难查的一类问题。</p>
      */
     int tableEntryCount,
@@ -84,8 +85,28 @@ public record GameStatePayload(
      * 收到绝对值也没法换算。客户端拿到它就在本地按 50ms/刻 续算，下一次快照到达时重新对齐——
      * 这样倒计时是连续的，不必靠服务端每刻推送。</p>
      */
-    int turnRemainingTicks
+    int turnRemainingTicks,
+    int tableWidth,
+    int tableDepth
 ) implements CustomPacketPayload {
+
+    public GameStatePayload {
+        tableWidth = Math.clamp(tableWidth, 1, DDZTableLayout.MAX_BLOCKS);
+        tableDepth = Math.clamp(tableDepth, 1, DDZTableLayout.MAX_BLOCKS);
+        if (tableWidth * tableDepth > DDZTableLayout.MAX_BLOCKS)
+            throw new IllegalArgumentException("Table exceeds nine blocks");
+    }
+
+    public double tableCenterX() { return table.pos().getX() + tableWidth / 2.0; }
+    public double tableCenterZ() { return table.pos().getZ() + tableDepth / 2.0; }
+
+    public boolean contains(TableKey clicked) {
+        var p = clicked.pos();
+        var origin = table.pos();
+        return table.dimension().equals(clicked.dimension()) && p.getY() == origin.getY()
+            && p.getX() >= origin.getX() && p.getX() < origin.getX() + tableWidth
+            && p.getZ() >= origin.getZ() && p.getZ() < origin.getZ() + tableDepth;
+    }
 
     public static final Type<GameStatePayload> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(CCReference.MOD_ID, "game_state"));
 
@@ -130,11 +151,13 @@ public record GameStatePayload(
         tag.putInt("betCount", betCount);
         tag.putInt("betMulti", betMulti);
         tag.putInt("chipReq", chipRequired);
-        tag.putBoolean("iAmHost", iAmHost);
+        tag.putBoolean("canEditTable", canEditTable);
         tag.putBoolean("cfgOpen", configOpen);
         tag.putBoolean("tblChips", tableChipsEnabled);
         tag.putInt("tblEntry", tableEntryCount);
         tag.putInt("turnLeft", turnRemainingTicks);
+        tag.putInt("tableWidth", tableWidth);
+        tag.putInt("tableDepth", tableDepth);
         return tag;
     }
 
@@ -170,11 +193,13 @@ public record GameStatePayload(
             tag.getInt("betCount"),
             tag.getInt("betMulti"),
             tag.getInt("chipReq"),
-            tag.getBoolean("iAmHost"),
+            tag.getBoolean("canEditTable"),
             tag.getBoolean("cfgOpen"),
             tag.getBoolean("tblChips"),
             tag.getInt("tblEntry"),
-            tag.getInt("turnLeft"));
+            tag.getInt("turnLeft"),
+            tag.contains("tableWidth") ? tag.getInt("tableWidth") : 1,
+            tag.contains("tableDepth") ? tag.getInt("tableDepth") : 1);
     }
 
     private static IntArrayTag toIntArray(List<Integer> list) {

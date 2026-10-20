@@ -9,11 +9,11 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
  *
  * <p>登记在加载器侧（NeoForge 的 {@code init/NeoForgeBlockEntityTypes}、Fabric 的对应类），
  * 构造逻辑共用这里的一份。当前只有斗地主牌桌自己的方块实体
- * （每桌筹码配置与房主，见 {@link DDZTableBlockEntity}）。</p>
+ * （每桌筹码配置与临时编辑锁，见 {@link DDZTableBlockEntity}）。</p>
  */
 public final class InitBlockEntityTypes {
     /**
-     * 斗地主牌桌的方块实体：存<b>这一张桌</b>的筹码配置（类型/底注/门槛/开关）与房主。
+     * 斗地主牌桌的方块实体：持久保存本桌筹码配置（类型/底注/门槛/开关），临时保存编辑锁。
      *
      * <p>放在方块实体而不是全局配置里，为的是让「一张桌子一套筹码信息」随区块持久化：
      * 服务器管理员的总闸门（{@code server.json} 的 {@code chipsRequired}）只决定「能不能用」，

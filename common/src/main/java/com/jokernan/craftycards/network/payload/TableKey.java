@@ -8,7 +8,8 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.Level;
 
 /**
- * 跨维度唯一标识一张斗地主牌桌（维度 + 方块坐标）。
+ * 跨维度唯一标识一张斗地主牌桌（维度 + 整桌西北角坐标）。
+ * C2S 可以携带任一组成块坐标，服务端解析结构后统一到西北角；S2C 始终携带主坐标。
  */
 public record TableKey(ResourceKey<Level> dimension, BlockPos pos) {
     public static final StreamCodec<RegistryFriendlyByteBuf, TableKey> STREAM_CODEC = StreamCodec.composite(

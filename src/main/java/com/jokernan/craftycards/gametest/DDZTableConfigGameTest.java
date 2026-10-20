@@ -20,11 +20,11 @@ import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 import java.util.List;
 
 /**
- * <b>每桌筹码配置</b>的交付测试：房主是谁、配置界面互斥、会话真的按本桌的值审核与收押注、
+ * <b>每桌筹码配置</b>的交付测试：编辑者是谁、配置界面互斥、会话真的按本桌的值审核与收押注、
  * 本桌关掉筹码就是纯娱乐局，以及判负的金额守恒。
  *
  * <p>为什么必须用 GameTest：这一整块的状态活在<b>方块实体</b>（每桌一份）与 {@code ServerSession}
- * 上，还要 {@code ServerPlayer}（房主是玩家 UUID、配置锁查在线状态），单测里连类都加载不了。
+ * 上，还要 {@code ServerPlayer}（编辑者是玩家 UUID、配置锁查在线状态），单测里连类都加载不了。
  * 而它出问题的表现又特别隐蔽——"右键没反应""点了保存没变""判负后东西少了"，都不是崩溃。</p>
  */
 @GameTestHolder(CCReference.MOD_ID)
@@ -50,69 +50,10 @@ public class DDZTableConfigGameTest {
         return new PlayerActionPayload(key, PlayerActionPayload.Action.CLOSE_TABLE_CONFIG, 0, List.of());
     }
 
-    /**
-     * 第一个 Shift+右键这张桌的人成为房主；第二个人拿不到配置权，退回原用途（观战开关）。
-     *
-     * <p>房主必须能自动产生：桌子刚放下时没有任何"房主"可言，若要求先有人授权，这张桌就永远
-     * 配不了。这个用例同时钉住"只有一个房主"与"非房主 Shift+右键不能把观战入口弄丢"。</p>
-     */
-    @GameTest(template = TEMPLATE)
-    public static void hostIsFirstShiftClicker(GameTestHelper helper) {
-        DDZTestSupport.forceBettingDefaults();
-        helper.setBlock(CORE, InitItems.DDZ_TABLE.get());
-        TableKey key = new TableKey(helper.getLevel().dimension(), helper.absolutePos(CORE));
-        DDZTableManager manager = DDZTableManager.getInstance();
-
-        ServerPlayer first = DDZTestSupport.atTable(helper, CORE, helper.makeMockServerPlayerInLevel());
-        ServerPlayer second = DDZTestSupport.atTable(helper, CORE, helper.makeMockServerPlayerInLevel());
-        try {
-            manager.handle(first, open(key));
-            DDZSession session = manager.session(key);
-            if (session == null) {
-                helper.fail("Shift+右键配置界面应建立本桌会话");
-                return;
-            }
-            GameStatePayload firstSnap = session.snapshotFor(first);
-            if (!firstSnap.iAmHost() || !firstSnap.configOpen()) {
-                helper.fail("第一个 Shift+右键的人应成为房主并打开配置界面，实际 iAmHost="
-                    + firstSnap.iAmHost() + " configOpen=" + firstSnap.configOpen());
-                return;
-            }
-            // 房主落在桌子上（持久化），不只是内存里的一句话
-            DDZTableBlockEntity table = DDZTestSupport.tableEntity(key, first);
-            if (table == null || !table.isHost(first.getUUID())) {
-                helper.fail("房主应记在本桌的方块实体上");
-                return;
-            }
-
-            manager.handle(second, open(key));
-            GameStatePayload secondSnap = session.snapshotFor(second);
-            if (secondSnap.iAmHost() || secondSnap.configOpen()) {
-                helper.fail("第二个人不该拿到本桌配置权，实际 iAmHost=" + secondSnap.iAmHost()
-                    + " configOpen=" + secondSnap.configOpen());
-                return;
-            }
-            if (!table.isHost(first.getUUID())) {
-                helper.fail("第二个人不该把房主顶掉");
-                return;
-            }
-            // 观战入口不能因为多了配置界面就消失：非房主的 Shift+右键要退回观战开关
-            if (!session.isWatching(second)) {
-                helper.fail("非房主 Shift+右键应退回观战开关");
-                return;
-            }
-            helper.succeed();
-        } catch (RuntimeException e) {
-            manager.remove(key);
-            throw e;
-        } finally {
-            DDZTestSupport.cleanup(manager, key, helper, first, second);
-        }
-    }
 
     /**
-     * 同一时间只允许一个人配置本桌：非房主既开不了界面、也改不动本桌的值；
-     * 房主关掉界面（或直接发 CLOSE）后锁才释放。
+     * 同一时间只允许一个人配置本桌：未持锁者既开不了界面、也改不动本桌的值；
+     * 编辑者关掉界面（或直接发 CLOSE）后锁才释放。
      *
      * <p>防住的是一类真实事故：两个人同时改一桌，后保存的把人家的设置悄悄顶掉。</p>
      */
@@ -134,27 +75,27 @@ public class DDZTableConfigGameTest {
             }
             manager.handle(host, open(key));
             if (!session.snapshotFor(host).configOpen()) {
-                helper.fail("房主应拿到配置锁");
+                helper.fail("编辑者应拿到配置锁");
                 return;
             }
 
-            // 第二个人：开不了界面（不是房主），也改不动本桌
+            // 第二个人：开不了界面（不是编辑者），也改不动本桌
             manager.handle(other, open(key));
             if (session.snapshotFor(other).configOpen()) {
-                helper.fail("非房主不该拿到配置锁（同一时间只允许一个人配置本桌）");
+                helper.fail("未持锁者不该拿到配置锁（同一时间只允许一个人配置本桌）");
                 return;
             }
             manager.handle(other, save(key, "minecraft:diamond", 1, 999, true));
             if (session.snapshotFor(host).tableEntryCount() == 999) {
-                helper.fail("非房主不该能改本桌配置（服务端应按房主 + 锁双重校验）");
+                helper.fail("未持锁者不该能改本桌配置（服务端应按编辑者 + 锁双重校验）");
                 return;
             }
             if (!session.snapshotFor(host).configOpen()) {
-                helper.fail("别人尝试配置不该把房主手里的锁抢走");
+                helper.fail("别人尝试配置不该把编辑者手里的锁抢走");
                 return;
             }
 
-            // 房主关掉界面 → 锁释放（下次谁都能重新打开；新的一轮仍由房主来配）
+            // 编辑者关掉界面 → 锁释放（下次谁都能重新打开；新的一轮仍由编辑者来配）
             manager.handle(host, close(key));
             if (session.snapshotFor(host).configOpen()) {
                 helper.fail("关闭配置界面后应释放配置锁");
@@ -169,52 +110,6 @@ public class DDZTableConfigGameTest {
         }
     }
 
-    /**
-     * 房主离线后，下一位 Shift+右键的人可以接管这张桌。
-     *
-     * <p>没有这条，桌子会被"一去不回的房主"锁死：筹码没配的桌子谁都入不了局，
-     * 而房主又改不了——等于砖了。（锁本身也会自愈：持有者查不到就按陈旧处理。）</p>
-     */
-    @GameTest(template = TEMPLATE)
-    public static void offlineHostCanBeTakenOver(GameTestHelper helper) {
-        DDZTestSupport.forceBettingDefaults();
-        helper.setBlock(CORE, InitItems.DDZ_TABLE.get());
-        TableKey key = new TableKey(helper.getLevel().dimension(), helper.absolutePos(CORE));
-        DDZTableManager manager = DDZTableManager.getInstance();
-
-        ServerPlayer gone = DDZTestSupport.atTable(helper, CORE, helper.makeMockServerPlayerInLevel());
-        ServerPlayer next = DDZTestSupport.atTable(helper, CORE, helper.makeMockServerPlayerInLevel());
-        try {
-            manager.handle(gone, open(key));
-            DDZSession session = manager.session(key);
-            if (session == null || !session.snapshotFor(gone).iAmHost()) {
-                helper.fail("第一个人应成为房主");
-                return;
-            }
-            // 直接把他从玩家列表摘掉（模拟"人没了"）：不比他真的走远/掉线更宽松，
-            // 走的是同一条"查不到这个 UUID 了"的判定
-            helper.getLevel().getServer().getPlayerList().remove(gone);
-
-            manager.handle(next, open(key));
-            GameStatePayload snap = session.snapshotFor(next);
-            if (!snap.iAmHost() || !snap.configOpen()) {
-                helper.fail("房主离线后，下一位 Shift+右键的人应接管本桌并打开配置界面，实际 iAmHost="
-                    + snap.iAmHost() + " configOpen=" + snap.configOpen());
-                return;
-            }
-            DDZTableBlockEntity table = DDZTestSupport.tableEntity(key, next);
-            if (table == null || !table.isHost(next.getUUID())) {
-                helper.fail("接管后房主应改成新的玩家");
-                return;
-            }
-            helper.succeed();
-        } catch (RuntimeException e) {
-            manager.remove(key);
-            throw e;
-        } finally {
-            DDZTestSupport.cleanup(manager, key, helper, gone, next);
-        }
-    }
 
     /**
      * 会话按<b>本桌</b>配置办事：桌上配成 底注 3 / 门槛 20 后，入局审核按 20、每人实收 3，
@@ -233,7 +128,7 @@ public class DDZTableConfigGameTest {
         ServerPlayer host = DDZTestSupport.atTable(helper, CORE, helper.makeMockServerPlayerInLevel());
         ServerPlayer poor = DDZTestSupport.atTable(helper, CORE, helper.makeMockServerPlayerInLevel());
         try {
-            // 先成为房主（顺带把本桌的初始值种进来），再按本桌的值保存
+            // 先成为编辑者（顺带把本桌的初始值种进来），再按本桌的值保存
             manager.handle(host, open(key));
             manager.handle(host, save(key, DDZTestSupport.itemId(DDZTestSupport.CHIP), 3, 20, true));
 
@@ -309,7 +204,7 @@ public class DDZTableConfigGameTest {
         ServerPlayer p3 = DDZTestSupport.atTable(helper, CORE, helper.makeMockServerPlayerInLevel());
         ServerPlayer[] players = {p1, p2, p3};
         try {
-            // 房主把本桌的筹码开关关掉（筹码类型留着，重新打开时不用再选一遍）
+            // 编辑者把本桌的筹码开关关掉（筹码类型留着，重新打开时不用再选一遍）
             manager.handle(p1, open(key));
             manager.handle(p1, save(key, DDZTestSupport.itemId(DDZTestSupport.CHIP), 1, 6, false));
 
@@ -333,7 +228,7 @@ public class DDZTableConfigGameTest {
                 return;
             }
             // 桌上配的筹码类型照发（配置界面回填用）：把"玩不玩"与"配了什么"分开表达，
-            // 否则房主关掉筹码再打开界面就会看到"未选择"，顺手一保存就把自己选的类型抹了
+            // 否则编辑者关掉筹码再打开界面就会看到"未选择"，顺手一保存就把自己选的类型抹了
             if (!DDZTestSupport.itemId(DDZTestSupport.CHIP).equals(snap.betItem())) {
                 helper.fail("本桌配好的筹码类型应照发给客户端，实际 \"" + snap.betItem() + "\"");
                 return;

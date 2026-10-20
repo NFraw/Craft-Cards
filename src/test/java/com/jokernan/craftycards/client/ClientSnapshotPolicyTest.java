@@ -3,6 +3,8 @@ package com.jokernan.craftycards.client;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 /**
  * 快照处置决策的穷举测试。
@@ -46,5 +48,18 @@ class ClientSnapshotPolicyTest {
                     "解散应优先于结算：settled=" + settled + " participant=" + participant);
             }
         }
+    }
+
+    @Test void closingAnOldTableCannotClearTheNewTablesPreviewOrGame() {
+        assertEquals(ClientSnapshotPolicy.Action.IGNORE, ClientSnapshotPolicy.decide(true, false, false, false));
+        assertEquals(ClientSnapshotPolicy.Action.IGNORE, ClientSnapshotPolicy.decide(true, true, true, false));
+        assertEquals(ClientSnapshotPolicy.Action.NOTIFY_AND_CLEAR, ClientSnapshotPolicy.decide(true, false, false, true));
+    }
+
+    @Test void destroyedLoadedTableClearsButAnUnloadedChunkDoesNot() {
+        assertTrue(ClientSnapshotPolicy.shouldClearMissingTable(true, true, false));
+        assertFalse(ClientSnapshotPolicy.shouldClearMissingTable(true, false, false));
+        assertFalse(ClientSnapshotPolicy.shouldClearMissingTable(true, true, true));
+        assertTrue(ClientSnapshotPolicy.shouldClearMissingTable(false, false, false));
     }
 }
