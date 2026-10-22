@@ -54,6 +54,9 @@ public final class InitItems {
      * 服务端入局由 C2S 包处理器完成。</p>
      */
     public static final RegHolder<Block> DDZ_TABLE = RegHolder.create("ddz_table");
+    public static final RegHolder<Block> ZJH_TABLE = RegHolder.create("zjh_table");
+    public static final RegHolder<BlockItem> ZJH_TABLE_ITEM = RegHolder.create("zjh_table");
+    public static final RegHolder<Item> CARD_EMPTY = RegHolder.create("card_empty");
 
     // === 物品 ===
 
@@ -96,6 +99,7 @@ public final class InitItems {
     public static Block createDdzTable() {
         return new BlockDDZTable();
     }
+    public static Block createZjhTable() { return new com.jokernan.craftycards.block.BlockZJHTable(); }
 
     /** 构造牌背牌物品。 */
     public static Item createCardCovered() {
@@ -131,7 +135,7 @@ public final class InitItems {
      * <p>游戏内部物品不进：牌背牌由右键翻面产生，斗地主扑克由入局时发放。</p>
      */
     public static List<RegHolder<? extends Item>> creativeTabItems() {
-        return List.of(CASINO_CARPET_SPACE_ITEM, CARD, DDZ_TABLE_ITEM);
+        return List.of(CASINO_CARPET_SPACE_ITEM, CARD, DDZ_TABLE_ITEM, ZJH_TABLE_ITEM);
     }
 
     /**

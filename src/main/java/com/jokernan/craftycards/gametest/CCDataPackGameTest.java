@@ -34,6 +34,7 @@ public class CCDataPackGameTest {
         var manager = helper.getLevel().getServer().getRecipeManager();
         String[] ids = {
             "crafty_cards:blocks/ddz_table",
+            "crafty_cards:blocks/zjh_table",
         };
         for (String id : ids) {
             if (manager.byKey(ResourceLocation.parse(id)).isEmpty()) {
@@ -49,6 +50,7 @@ public class CCDataPackGameTest {
     public static void blocksHaveLootTables(GameTestHelper helper) {
         String[] tables = {
             "crafty_cards:blocks/ddz_table",
+            "crafty_cards:blocks/zjh_table",
             "crafty_cards:blocks/casino_carpet_space",
         };
         var lootTables = helper.getLevel().getServer().reloadableRegistries().lookup()

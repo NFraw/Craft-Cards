@@ -1,0 +1,82 @@
+{
+    "minecraft": "1.21.1",
+    "loader": "neoforge",
+    "runId": "hud-review-zjh-textures-20261021",
+    "status": "PASS",
+    "error": null,
+    "roles": [
+        {
+            "role": "runSmokeServer",
+            "result": "PASS: ZJH real 3-player network settlement; table released; emerald total=192",
+            "exitCode": 0,
+            "log": "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-zjh-textures-20261021\\runSmokeServer.log",
+            "screenshots": [
+                
+            ]
+        },
+        {
+            "role": "runSmokeClient1",
+            "result": "PASS: ZJH join, reveal 1/2/3, call, target compare, private snapshots, full result, right-click dismissal",
+            "exitCode": 0,
+            "log": "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-zjh-textures-20261021\\runSmokeClient1.log",
+            "screenshots": [
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-zjh-textures-20261021\\screenshots\\runSmokeClient1\\table-game-colors.png",
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-zjh-textures-20261021\\screenshots\\runSmokeClient1\\zjh-config.png",
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-zjh-textures-20261021\\screenshots\\runSmokeClient1\\zjh-dark.png",
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-zjh-textures-20261021\\screenshots\\runSmokeClient1\\zjh-dismissed.png",
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-zjh-textures-20261021\\screenshots\\runSmokeClient1\\zjh-fullscreen.png",
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-zjh-textures-20261021\\screenshots\\runSmokeClient1\\zjh-revealed-1.png",
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-zjh-textures-20261021\\screenshots\\runSmokeClient1\\zjh-revealed-2.png",
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-zjh-textures-20261021\\screenshots\\runSmokeClient1\\zjh-revealed-3.png",
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-zjh-textures-20261021\\screenshots\\runSmokeClient1\\zjh-selecting.png",
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-zjh-textures-20261021\\screenshots\\runSmokeClient1\\zjh-settled.png",
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-zjh-textures-20261021\\screenshots\\runSmokeClient1\\zjh-small.png",
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-zjh-textures-20261021\\screenshots\\runSmokeClient1\\zjh-target.png",
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-zjh-textures-20261021\\screenshots\\runSmokeClient1\\zjh-waiting.png"
+            ]
+        },
+        {
+            "role": "runSmokeClient2",
+            "result": "PASS: ZJH join, reveal 1/2/3, call, target compare, private snapshots, full result, right-click dismissal",
+            "exitCode": 0,
+            "log": "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-zjh-textures-20261021\\runSmokeClient2.log",
+            "screenshots": [
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-zjh-textures-20261021\\screenshots\\runSmokeClient2\\zjh-dark.png",
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-zjh-textures-20261021\\screenshots\\runSmokeClient2\\zjh-dismissed.png",
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-zjh-textures-20261021\\screenshots\\runSmokeClient2\\zjh-revealed-1.png",
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-zjh-textures-20261021\\screenshots\\runSmokeClient2\\zjh-revealed-2.png",
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-zjh-textures-20261021\\screenshots\\runSmokeClient2\\zjh-revealed-3.png",
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-zjh-textures-20261021\\screenshots\\runSmokeClient2\\zjh-selecting.png",
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-zjh-textures-20261021\\screenshots\\runSmokeClient2\\zjh-settled.png",
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-zjh-textures-20261021\\screenshots\\runSmokeClient2\\zjh-small.png",
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-zjh-textures-20261021\\screenshots\\runSmokeClient2\\zjh-waiting.png"
+            ]
+        },
+        {
+            "role": "runSmokeClient3",
+            "result": "PASS: ZJH join, reveal 1/2/3, call, target compare, private snapshots, full result, right-click dismissal",
+            "exitCode": 0,
+            "log": "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-zjh-textures-20261021\\runSmokeClient3.log",
+            "screenshots": [
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-zjh-textures-20261021\\screenshots\\runSmokeClient3\\zjh-dark.png",
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-zjh-textures-20261021\\screenshots\\runSmokeClient3\\zjh-dismissed.png",
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-zjh-textures-20261021\\screenshots\\runSmokeClient3\\zjh-revealed-1.png",
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-zjh-textures-20261021\\screenshots\\runSmokeClient3\\zjh-revealed-2.png",
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-zjh-textures-20261021\\screenshots\\runSmokeClient3\\zjh-revealed-3.png",
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-zjh-textures-20261021\\screenshots\\runSmokeClient3\\zjh-selecting.png",
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-zjh-textures-20261021\\screenshots\\runSmokeClient3\\zjh-settled.png",
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-zjh-textures-20261021\\screenshots\\runSmokeClient3\\zjh-small.png",
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-zjh-textures-20261021\\screenshots\\runSmokeClient3\\zjh-target.png"
+            ]
+        }
+    ],
+    "checks": {
+        "networkGame": true,
+        "staticAudioPack": true,
+        "hudFacesVisible": null,
+        "configurationText": true,
+        "actualAudioListening": false,
+        "visualReview": false,
+        "productionJar": false
+    }
+}

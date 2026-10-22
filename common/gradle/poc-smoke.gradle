@@ -90,8 +90,9 @@ guiScale:2
 tutorialStep:none
 '''
                 def config = new File(dir, 'config/crafty_cards')
+                config.mkdirs()
                 def repoRoot = project.findProperty('pocRepositoryRoot') ?: project.file('..')
-                copy { from new File(repoRoot, 'soundpacks/官方默认包'); into new File(config, 'soundpacks/官方默认包') }
+                copy { from new File(repoRoot, 'learning-soundpacks/官方默认包'); into new File(config, 'soundpacks/官方默认包') }
                 new File(config, 'sounds.json').setText('{"enabled":true,"volume":0.1,"activePack":"官方默认包"}', 'UTF-8')
             }
         }
@@ -105,6 +106,7 @@ tutorialStep:none
                 // Loom may prepend its own @argfile. Java does not expand one @file
                 // nested inside ours; we supply the classpath/main class explicitly.
                 def vmArgs = (launch.allJvmArgs + config.vmArgs).findAll { !it.toString().startsWith('@') } + ['-Dcraftycards.smoke=true']
+                if (project.findProperty('pocGame') == 'zjh') vmArgs += '-Dcraftycards.smoke.game=zjh'
                 if (project.hasProperty('pocFullscreen') && index == 2) vmArgs += '-Dcraftycards.smoke.fullscreen=true'
                 if (project.name == 'crafty-cards-forge') vmArgs += '-Dnet.minecraftforge.launcher.skip.assets=true'
                 def cpFiles = launch.classpath.files
@@ -174,7 +176,15 @@ tutorialStep:none
             }
             launches.drop(1).eachWithIndex { launch, index ->
                 def shots = new File(launch.workingDir, 'screenshots')
-                ['01-bidding.png', '02-playing.png', '03-settled.png',
+                if (project.findProperty('pocGame') == 'zjh') {
+                    ['zjh-dark.png', 'zjh-selecting.png', 'zjh-revealed-1.png',
+                     'zjh-revealed-2.png', 'zjh-revealed-3.png', 'zjh-settled.png', 'zjh-dismissed.png'].each { name ->
+                        def image = javax.imageio.ImageIO.read(new File(shots, name))
+                        if (image == null) throw new GradleException("Missing or unreadable ZJH screenshot ${name}")
+                    }
+                    return
+                }
+                ['01-bidding.png', '02-playing.png', '03-settled.png', '03-dismissed.png',
                  '04-config-home.png', '04-config-sound.png', '04-config-play.png',
                  '04-config-play-bottom.png', '04-config-render.png',
                  '04-config-render-bottom.png'].each { name ->
@@ -202,7 +212,13 @@ tutorialStep:none
                     || bright((int)(w * 0.05), (int)(h * 0.12), (int)(w * 0.65), (int)(h * 0.85)) < 100)
                     throw new GradleException("Configuration title/labels are not visibly rendered in ${shots}")
             }
-            if (!launches.drop(1).any { new File(it.workingDir, 'screenshots/02-selected.png').length() > 1000L })
+            if (project.findProperty('pocGame') == 'zjh') {
+                ['zjh-waiting.png', 'zjh-target.png', 'zjh-config.png', 'zjh-fullscreen.png', 'table-game-colors.png'].each { name ->
+                    if (!launches.drop(1).any { new File(it.workingDir, "screenshots/${name}").length() > 1000L })
+                        throw new GradleException("No real client captured ${name}")
+                }
+            }
+            if (project.findProperty('pocGame') != 'zjh' && !launches.drop(1).any { new File(it.workingDir, 'screenshots/02-selected.png').length() > 1000L })
                 throw new GradleException('No selected-card screenshot from the landlord')
             if (mcMinor >= 5) {
                 // A bad blit UV can pass the full game flow while every face is a flat grey rectangle.
@@ -229,7 +245,7 @@ tutorialStep:none
                 if (windowed == null || fullscreen == null || fullscreen.width <= windowed.width || fullscreen.height <= windowed.height)
                     throw new GradleException('Fullscreen HUD capture did not increase the viewport size')
             }
-            if (new File(launches[1].workingDir, 'screenshots/04-config-table.png').length() <= 1000L)
+            if (project.findProperty('pocGame') != 'zjh' && new File(launches[1].workingDir, 'screenshots/04-config-table.png').length() <= 1000L)
                 throw new GradleException('No table-configuration screenshot from the host')
         } catch (Throwable error) {
             failure = error
@@ -249,7 +265,7 @@ tutorialStep:none
                 def sourceShots = new File(launch.workingDir, 'screenshots')
                 if (sourceShots.isDirectory()) copy {
                     from sourceShots
-                    include '*.png'
+                    include '*.png', '*.png.json'
                     into targetShots
                 }
                 resultRows.add([role:launch.name, result:result.isFile() ? result.getText('UTF-8') : 'NOT_RUN',

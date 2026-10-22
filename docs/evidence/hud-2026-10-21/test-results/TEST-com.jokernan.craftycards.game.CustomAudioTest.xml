@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.jokernan.craftycards.game.CustomAudioTest" tests="16" skipped="0" failures="0" errors="0" timestamp="2026-10-21T13:10:07" hostname="JOKERNAN" time="0.07">
+  <properties/>
+  <testcase name="bgmFollowsPhase()" classname="com.jokernan.craftycards.game.CustomAudioTest" time="0.005"/>
+  <testcase name="rocketBgmWinsOverClutch()" classname="com.jokernan.craftycards.game.CustomAudioTest" time="0.001"/>
+  <testcase name="fileNameValidation()" classname="com.jokernan.craftycards.game.CustomAudioTest" time="0.0"/>
+  <testcase name="modResourcesContainNoAudio()" classname="com.jokernan.craftycards.game.CustomAudioTest" time="0.039"/>
+  <testcase name="clutchBgmWhenSomeoneIsNearlyOut()" classname="com.jokernan.craftycards.game.CustomAudioTest" time="0.0"/>
+  <testcase name="voiceLabelsUseCardFaces()" classname="com.jokernan.craftycards.game.CustomAudioTest" time="0.0"/>
+  <testcase name="configKeysAreTheContractWithPlayersAndTools()" classname="com.jokernan.craftycards.game.CustomAudioTest" time="0.001"/>
+  <testcase name="everyPhaseHasABgmDecision()" classname="com.jokernan.craftycards.game.CustomAudioTest" time="0.0"/>
+  <testcase name="knownKeyCheckIsStrict()" classname="com.jokernan.craftycards.game.CustomAudioTest" time="0.0"/>
+  <testcase name="packMetaCarriesFormat()" classname="com.jokernan.craftycards.game.CustomAudioTest" time="0.001"/>
+  <testcase name="onlyBgmKeysStream()" classname="com.jokernan.craftycards.game.CustomAudioTest" time="0.0"/>
+  <testcase name="slotNamesAreUnique()" classname="com.jokernan.craftycards.game.CustomAudioTest" time="0.0"/>
+  <testcase name="makerLabelsMatchGameLabels()" classname="com.jokernan.craftycards.game.CustomAudioTest" time="0.014"/>
+  <testcase name="soundIdPrefixesVoicesOnly()" classname="com.jokernan.craftycards.game.CustomAudioTest" time="0.001"/>
+  <testcase name="everyKeyHasALabel()" classname="com.jokernan.craftycards.game.CustomAudioTest" time="0.001"/>
+  <testcase name="bgmChainFallsBackToPlaying()" classname="com.jokernan.craftycards.game.CustomAudioTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

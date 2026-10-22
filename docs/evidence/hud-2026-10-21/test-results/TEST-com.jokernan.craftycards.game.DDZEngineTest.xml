@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.jokernan.craftycards.game.DDZEngineTest" tests="36" skipped="0" failures="0" errors="0" timestamp="2026-10-21T13:10:07" hostname="JOKERNAN" time="0.03">
+  <properties/>
+  <testcase name="testBombCannotBeSplitIntoPlaneWings()" classname="com.jokernan.craftycards.game.DDZEngineTest" time="0.002"/>
+  <testcase name="testPlayDuplicateCardRejected()" classname="com.jokernan.craftycards.game.DDZEngineTest" time="0.001"/>
+  <testcase name="testPairStraightFollowsPairStraight()" classname="com.jokernan.craftycards.game.DDZEngineTest" time="0.005"/>
+  <testcase name="testStraight()" classname="com.jokernan.craftycards.game.DDZEngineTest" time="0.001"/>
+  <testcase name="testStraightFollowsStraight()" classname="com.jokernan.craftycards.game.DDZEngineTest" time="0.001"/>
+  <testcase name="testAceRank()" classname="com.jokernan.craftycards.game.DDZEngineTest" time="0.001"/>
+  <testcase name="testPlanePairAndSingle()" classname="com.jokernan.craftycards.game.DDZEngineTest" time="0.0"/>
+  <testcase name="testPassWhenNotYourTurn()" classname="com.jokernan.craftycards.game.DDZEngineTest" time="0.001"/>
+  <testcase name="testInvalidCardType()" classname="com.jokernan.craftycards.game.DDZEngineTest" time="0.0"/>
+  <testcase name="testStraightA2345Invalid()" classname="com.jokernan.craftycards.game.DDZEngineTest" time="0.0"/>
+  <testcase name="testPairStraight()" classname="com.jokernan.craftycards.game.DDZEngineTest" time="0.0"/>
+  <testcase name="testFaceCardRank()" classname="com.jokernan.craftycards.game.DDZEngineTest" time="0.001"/>
+  <testcase name="testPlayCards()" classname="com.jokernan.craftycards.game.DDZEngineTest" time="0.0"/>
+  <testcase name="testBomb()" classname="com.jokernan.craftycards.game.DDZEngineTest" time="0.0"/>
+  <testcase name="testPair()" classname="com.jokernan.craftycards.game.DDZEngineTest" time="0.0"/>
+  <testcase name="testNumberRank()" classname="com.jokernan.craftycards.game.DDZEngineTest" time="0.0"/>
+  <testcase name="testLeaderReLeadsAfterTwoPasses()" classname="com.jokernan.craftycards.game.DDZEngineTest" time="0.001"/>
+  <testcase name="testBidToStart()" classname="com.jokernan.craftycards.game.DDZEngineTest" time="0.0"/>
+  <testcase name="testTripleWithPair()" classname="com.jokernan.craftycards.game.DDZEngineTest" time="0.0"/>
+  <testcase name="testShuffleAndDeal()" classname="com.jokernan.craftycards.game.DDZEngineTest" time="0.0"/>
+  <testcase name="testSingleCard()" classname="com.jokernan.craftycards.game.DDZEngineTest" time="0.0"/>
+  <testcase name="testFourTwoBeatsByFourNotKicker()" classname="com.jokernan.craftycards.game.DDZEngineTest" time="0.002"/>
+  <testcase name="testTripleWithOne()" classname="com.jokernan.craftycards.game.DDZEngineTest" time="0.001"/>
+  <testcase name="testLeaderCannotPassAfterTwoPasses()" classname="com.jokernan.craftycards.game.DDZEngineTest" time="0.0"/>
+  <testcase name="testTripleOneBeatsByTripleNotKicker()" classname="com.jokernan.craftycards.game.DDZEngineTest" time="0.001"/>
+  <testcase name="testCardTypeWeight()" classname="com.jokernan.craftycards.game.DDZEngineTest" time="0.0"/>
+  <testcase name="testPlayStraightAsLead()" classname="com.jokernan.craftycards.game.DDZEngineTest" time="0.0"/>
+  <testcase name="testGetWinnerBeforeEnd()" classname="com.jokernan.craftycards.game.DDZEngineTest" time="0.001"/>
+  <testcase name="testPlayPairStraightAsLead()" classname="com.jokernan.craftycards.game.DDZEngineTest" time="0.001"/>
+  <testcase name="testStraightInvalid()" classname="com.jokernan.craftycards.game.DDZEngineTest" time="0.003"/>
+  <testcase name="testRocket()" classname="com.jokernan.craftycards.game.DDZEngineTest" time="0.0"/>
+  <testcase name="testJokerRank()" classname="com.jokernan.craftycards.game.DDZEngineTest" time="0.0"/>
+  <testcase name="testStraightCannotContain2()" classname="com.jokernan.craftycards.game.DDZEngineTest" time="0.001"/>
+  <testcase name="testTriple()" classname="com.jokernan.craftycards.game.DDZEngineTest" time="0.0"/>
+  <testcase name="testPlaneSingleBeatsByHighestTriple()" classname="com.jokernan.craftycards.game.DDZEngineTest" time="0.001"/>
+  <testcase name="testIllegalPlaneCannotBePlayed()" classname="com.jokernan.craftycards.game.DDZEngineTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

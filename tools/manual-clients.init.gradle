@@ -1,0 +1,35 @@
+gradle.projectsEvaluated {
+    def p = gradle.rootProject
+    p.tasks.register('prepareFourManualClients') {
+        def runNames = ['client', 'client2', 'client3', 'client4']
+        dependsOn p.providers.provider {
+            runNames.collectMany { name ->
+                def launch = p.tasks.getByName('run' + name.capitalize())
+                launch.taskDependencies.getDependencies(launch).toList()
+            }
+        }
+        doLast {
+            def output = p.file('build/manual-clients')
+            output.mkdirs()
+            def rows = []
+            runNames.each { name ->
+                def launch = p.tasks.getByName('run' + name.capitalize())
+                launch.classpath(launch.classpathProvider)
+                launch.environment.putAll(launch.environmentProperty.get())
+                def vmFile = p.layout.buildDirectory.file("moddev/${name}RunVmArgs.txt").get().asFile
+                def programFile = p.layout.buildDirectory.file("moddev/${name}RunProgramArgs.txt").get().asFile
+                def args = launch.allJvmArgs.findAll { !it.toString().startsWith('@') } +
+                    ['-Xmx1536m', '-cp', launch.classpath.asPath, launch.mainClass.get(), '@' + programFile.absolutePath]
+                def argsFile = new File(output, "${name}.args")
+                argsFile.setText(vmFile.getText('UTF-8') + '\n' + args.collect {
+                    '"' + it.toString().replace('\\', '\\\\').replace('"', '\\"') + '"'
+                }.join('\n'), 'UTF-8')
+                rows.add([name:name, executable:launch.javaLauncher.get().executablePath.asFile.absolutePath,
+                    directory:launch.gameDirectory.get().asFile.absolutePath, argsFile:argsFile.absolutePath,
+                    environment:launch.environment.findAll { k,v -> k.toString() == "MOD_CLASSES" }.collectEntries { k,v -> [(k.toString()):v.toString()] }])
+            }
+            new File(output, 'launches.json').setText(groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(rows)), 'UTF-8')
+            logger.lifecycle('Prepared four existing client configurations; no clients started yet.')
+        }
+    }
+}

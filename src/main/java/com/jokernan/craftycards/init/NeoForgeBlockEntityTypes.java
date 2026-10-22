@@ -23,6 +23,7 @@ public final class NeoForgeBlockEntityTypes {
     public static void register(IEventBus bus) {
         InitBlockEntityTypes.DDZ_TABLE.bind(
             BLOCK_ENTITY_TYPES.register("ddz_table", InitBlockEntityTypes::createDdzTable));
+        InitBlockEntityTypes.ZJH_TABLE.bind(BLOCK_ENTITY_TYPES.register("zjh_table", InitBlockEntityTypes::createZjhTable));
         BLOCK_ENTITY_TYPES.register(bus);
     }
 }

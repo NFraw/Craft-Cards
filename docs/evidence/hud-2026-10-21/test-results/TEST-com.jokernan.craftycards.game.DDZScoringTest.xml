@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.jokernan.craftycards.game.DDZScoringTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-10-21T13:10:07" hostname="JOKERNAN" time="0.006">
+  <properties/>
+  <testcase name="eachBombDoublesMultiplier()" classname="com.jokernan.craftycards.game.DDZScoringTest" time="0.004"/>
+  <testcase name="antiSpringDoublesMultiplier()" classname="com.jokernan.craftycards.game.DDZScoringTest" time="0.001"/>
+  <testcase name="springDoublesMultiplier()" classname="com.jokernan.craftycards.game.DDZScoringTest" time="0.001"/>
+  <testcase name="baseScoreEqualsBidAndNoBombsMeans1x()" classname="com.jokernan.craftycards.game.DDZScoringTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

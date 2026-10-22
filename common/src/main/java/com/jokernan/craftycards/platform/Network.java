@@ -26,6 +26,8 @@ public final class Network {
 
         /** 服务端 → 某个玩家：发一份完整快照（按接收者单独构建，不共用广播）。 */
         void sendToPlayer(ServerPlayer player, GameStatePayload payload);
+        default void sendZjhToServer(com.jokernan.craftycards.network.payload.ZJHActionPayload payload) {}
+        default void sendZjhToPlayer(ServerPlayer player,com.jokernan.craftycards.network.payload.ZJHStatePayload payload) {}
     }
 
     private static volatile Bridge bridge = new Bridge() {
@@ -41,6 +43,8 @@ public final class Network {
     };
 
     private Network() {}
+    public static void sendZjh(com.jokernan.craftycards.network.payload.ZJHActionPayload p){bridge.sendZjhToServer(p);}
+    public static void sendZjh(ServerPlayer player,com.jokernan.craftycards.network.payload.ZJHStatePayload p){bridge.sendZjhToPlayer(player,p);}
 
     /** 由各加载器入口尽早安装实现。 */
     public static void install(Bridge implementation) {

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.jokernan.craftycards.client.ZJHControlsTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-10-21T13:10:07" hostname="JOKERNAN" time="0.007">
+  <properties/>
+  <testcase name="revealStaysAvailableUntilAllThreeCardsAreShown()" classname="com.jokernan.craftycards.client.ZJHControlsTest" time="0.002"/>
+  <testcase name="amountsDoubleAfterTheFirstRevealAndRaisesAreAnteMultiples()" classname="com.jokernan.craftycards.client.ZJHControlsTest" time="0.0"/>
+  <testcase name="unavailableRaisesStayVisibleAndCannotBeSelected()" classname="com.jokernan.craftycards.client.ZJHControlsTest" time="0.0"/>
+  <testcase name="revealCanBeRepeatedThroughTheButtonUntilAllSlotsAreShown()" classname="com.jokernan.craftycards.client.ZJHControlsTest" time="0.001"/>
+  <testcase name="enteringRevealModeDoesNotPretendCardsHaveBeenSeen()" classname="com.jokernan.craftycards.client.ZJHControlsTest" time="0.0"/>
+  <testcase name="revealedSlotsCannotBeSelectedAndLeavingTurnClearsLocalState()" classname="com.jokernan.craftycards.client.ZJHControlsTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

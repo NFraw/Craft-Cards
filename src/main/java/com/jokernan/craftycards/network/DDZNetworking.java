@@ -34,11 +34,20 @@ public class DDZNetworking {
      * @param event 载荷注册事件
      */
     public static void registerPayloads(RegisterPayloadHandlersEvent event) {
-        PayloadRegistrar registrar = event.registrar("3");
+        PayloadRegistrar registrar = event.registrar("4");
         // C2S：客户端发送玩家操作到服务端
         registrar.playToServer(PlayerActionPayload.TYPE, PlayerActionPayload.STREAM_CODEC, new ServerPayloadHandler());
         // S2C：服务端广播游戏状态快照到客户端
         registrar.playToClient(GameStatePayload.TYPE, GameStatePayload.STREAM_CODEC, new ClientPayloadHandler());
+        registrar.playToServer(com.jokernan.craftycards.network.payload.ZJHActionPayload.TYPE,
+            com.jokernan.craftycards.network.payload.ZJHActionPayload.STREAM_CODEC,
+            (payload, context) -> context.enqueueWork(() -> {
+                if (context.player() instanceof ServerPlayer player)
+                    com.jokernan.craftycards.game.server.zjh.ZJHTableManager.getInstance().handle(player,payload);
+            }));
+        registrar.playToClient(com.jokernan.craftycards.network.payload.ZJHStatePayload.TYPE,
+            com.jokernan.craftycards.network.payload.ZJHStatePayload.STREAM_CODEC,
+            (payload, context) -> context.enqueueWork(() -> com.jokernan.craftycards.client.ZJHClient.accept(payload)));
     }
 
     /**
@@ -49,6 +58,12 @@ public class DDZNetworking {
      * （Fabric 侧是 {@code ServerPlayNetworking} / {@code ClientPlayNetworking}）。</p>
      */
     public static final class PacketDistributorBridge implements Network.Bridge {
+        @Override public void sendZjhToServer(com.jokernan.craftycards.network.payload.ZJHActionPayload payload) {
+            PacketDistributor.sendToServer(payload);
+        }
+        @Override public void sendZjhToPlayer(ServerPlayer player,com.jokernan.craftycards.network.payload.ZJHStatePayload payload) {
+            PacketDistributor.sendToPlayer(player,payload);
+        }
         @Override
         public void sendToServer(PlayerActionPayload payload) {
             PacketDistributor.sendToServer(payload);

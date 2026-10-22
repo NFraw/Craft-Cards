@@ -4,7 +4,7 @@
 
 This branch is the independent source snapshot for **neoforge on Minecraft 1.21.1**. It includes shared game code and the overlays needed for this target. Older overlay directory names are build inputs; they do not produce JARs for those Minecraft versions.
 
-Crafty Cards brings three-player multiplayer Dou Dizhu into Minecraft. See [CREDITS.md](CREDITS.md) for provenance, artwork, and licensing notes.
+Crafty Cards brings three-player multiplayer Dou Dizhu and 2–6 player Zha Jin Hua into Minecraft. The new table uses red carpet in place of green carpet in the existing table recipe. See the [Zha Jin Hua guide and manual checks](docs/炸金花玩法与验收.md), and [CREDITS.md](CREDITS.md) for provenance, artwork, and licensing notes.
 
 ## Fixed target and build
 

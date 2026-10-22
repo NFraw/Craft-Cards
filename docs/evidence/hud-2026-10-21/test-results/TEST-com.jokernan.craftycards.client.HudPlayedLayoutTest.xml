@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.jokernan.craftycards.client.HudPlayedLayoutTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-10-21T13:10:06" hostname="JOKERNAN" time="0.541">
+  <properties/>
+  <testcase name="narrowWindowWithFewCardsPushesBlockRightToStayVisible()" classname="com.jokernan.craftycards.client.HudPlayedLayoutTest" time="0.003"/>
+  <testcase name="rowHeightMatchesCardModelAspect()" classname="com.jokernan.craftycards.client.HudPlayedLayoutTest" time="0.001"/>
+  <testcase name="fewCardsKeepConfiguredGapAndSitAboveHand()" classname="com.jokernan.craftycards.client.HudPlayedLayoutTest" time="0.001"/>
+  <testcase name="blockAlwaysFitsOnScreen()" classname="com.jokernan.craftycards.client.HudPlayedLayoutTest" time="0.529"/>
+  <testcase name="rowNeverCoversHand()" classname="com.jokernan.craftycards.client.HudPlayedLayoutTest" time="0.004"/>
+  <testcase name="cardsShrinkGapInsteadOfOverflowing()" classname="com.jokernan.craftycards.client.HudPlayedLayoutTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

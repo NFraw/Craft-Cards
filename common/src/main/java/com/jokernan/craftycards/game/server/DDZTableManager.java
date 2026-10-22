@@ -135,6 +135,13 @@ public class DDZTableManager {
     }
 
     public void handle(ServerPlayer player, PlayerActionPayload payload) {
+        if ((payload.action() == PlayerActionPayload.Action.JOIN
+            || payload.action() == PlayerActionPayload.Action.WATCH
+            || payload.action() == PlayerActionPayload.Action.OPEN_TABLE_CONFIG)
+            && com.jokernan.craftycards.game.server.zjh.ZJHTableManager.getInstance().contains(player)) {
+            player.sendSystemMessage(Component.literal("请先离开炸金花牌局"));
+            return;
+        }
         DDZTableStructure structure;
         try {
             if (!player.serverLevel().dimension().equals(payload.table().dimension()))
@@ -241,5 +248,8 @@ public class DDZTableManager {
             if (session.structure().contains(key)) return session;
         }
         return null;
+    }
+    public boolean contains(ServerPlayer player) {
+        return sessions.values().stream().anyMatch(s -> s.contains(player));
     }
 }

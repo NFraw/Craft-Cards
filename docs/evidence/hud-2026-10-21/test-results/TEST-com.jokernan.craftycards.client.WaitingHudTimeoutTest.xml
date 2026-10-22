@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.jokernan.craftycards.client.WaitingHudTimeoutTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-10-21T13:10:07" hostname="JOKERNAN" time="0.005">
+  <properties/>
+  <testcase name="bothWaitingHintsDisappearAtFiveSeconds()" classname="com.jokernan.craftycards.client.WaitingHudTimeoutTest" time="0.002"/>
+  <testcase name="resetClearsLifetimeForReconnect()" classname="com.jokernan.craftycards.client.WaitingHudTimeoutTest" time="0.0"/>
+  <testcase name="activePhasesDoNotUseWaitingTimeout()" classname="com.jokernan.craftycards.client.WaitingHudTimeoutTest" time="0.0"/>
+  <testcase name="differentTableOrMeaningfulWaitingChangeStartsANewHint()" classname="com.jokernan.craftycards.client.WaitingHudTimeoutTest" time="0.001"/>
+  <testcase name="repeatedSnapshotsCannotKeepHintAlive()" classname="com.jokernan.craftycards.client.WaitingHudTimeoutTest" time="0.0"/>
+  <testcase name="rightClickCanShowHintForAnotherFiveSeconds()" classname="com.jokernan.craftycards.client.WaitingHudTimeoutTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

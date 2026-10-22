@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.jokernan.craftycards.game.DDZTableLayoutTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2026-10-21T13:10:07" hostname="JOKERNAN" time="0.043">
+  <properties/>
+  <testcase name="diagonalNeighboursDoNotMerge()" classname="com.jokernan.craftycards.game.DDZTableLayoutTest" time="0.027"/>
+  <testcase name="nineBlockRectanglesAreAcceptedFromEveryCorner()" classname="com.jokernan.craftycards.game.DDZTableLayoutTest" time="0.002"/>
+  <testcase name="rejectsLShapeHoleMissingTableAndOversizedComponent()" classname="com.jokernan.craftycards.game.DDZTableLayoutTest" time="0.004"/>
+  <testcase name="tenthBlockAndOversizedBridgeAreRejectedButTemporaryLIsAllowed()" classname="com.jokernan.craftycards.game.DDZTableLayoutTest" time="0.004"/>
+  <testcase name="rotatedRectangleAndSingleBlockWork()" classname="com.jokernan.craftycards.game.DDZTableLayoutTest" time="0.001"/>
+  <testcase name="everyTileOfTwoByThreeResolvesToSameTable()" classname="com.jokernan.craftycards.game.DDZTableLayoutTest" time="0.001"/>
+  <testcase name="distanceAndChangeDetectionUseWholeTable()" classname="com.jokernan.craftycards.game.DDZTableLayoutTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

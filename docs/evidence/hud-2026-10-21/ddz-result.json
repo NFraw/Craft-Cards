@@ -1,0 +1,86 @@
+{
+    "minecraft": "1.21.1",
+    "loader": "neoforge",
+    "runId": "hud-review-ddz-textures-20261021",
+    "status": "PASS",
+    "error": null,
+    "roles": [
+        {
+            "role": "runSmokeServer",
+            "result": "PASS: three real players, session ended, emerald total=192; clients verify normal settlement",
+            "exitCode": 0,
+            "log": "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-ddz-textures-20261021\\runSmokeServer.log",
+            "screenshots": [
+                
+            ]
+        },
+        {
+            "role": "runSmokeClient1",
+            "result": "PASS: models, configuration pages, audio reload, 3-player private snapshots, input/countdown, world render, normal settlement and right-click dismissal",
+            "exitCode": 0,
+            "log": "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-ddz-textures-20261021\\runSmokeClient1.log",
+            "screenshots": [
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-ddz-textures-20261021\\screenshots\\runSmokeClient1\\01-bidding.png",
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-ddz-textures-20261021\\screenshots\\runSmokeClient1\\02-playing.png",
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-ddz-textures-20261021\\screenshots\\runSmokeClient1\\03-dismissed.png",
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-ddz-textures-20261021\\screenshots\\runSmokeClient1\\03-settled.png",
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-ddz-textures-20261021\\screenshots\\runSmokeClient1\\04-config-home.png",
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-ddz-textures-20261021\\screenshots\\runSmokeClient1\\04-config-play-bottom.png",
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-ddz-textures-20261021\\screenshots\\runSmokeClient1\\04-config-play.png",
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-ddz-textures-20261021\\screenshots\\runSmokeClient1\\04-config-render-bottom.png",
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-ddz-textures-20261021\\screenshots\\runSmokeClient1\\04-config-render.png",
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-ddz-textures-20261021\\screenshots\\runSmokeClient1\\04-config-sound.png",
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-ddz-textures-20261021\\screenshots\\runSmokeClient1\\04-config-table.png"
+            ]
+        },
+        {
+            "role": "runSmokeClient2",
+            "result": "PASS: models, configuration pages, audio reload, 3-player private snapshots, input/countdown, world render, normal settlement and right-click dismissal",
+            "exitCode": 0,
+            "log": "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-ddz-textures-20261021\\runSmokeClient2.log",
+            "screenshots": [
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-ddz-textures-20261021\\screenshots\\runSmokeClient2\\01-bidding.png",
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-ddz-textures-20261021\\screenshots\\runSmokeClient2\\02-hud-fullscreen.png",
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-ddz-textures-20261021\\screenshots\\runSmokeClient2\\02-hud-small.png",
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-ddz-textures-20261021\\screenshots\\runSmokeClient2\\02-hud-windowed.png",
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-ddz-textures-20261021\\screenshots\\runSmokeClient2\\02-playing.png",
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-ddz-textures-20261021\\screenshots\\runSmokeClient2\\02-selected.png",
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-ddz-textures-20261021\\screenshots\\runSmokeClient2\\03-dismissed.png",
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-ddz-textures-20261021\\screenshots\\runSmokeClient2\\03-settled.png",
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-ddz-textures-20261021\\screenshots\\runSmokeClient2\\04-config-home.png",
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-ddz-textures-20261021\\screenshots\\runSmokeClient2\\04-config-play-bottom.png",
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-ddz-textures-20261021\\screenshots\\runSmokeClient2\\04-config-play.png",
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-ddz-textures-20261021\\screenshots\\runSmokeClient2\\04-config-render-bottom.png",
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-ddz-textures-20261021\\screenshots\\runSmokeClient2\\04-config-render.png",
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-ddz-textures-20261021\\screenshots\\runSmokeClient2\\04-config-sound.png"
+            ]
+        },
+        {
+            "role": "runSmokeClient3",
+            "result": "PASS: models, configuration pages, audio reload, 3-player private snapshots, input/countdown, world render, normal settlement and right-click dismissal",
+            "exitCode": 0,
+            "log": "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-ddz-textures-20261021\\runSmokeClient3.log",
+            "screenshots": [
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-ddz-textures-20261021\\screenshots\\runSmokeClient3\\01-bidding.png",
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-ddz-textures-20261021\\screenshots\\runSmokeClient3\\02-playing.png",
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-ddz-textures-20261021\\screenshots\\runSmokeClient3\\03-dismissed.png",
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-ddz-textures-20261021\\screenshots\\runSmokeClient3\\03-settled.png",
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-ddz-textures-20261021\\screenshots\\runSmokeClient3\\04-config-home.png",
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-ddz-textures-20261021\\screenshots\\runSmokeClient3\\04-config-play-bottom.png",
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-ddz-textures-20261021\\screenshots\\runSmokeClient3\\04-config-play.png",
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-ddz-textures-20261021\\screenshots\\runSmokeClient3\\04-config-render-bottom.png",
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-ddz-textures-20261021\\screenshots\\runSmokeClient3\\04-config-render.png",
+                "D:\\03Project\\1\\Craft-Cards\\build\\mc-1.21.1\\poc\\hud-review-ddz-textures-20261021\\screenshots\\runSmokeClient3\\04-config-sound.png"
+            ]
+        }
+    ],
+    "checks": {
+        "networkGame": true,
+        "staticAudioPack": true,
+        "hudFacesVisible": null,
+        "configurationText": true,
+        "actualAudioListening": false,
+        "visualReview": false,
+        "productionJar": false
+    }
+}

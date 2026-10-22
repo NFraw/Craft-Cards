@@ -44,6 +44,9 @@ public final class PocClient {
     private int playScreenshotAt;
     private int selectedScreenshotAt;
     private int fullscreenScreenshotAt;
+    private int smallScreenshotAt;
+    private boolean smallScreenshotSaved;
+    private boolean resultDismissed;
     private boolean selectedScreenshotSaved;
     private boolean fullscreenScreenshotSaved;
     private boolean connected, prepared, joined, playedShot, biddingShot, countdownMoved, creativeChecked, tableSlotSelected, tableConfigShot;
@@ -117,7 +120,7 @@ public final class PocClient {
         if (!creativeChecked) {
             net.minecraft.world.item.CreativeModeTabs.tryRebuildTabContents(mc.level.enabledFeatures(), true, mc.level.registryAccess());
             var tab = net.minecraft.core.registries.BuiltInRegistries.CREATIVE_MODE_TAB.get(ResourceLocation.parse("crafty_cards:crafty_cards"));
-            check(tab != null && tab.shouldDisplay() && tab.getDisplayItems().size() == 3, "creative tab visible with 3 items");
+            check(tab != null && tab.shouldDisplay() && tab.getDisplayItems().size() == 4, "creative tab visible with 4 items");
             creativeChecked = true;
         }
         Vec3 delta = Vec3.atCenterOf(PocServer.TABLE).subtract(mc.player.getEyePosition());
@@ -178,6 +181,11 @@ public final class PocClient {
             click(mc);
             waitUntil = ticks + 15; return;
         }
+        if(resultDismissed) {
+            check(snap==null,"settlement HUD stayed dismissed");screenshot(mc,"03-dismissed.png");
+            result(mc,"PASS: models, configuration pages, audio reload, 3-player private snapshots, input/countdown, world render, normal settlement and right-click dismissal");
+            mc.stop();return;
+        }
         if (snap == null) throw new AssertionError("Participant snapshot disappeared: " + data.getMessage());
         select(mc, InitItems.DDZ_CARD.get());
         mc.setScreen(null);
@@ -215,6 +223,16 @@ public final class PocClient {
                 fullscreenScreenshotSaved = true;
                 return;
             }
+            if (n==2 && "true".equals(System.getProperty("craftycards.smoke.fullscreen")) && !smallScreenshotSaved) {
+                if(smallScreenshotAt==0) {
+                    org.lwjgl.glfw.GLFW.glfwSetWindowSize(mc.getWindow().getWindow(),1280,720);
+                    mc.options.guiScale().set(4);mc.resizeDisplay();smallScreenshotAt=ticks+25;return;
+                }
+                if(ticks<smallScreenshotAt)return;
+                screenshot(mc,"02-hud-small.png");
+                org.lwjgl.glfw.GLFW.glfwSetWindowSize(mc.getWindow().getWindow(),960,640);
+                mc.options.guiScale().set(2);mc.resizeDisplay();smallScreenshotSaved=true;return;
+            }
             if (!playedShot && !snap.lastPlayedCards().isEmpty()) {
                 if (playScreenshotAt == 0) playScreenshotAt = ticks + 3;
                 if (ticks >= playScreenshotAt) { screenshot(mc, "02-playing.png"); playedShot = true; }
@@ -239,6 +257,10 @@ public final class PocClient {
                     check(data.getSelectedCards().size() == 1, "one card selected");
                     if (!selectedScreenshotSaved) { selectedScreenshotAt = ticks + 15; return; }
                 }
+            } else {
+                // Fullscreen focus changes can leave preselected cards in a farmer's client.
+                // This fixture's policy is always PASS; enforce that precondition explicitly.
+                data.clearSelection();
             }
             click(mc); waitUntil = ticks + 10;
         } else if (snap.phase() == DDZGamePhase.SETTLED) {
@@ -250,10 +272,10 @@ public final class PocClient {
             if (stage == 4) {
                 screenshot(mc, "03-settled.png");
                 check(configPage == 4 && (n != 1 || tableConfigShot), "configuration pages captured");
-                result(mc, "PASS: models, four configuration pages, audio pack reload, 3-player snapshots, HUD input/countdown, world render, normal settlement");
-                stage = 5; waitUntil = ticks + 80; return;
+                stage = 5; waitUntil = ticks + 30; return;
             }
-            mc.stop();
+            check(DDZGameHud.getInstance().handleMouseClick(1,1),"right click consumed at settlement");
+            check(data.getSnapshot()==null,"right click dismissed settlement");resultDismissed=true;waitUntil=ticks+10;
         }
     }
 
@@ -347,6 +369,7 @@ public final class PocClient {
     }
     private static void screenshot(Minecraft mc, String name) {
         Screenshot.grab(mc.gameDirectory, name, mc.getMainRenderTarget(), message -> {});
+        CaptureMetadata.write(mc,name);
     }
     private static void result(Minecraft mc, String text) {
         try { Files.writeString(mc.gameDirectory.toPath().resolve("poc-result.txt"), text); }

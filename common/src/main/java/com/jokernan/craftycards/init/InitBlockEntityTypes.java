@@ -20,6 +20,11 @@ public final class InitBlockEntityTypes {
      * 关掉再打开不会重置各桌自己的数据。</p>
      */
     public static final RegHolder<BlockEntityType<DDZTableBlockEntity>> DDZ_TABLE = RegHolder.create("ddz_table");
+    public static final RegHolder<BlockEntityType<com.jokernan.craftycards.blockentity.ZJHTableBlockEntity>> ZJH_TABLE = RegHolder.create("zjh_table");
+    public static BlockEntityType<com.jokernan.craftycards.blockentity.ZJHTableBlockEntity> createZjhTable() {
+        return BlockEntityType.Builder.of(com.jokernan.craftycards.blockentity.ZJHTableBlockEntity::new,
+            InitItems.ZJH_TABLE.get()).build(null);
+    }
 
     private InitBlockEntityTypes() {}
 

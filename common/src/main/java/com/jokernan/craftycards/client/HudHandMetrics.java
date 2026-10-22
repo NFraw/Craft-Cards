@@ -20,9 +20,8 @@ final class HudHandMetrics {
     record Viewport(int width, int height, float scale) {}
 
     static Viewport viewport(int guiWidth, int guiHeight) {
-        if (guiWidth <= 0 || guiHeight <= 0) return new Viewport(guiWidth, guiHeight, 1F);
-        float scale = guiHeight / 320F;
-        return new Viewport(Math.round(guiWidth / scale), Math.round(guiHeight / scale), scale);
+        var viewport = CardGameHudLayout.viewport(guiWidth, guiHeight);
+        return new Viewport(viewport.width(), viewport.height(), viewport.scale());
     }
 
     /** GUI 模型的深度位置；独立于扇形角度、屏幕位置和选中上移。 */

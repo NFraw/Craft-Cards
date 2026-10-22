@@ -22,7 +22,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 /**
  * 斗地主 HUD（网络驱动）：不是全屏 Screen，而是叠加在主世界上的信息层，
@@ -46,6 +45,15 @@ public class DDZGameHud {
     private static final int HUD_EDGE_MARGIN = 10;
     /** 上轮出牌：标签与牌行之间的间隙（像素）。 */
     private static final int LABEL_GAP = 6;
+    /**
+     * 操作块（选项行）距屏幕底部的固定距离。
+     *
+     * <p>斗地主手牌最多 17 张、扇形铺满底部，操作块位置<b>不随牌数变</b>，所以用固定偏移而不是
+     * "贴着牌顶往上排"。提示行与反馈行不再各写一个魔法数，而是由
+     * {@link HudOptionBar#hintY} / {@link HudOptionBar#messageY} 从这个锚点推出来——
+     * 炸金花那边用的是同两条规则（只是锚点来自手牌几何），两个游戏的竖向语法因此一致。</p>
+     */
+    public static final int ACTION_ROW_OFFSET = CardGameHudLayout.ACTION_OFFSET;
 
     private static final DDZGameHud INSTANCE = new DDZGameHud();
 
@@ -57,9 +65,6 @@ public class DDZGameHud {
         Minecraft mc = Minecraft.getInstance();
         return mc.player != null && mc.player.getMainHandItem().is(InitItems.DDZ_CARD.get());
     }
-
-    /** 礼花用随机源：固定种子逐帧重置，保证图案静止不闪烁；复用实例避免每帧新建。 */
-    private final Random confettiRandom = new Random();
 
     private DDZGameHud() {}
 
@@ -99,6 +104,15 @@ public class DDZGameHud {
         }
     }
 
+    /**
+     * 操作块（选项行）的 y：距底固定偏移 {@link #ACTION_ROW_OFFSET}，但矮屏下由
+     * {@link HudOptionBar#actionRowY} 兜住下限，不会顶到标题/阶段行。
+     * 提示行与反馈行都由它推出，两个游戏用的是同一条规则。
+     */
+    private static int actionRowY(int height) {
+        return HudOptionBar.actionRowY(height, ACTION_ROW_OFFSET);
+    }
+
     private HudHandMetrics.Viewport viewport() {
         var window = Minecraft.getInstance().getWindow();
         return HudHandMetrics.viewport(window.getGuiScaledWidth(), window.getGuiScaledHeight());
@@ -114,7 +128,7 @@ public class DDZGameHud {
         int width = viewport().width();
         int height = viewport().height();
 
-        guiGraphics.drawCenteredString(mc.font, "斗地主", width / 2, 4, 0xFFFFFFFF);
+        HudText.centered(guiGraphics, mc.font, "斗地主", width / 2, 4, 0xFFFFFFFF);
 
         // 结算庆祝界面：全屏覆盖，提前 return 不画手牌/操作提示
         if (snap.phase() == DDZGamePhase.SETTLED) {
@@ -140,41 +154,42 @@ public class DDZGameHud {
         int turnLeft = ClientDDZData.getInstance().turnRemainingTicks();   // 取一次，别让两段读到不同的刻
         String countdown = TurnCountdown.label(turnLeft);
         if (countdown.isEmpty()) {
-            guiGraphics.drawCenteredString(mc.font, phaseText, width / 2, 16, 0xFFAAAAAA);
+            HudText.centered(guiGraphics, mc.font, phaseText, width / 2, 16, 0xFFAAAAAA);
         } else {
             // 两段分开画：阶段文字保持灰、倒计时按紧迫程度变色（居中的总宽度要把两段一起算）
             int textX = (width - mc.font.width(phaseText) - mc.font.width(countdown)) / 2;
+            HudText.back(guiGraphics, mc.font, width / 2, 16, mc.font.width(phaseText) + mc.font.width(countdown));
             guiGraphics.drawString(mc.font, phaseText, textX, 16, 0xFFAAAAAA);
             guiGraphics.drawString(mc.font, countdown, textX + mc.font.width(phaseText), 16,
                 TurnCountdown.color(turnLeft));
         }
 
         if (snap.phase() == DDZGamePhase.WAITING) {
-            guiGraphics.drawCenteredString(mc.font,
+            HudText.centered(guiGraphics, mc.font,
                 "等待玩家加入 (" + countOnline(snap) + "/3)",
                 width / 2, 30, 0xFFFFAA00);
             // chipRequired = 0 表示本桌不玩筹码（全局闸门关掉，或这张桌自己关了）：
             // 直接入局即可，不要再提示"先配筹码"，否则玩家会去找一个根本不存在的步骤
             if (snap.chipRequired() <= 0) {
-                guiGraphics.drawCenteredString(mc.font, "本桌不需要筹码 · 右键牌桌入局",
+                HudText.centered(guiGraphics, mc.font, "本桌不需要筹码 · 右键牌桌入局",
                     width / 2, 46, 0xFF55FF55);
-                guiGraphics.drawCenteredString(mc.font, "开局后即可叫分",
+                HudText.centered(guiGraphics, mc.font, "开局后即可叫分",
                     width / 2, 58, 0xFFAAAAAA);
                 return;
             }
             // 本桌筹码由临时编辑者配置，没配时提示空桌上的公共编辑入口，
             // 否则右键入局只会"没反应"
             if (snap.betItem().isEmpty()) {
-                guiGraphics.drawCenteredString(mc.font, "本桌筹码还没配",
+                HudText.centered(guiGraphics, mc.font, "本桌筹码还没配",
                     width / 2, 46, 0xFFFF5555);
-                guiGraphics.drawCenteredString(mc.font,
+                HudText.centered(guiGraphics, mc.font,
                     "空桌时 Shift+右键牌桌 → 在配置界面里选筹码物品",
                     width / 2, 58, 0xFFAAAAAA);
             } else {
-                guiGraphics.drawCenteredString(mc.font,
+                HudText.centered(guiGraphics, mc.font,
                     "筹码: " + chipName(snap) + "（入局需备 " + snap.chipRequired() + " 个）",
                     width / 2, 46, 0xFF55FF55);
-                guiGraphics.drawCenteredString(mc.font,
+                HudText.centered(guiGraphics, mc.font,
                     "右键牌桌入局 · 空桌时任何人可 Shift+右键配置",
                     width / 2, 58, 0xFFAAAAAA);
             }
@@ -182,7 +197,7 @@ public class DDZGameHud {
         }
 
         if (snap.landlordIndex() >= 0) {
-            guiGraphics.drawCenteredString(mc.font, "地主: " + playerName(snap, snap.landlordIndex()), width / 2, 30, 0xFFFFD700);
+            HudText.centered(guiGraphics, mc.font, "地主: " + playerName(snap, snap.landlordIndex()), width / 2, 30, 0xFFFFD700);
         }
 
         // 底牌（开局后可见）：左上角左对齐
@@ -214,13 +229,13 @@ public class DDZGameHud {
                 }
                 hint = "已选 [" + ranks + "] | 右键牌桌 = 出牌";
             }
-            guiGraphics.drawCenteredString(mc.font, hint, width / 2, height - 188, 0xFF55FF55);
+            HudText.centered(guiGraphics, mc.font, hint, width / 2, HudOptionBar.hintY(actionRowY(height)), HudOptionBar.COLOR_HINT);
         }
 
-        // 本局提示（如"无效的牌型"）
+        // 本局提示（如"无效的牌型"）：与炸金花同一位置关系——紧贴操作块上方，不画在屏幕顶部
         String msg = ClientDDZData.getInstance().getMessage();
         if (!msg.isEmpty() && snap.phase() != DDZGamePhase.BIDDING) {
-            guiGraphics.drawCenteredString(mc.font, msg, width / 2, height - 172, 0xFFFF5555);
+            HudText.centered(guiGraphics, mc.font, msg, width / 2, HudOptionBar.messageY(actionRowY(height)), HudOptionBar.COLOR_MESSAGE);
         }
 
         // 手牌 / 焦点框 / 上轮出牌块都只在握着斗地主扑克时展开（世界内的牌不受影响）
@@ -231,8 +246,8 @@ public class DDZGameHud {
             if (RenderConfig.hudPlayedShow) renderLastPlayed(guiGraphics, snap);
         } else if (snap.phase() == DDZGamePhase.PLAYING && snap.currentPlayerIndex() == snap.myIndex()) {
             // 轮到你了却没握牌：给出明确提示，否则玩家会以为牌局卡住了
-            guiGraphics.drawCenteredString(mc.font, "握上斗地主扑克才能出自己的牌",
-                width / 2, height - 188, 0xFFFFAA00);
+            HudText.centered(guiGraphics, mc.font, "握上斗地主扑克才能出自己的牌",
+                width / 2, HudOptionBar.hintY(actionRowY(height)), 0xFFFFAA00);
         }
     }
 
@@ -318,18 +333,18 @@ public class DDZGameHud {
         HudSettlementLayout layout = HudSettlementLayout.solve(
             height, mc.font.lineHeight, RenderConfig.hudSmallCardH(), hasBet ? 2 : 0);
 
-        guiGraphics.drawCenteredString(mc.font, result, width / 2, layout.resultY, 0xFFFFD700);
+        HudText.centered(guiGraphics, mc.font, result, width / 2, layout.resultY, 0xFFFFD700);
 
         if (hasBet) {
             // 底分 × 倍数 × 底注：与结算实际用的公式同一套（见 DDZSession.scorePerFarmer）
             int perFarmer = snap.bidScore() * snap.betMulti() * snap.betCount();
             String betInfo = "筹码: " + chipName(snap) + " · 底注 " + snap.betCount()
                 + " · 底分 " + snap.bidScore() + " × 倍数 " + snap.betMulti();
-            guiGraphics.drawCenteredString(mc.font, betInfo, width / 2, layout.betY, 0xFF55FF55);
+            HudText.centered(guiGraphics, mc.font, betInfo, width / 2, layout.betY, 0xFF55FF55);
             String winInfo = winner >= 0
                 ? "每位农民输 " + perFarmer + " 个，地主赢 " + (perFarmer * 2) + " 个"
                 : "每位农民赢 " + perFarmer + " 个，地主输 " + (perFarmer * 2) + " 个";
-            guiGraphics.drawCenteredString(mc.font, winInfo, width / 2, layout.betWinY, 0xFFFFD700);
+            HudText.centered(guiGraphics, mc.font, winInfo, width / 2, layout.betWinY, 0xFFFFD700);
         }
 
         List<List<Integer>> allHands = snap.allHands();
@@ -339,7 +354,7 @@ public class DDZGameHud {
             String label = playerName(snap, i) + (i == snap.landlordIndex() ? "（地主）" : "")
                 + " 剩余 " + hand.size() + " 张";
             int color = i == snap.myIndex() ? 0xFF7FD4FF : 0xFFFFFFFF;
-            guiGraphics.drawCenteredString(mc.font, label, width / 2, layout.nameY[i], color);
+            HudText.centered(guiGraphics, mc.font, label, width / 2, layout.nameY[i], color);
             if (!hand.isEmpty()) {
                 // 牌多时压缩间距（最小 14）保证整排不超屏，牌少时用默认间距
                 int gap = hand.size() > 1
@@ -351,24 +366,12 @@ public class DDZGameHud {
             }
         }
 
-        guiGraphics.drawCenteredString(mc.font, "点击任意处关闭", width / 2, layout.closeY, 0xFF55FF55);
+        HudText.centered(guiGraphics, mc.font, "点击任意处关闭", width / 2, layout.closeY, 0xFF55FF55);
     }
 
-    /** 礼花粒子效果：在结算界面显示彩色粒子动画 */
+    /** 礼花粒子效果（玩家获胜时播放）：与炸金花共用同一套，避免两个游戏结算观感不同。 */
     private void renderConfetti(GuiGraphics guiGraphics, int width, int height) {
-        // 复用随机源并重置种子：图案与固定种子逐帧重算完全一致（静止不闪烁），但不产生分配
-        Random random = confettiRandom;
-        random.setSeed(12345);
-        int particleCount = 50;
-        int[] colors = {0xFFFF0000, 0xFF00FF00, 0xFF0000FF, 0xFFFFFF00, 0xFFFF00FF, 0xFF00FFFF};
-
-        for (int i = 0; i < particleCount; i++) {
-            int x = random.nextInt(width);
-            int y = random.nextInt(height);
-            int size = 2 + random.nextInt(4);
-            int color = colors[random.nextInt(colors.length)];
-            guiGraphics.fill(x, y, x + size, y + size, color);
-        }
+        HudConfetti.render(guiGraphics, width, height);
     }
 
     /** 播放结算音效（胜利/失败）。映射到原版音效，理由见 {@link ClientSounds}。 */
@@ -387,24 +390,28 @@ public class DDZGameHud {
         Minecraft mc = Minecraft.getInstance();
         int bid = ClientDDZData.getInstance().getBidChoice();
         String[] labels = {"不叫", "1分", "2分", "3分"};
-        int itemW = 40;
-        int totalW = itemW * 4;
-        int startX = width / 2 - totalW / 2;
-        int y = height - 165;
-        for (int i = 0; i < 4; i++) {
-            int x = startX + i * itemW;
+        int y = actionRowY(height);
+
+        // 与炸金花共用同一套选项行排版：等宽项 + 项内居中 + 金色焦点 + 深色底衬
+        int[] widths = new int[labels.length];
+        for (int i = 0; i < labels.length; i++) widths[i] = mc.font.width(labels[i]);
+        HudOptionBar.Item[] items = HudOptionBar.solve(width, widths, y);
+        for (int i = 0; i < items.length; i++) {
+            HudOptionBar.Item item = items[i];
             boolean allowed = i == 0 || i > currentBid;
-            int color = !allowed ? 0xFF666666
-                : i == bid ? 0xFFFFD700 : 0xFFFFFFFF;
-            if (i == bid) {
-                guiGraphics.fill(x - 2, y - 2, x + itemW - 2, y + 10, 0x66000000);
+            boolean focused = i == bid;
+            if (focused) {
+                guiGraphics.fill(item.focusLeft(), item.focusTop(),
+                    item.focusRight(), item.focusBottom(), HudOptionBar.COLOR_FOCUS_BACK);
             }
-            guiGraphics.drawCenteredString(mc.font, labels[i], x + itemW / 2 - 2, y, color);
+            HudText.centered(guiGraphics, mc.font, labels[i], item.centerX(), item.y(),
+                HudOptionBar.colorOf(focused, allowed));
         }
         String hint = currentBid > 0
             ? "滚轮选择 | 右键牌桌确认 · 当前最高叫分 " + currentBid
             : "滚轮选择 | 右键牌桌确认";
-        guiGraphics.drawCenteredString(mc.font, hint, width / 2, y + 12, 0xFF55FF55);
+        // 提示行在选项行上方（原先在下方，与炸金花/出牌阶段的提示位置相反）
+        HudText.centered(guiGraphics, mc.font, hint, width / 2, HudOptionBar.hintY(y), HudOptionBar.COLOR_HINT);
     }
 
     /**
@@ -600,21 +607,7 @@ public class DDZGameHud {
      */
     private void renderCardStack(GuiGraphics guiGraphics, ItemStack stack, float px, float py,
                                  float scale, float rotationZ, boolean bottomPivot, float depth) {
-        Minecraft mc = Minecraft.getInstance();
-        if (mc.level == null) return;
-
-        float offsetY = bottomPivot ? 0.5F : 0F;
-
-        PoseStack pose = guiGraphics.pose();
-        pose.pushPose();
-        pose.translate(px, py, depth);
-        pose.mulPose(Axis.ZP.rotationDegrees(rotationZ));
-        pose.translate(0F, -offsetY * scale, 0F);
-        pose.scale(scale, -scale, 1);
-        ItemRenderer renderer = mc.getItemRenderer();
-        renderer.renderStatic(stack, ItemDisplayContext.GUI, 0xF000F0,
-            OverlayTexture.NO_OVERLAY, pose, guiGraphics.bufferSource(), mc.level, 0);
-        pose.popPose();
+        CardVisuals.draw(guiGraphics, stack, px, py, scale, rotationZ, bottomPivot, depth);
     }
 
     /** 卡牌 ID → 牌面文本（用于提示栏展示已选牌，方便确认顺子/对子等牌型）。 */
@@ -663,7 +656,7 @@ public class DDZGameHud {
     }
 
     private int handBaseY() {
-        return viewport().height() - RenderConfig.hudBottomMargin - RenderConfig.hudCardH();
+        return viewport().height() - CardGameHudLayout.bottomMargin(RenderConfig.hudBottomMargin,viewport().scale()) - RenderConfig.hudCardH();
     }
 
     private int countOnline(GameStatePayload snap) {

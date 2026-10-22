@@ -10,7 +10,6 @@ import com.jokernan.craftycards.init.InitItems;
 import com.jokernan.craftycards.network.payload.GameStatePayload;
 import com.jokernan.craftycards.network.payload.TableKey;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.NonNullList;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.resources.ResourceLocation;
@@ -340,15 +339,7 @@ public class DDZEndToEndGameTest {
 
     /** 玩家背包中某物品的总数（含副手与护甲槽）。 */
     private static int countOf(ServerPlayer player, net.minecraft.world.item.Item item) {
-        int total = 0;
-        NonNullList<ItemStack> items = player.getInventory().items;
-        for (ItemStack st : items) {
-            if (st.is(item)) total += st.getCount();
-        }
-        for (ItemStack st : player.getInventory().offhand) {
-            if (st.is(item)) total += st.getCount();
-        }
-        return total;
+        return DDZTestSupport.countOf(player,item);
     }
 
     private static void cleanup(DDZTableManager manager, TableKey key, GameTestHelper helper,

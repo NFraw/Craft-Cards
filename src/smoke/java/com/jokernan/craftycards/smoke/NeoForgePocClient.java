@@ -12,7 +12,11 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 public final class NeoForgePocClient {
     @SubscribeEvent
     public static void setup(FMLClientSetupEvent event) {
-        event.enqueueWork(() -> new PocClient().initialize(callback ->
-            NeoForge.EVENT_BUS.addListener((ClientTickEvent.Post tick) -> callback.accept(Minecraft.getInstance()))));
+        event.enqueueWork(() -> {
+            java.util.function.Consumer<java.util.function.Consumer<Minecraft>> register = callback ->
+                NeoForge.EVENT_BUS.addListener((ClientTickEvent.Post tick) -> callback.accept(Minecraft.getInstance()));
+            if ("zjh".equals(System.getProperty("craftycards.smoke.game"))) new ZjhPocClient().initialize(register);
+            else new PocClient().initialize(register);
+        });
     }
 }

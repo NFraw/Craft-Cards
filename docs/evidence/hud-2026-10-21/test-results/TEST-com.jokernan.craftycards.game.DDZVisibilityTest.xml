@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.jokernan.craftycards.game.DDZVisibilityTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-10-21T13:10:07" hostname="JOKERNAN" time="0.005">
+  <properties/>
+  <testcase name="spectatorReceivesOnlyWhenOptedInOrAutoShareEnabled()" classname="com.jokernan.craftycards.game.DDZVisibilityTest" time="0.003"/>
+  <testcase name="openHandModeForParticipants()" classname="com.jokernan.craftycards.game.DDZVisibilityTest" time="0.0"/>
+  <testcase name="spectatorsBlindWhenDisabled()" classname="com.jokernan.craftycards.game.DDZVisibilityTest" time="0.0"/>
+  <testcase name="defaultConfigurationMatrix()" classname="com.jokernan.craftycards.game.DDZVisibilityTest" time="0.001"/>
+  <testcase name="switchesAreIndependent()" classname="com.jokernan.craftycards.game.DDZVisibilityTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -521,14 +521,7 @@ public class DDZSession {
 
     /** 玩家背包（含副手与护甲槽）里某物品的总数。 */
     private static int countOfType(ServerPlayer player, net.minecraft.world.item.Item item) {
-        if (player == null || item == null) return 0;
-        var inv = player.getInventory();
-        int total = 0;
-        for (int i = 0; i < inv.getContainerSize(); i++) {
-            ItemStack st = inv.getItem(i);
-            if (st.is(item)) total += st.getCount();
-        }
-        return total;
+        return ChipCurrency.count(player,item);
     }
 
     public void handleBid(ServerPlayer player, int score) {
@@ -606,7 +599,7 @@ public class DDZSession {
      *
      * <p>取的是**背包里任意一格**的筹码物品（不要求手持——筹码类型已经由声明定下来了）。
      * 用 {@code split(1)} 取出，物品的全部组件（附魔/自定义名/耐久）原样保留，
-     * 结算或退还时交还原物，绝不重建。</p>
+     * 自定义筹码结算或退还时交还原物；普通铁锭、金锭、钻石与方块按1:9兑换。</p>
      *
      * <p>调用前 {@link #handleJoin} 已校验过数量足够；这里再判一次是防御性的。</p>
      */
@@ -619,13 +612,9 @@ public class DDZSession {
         net.minecraft.world.item.Item chip = chipItem();
         if (chip == null) return;
 
-        // 按本桌底注收 N 份进池子（逐个 split，各自保留组件）
-        List<ItemStack> pool = new ArrayList<>();
-        for (int i = 0; i < stake(); i++) {
-            ItemStack one = takeOneOfType(player, chip);
-            if (one.isEmpty()) break;
-            pool.add(one);
-        }
+        // 一次兑换并收取，避免逐个拆块、找零导致满背包时中途不足。
+        int available=ChipCurrency.count(player,chip);
+        List<ItemStack> pool=ChipCurrency.take(player,chip,Math.min(stake(),available));
         if (pool.isEmpty()) {
             sendFeedback(player, "message.ddz.chip_not_enough_any");
             return;
@@ -646,26 +635,9 @@ public class DDZSession {
         if (player == null) return;
         int seat = seatOf(player.getUUID());
         if (seat < 0 || !betPlaced[seat]) return;
-        for (ItemStack stake : betStakes[seat]) {
-            // 走 giveOrDrop：背包满时掉在地上，而不是像 add() 那样静默消失
-            giveOrDrop(player, stake);
-        }
+        ChipCurrency.give(player,betStakes[seat]);
         betStakes[seat] = new ArrayList<>();
         betPlaced[seat] = false;
-    }
-
-    /**
-     * 从玩家背包取 1 个指定类型的物品（保留该物品自身的组件）。
-     * 用于"地主输了要赔付"时补足与押注同类型的物品；取不到返回空。
-     */
-    private static ItemStack takeOneOfType(ServerPlayer player, net.minecraft.world.item.Item item) {
-        if (player == null || item == null) return ItemStack.EMPTY;
-        var inv = player.getInventory();
-        for (int i = 0; i < inv.getContainerSize(); i++) {
-            ItemStack st = inv.getItem(i);
-            if (st.is(item)) return st.split(1);
-        }
-        return ItemStack.EMPTY;
     }
 
     /**
@@ -710,7 +682,7 @@ public class DDZSession {
 
         // 剩下的押注（赢家自己那份，以及少赔时没被取走的部分）原样退还，并复位押注状态
         for (int i = 0; i < DDZEngine.PLAYER_COUNT; i++) {
-            for (ItemStack own : betStakes[i]) giveOrDrop(seats[i], own);
+            ChipCurrency.give(seats[i],betStakes[i]);
             betStakes[i] = new ArrayList<>();
             betPlaced[i] = false;
         }
@@ -728,27 +700,19 @@ public class DDZSession {
         if (payer == null || payee == null || amount <= 0) return;
 
         int paid = 0;
+        List<ItemStack> winnings=new ArrayList<>();
         List<ItemStack> pool = betStakes[payerSeat];
         while (paid < amount && !pool.isEmpty()) {
-            giveOrDrop(payee, pool.remove(0));
-            paid++;
+            ItemStack stack=pool.getFirst();
+            ItemStack part=stack.split(Math.min(amount-paid,stack.getCount()));
+            paid+=part.getCount();winnings.add(part);
+            if(stack.isEmpty())pool.removeFirst();
         }
-        while (paid < amount) {
-            ItemStack one = takeOneOfType(payer, chip);
-            if (one.isEmpty()) break;
-            giveOrDrop(payee, one);
-            paid++;
-        }
+        int extra=Math.min(amount-paid,ChipCurrency.count(payer,chip));
+        winnings.addAll(ChipCurrency.take(payer,chip,extra));paid+=extra;
+        ChipCurrency.give(payee,winnings);
         if (paid < amount) {
             payer.sendSystemMessage(Component.translatable("message.ddz.bet_unpaid", amount - paid));
-        }
-    }
-
-    /** 给玩家物品，背包满则掉落。 */
-    private void giveOrDrop(ServerPlayer player, ItemStack stack) {
-        if (player == null || stack.isEmpty()) return;
-        if (!player.getInventory().add(stack)) {
-            player.drop(stack, false);
         }
     }
 

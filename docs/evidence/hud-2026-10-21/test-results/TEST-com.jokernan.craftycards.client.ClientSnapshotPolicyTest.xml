@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.jokernan.craftycards.client.ClientSnapshotPolicyTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-10-21T13:10:06" hostname="JOKERNAN" time="0.011">
+  <properties/>
+  <testcase name="closedSessionAlwaysNotifiesAndClears()" classname="com.jokernan.craftycards.client.ClientSnapshotPolicyTest" time="0.008"/>
+  <testcase name="spectatorNeverGetsSettlementOverlay()" classname="com.jokernan.craftycards.client.ClientSnapshotPolicyTest" time="0.0"/>
+  <testcase name="closingAnOldTableCannotClearTheNewTablesPreviewOrGame()" classname="com.jokernan.craftycards.client.ClientSnapshotPolicyTest" time="0.0"/>
+  <testcase name="destroyedLoadedTableClearsButAnUnloadedChunkDoesNot()" classname="com.jokernan.craftycards.client.ClientSnapshotPolicyTest" time="0.001"/>
+  <testcase name="participantSettlementShowsOverlay()" classname="com.jokernan.craftycards.client.ClientSnapshotPolicyTest" time="0.0"/>
+  <testcase name="normalSnapshotApplies()" classname="com.jokernan.craftycards.client.ClientSnapshotPolicyTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

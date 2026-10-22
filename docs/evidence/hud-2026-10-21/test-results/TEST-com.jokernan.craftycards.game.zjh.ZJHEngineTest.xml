@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.jokernan.craftycards.game.zjh.ZJHEngineTest" tests="10" skipped="0" failures="0" errors="0" timestamp="2026-10-21T13:10:07" hostname="JOKERNAN" time="0.053">
+  <properties/>
+  <testcase name="specialIsLowestExceptAgainstTripsAndWinsMultiwayWithTrips()" classname="com.jokernan.craftycards.game.zjh.ZJHEngineTest" time="0.008"/>
+  <testcase name="randomGamesTerminateWithUniqueCardsAndConservedPot()" classname="com.jokernan.craftycards.game.zjh.ZJHEngineTest" time="0.015"/>
+  <testcase name="oversizedFeeSettlesWithoutPartialDebit()" classname="com.jokernan.craftycards.game.zjh.ZJHEngineTest" time="0.001"/>
+  <testcase name="capAndFoldAlwaysConserveLedger()" classname="com.jokernan.craftycards.game.zjh.ZJHEngineTest" time="0.0"/>
+  <testcase name="everyThreeCardHandClassifiesAndPermutationIsIrrelevant()" classname="com.jokernan.craftycards.game.zjh.ZJHEngineTest" time="0.02"/>
+  <testcase name="compareUnlocksAfterTwoWholeRoundsAndTargetPaysNothing()" classname="com.jokernan.craftycards.game.zjh.ZJHEngineTest" time="0.001"/>
+  <testcase name="identicalHandStrengthLosesForInitiator()" classname="com.jokernan.craftycards.game.zjh.ZJHEngineTest" time="0.001"/>
+  <testcase name="aceLowStraightIsSecondAndPairComparesPairFirst()" classname="com.jokernan.craftycards.game.zjh.ZJHEngineTest" time="0.0"/>
+  <testcase name="revealIsTurnBoundMonotonicAndDoesNotAdvanceTurn()" classname="com.jokernan.craftycards.game.zjh.ZJHEngineTest" time="0.001"/>
+  <testcase name="everyLiveSeatActsOncePerRotationAcrossNewDealsAndDealerChanges()" classname="com.jokernan.craftycards.game.zjh.ZJHEngineTest" time="0.002"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

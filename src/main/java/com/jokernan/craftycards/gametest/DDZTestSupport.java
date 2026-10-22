@@ -112,13 +112,15 @@ final class DDZTestSupport {
         com.jokernan.craftycards.game.server.ServerGameConfig.chipEntryCount = 0;
     }
 
-    /** 玩家背包（含副手与护甲槽）里某物品的总数。 */
+    /** 独立按兑换比例核对价值，避免结算压成方块后误报物品丢失。 */
     static int countOf(ServerPlayer player, Item item) {
         var inv = player.getInventory();
+        Item block=item==Items.IRON_INGOT?Items.IRON_BLOCK:item==Items.GOLD_INGOT?Items.GOLD_BLOCK:item==Items.DIAMOND?Items.DIAMOND_BLOCK:Items.AIR;
         int total = 0;
         for (int i = 0; i < inv.getContainerSize(); i++) {
             ItemStack st = inv.getItem(i);
             if (st.is(item)) total += st.getCount();
+            else if(block!=Items.AIR&&st.is(block)&&ItemStack.isSameItemSameComponents(st,new ItemStack(block)))total+=st.getCount()*9;
         }
         return total;
     }

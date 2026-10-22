@@ -164,6 +164,9 @@ public class CraftyCards {
             WorldRenderHook.register(WorldHandCards.getInstance()::render);
             WorldRenderHook.register(WorldPlayedCards.getInstance()::render);
             WorldRenderHook.register(WorldTableChip.getInstance()::render);
+            WorldRenderHook.register(com.jokernan.craftycards.client.WorldZJH::render);
+            NeoForge.EVENT_BUS.addListener(net.neoforged.neoforge.client.event.ClientTickEvent.Post.class,
+                e -> com.jokernan.craftycards.client.ZJHClient.tick());
             NeoForge.EVENT_BUS.addListener(ClientGameEvents::onRenderLevelStage);
             // 背景音乐：按阶段循环播放音乐包里的 BGM。ClientBgm.tick() 刻意不带事件参数
             // （common 不认识加载器的 tick 事件类型），所以这里显式给出事件类
@@ -181,6 +184,7 @@ public class CraftyCards {
                 CCReference.location("ddz_hud"),
                 (guiGraphics, deltaTracker) -> {
                     DDZGameHud.getInstance().render(guiGraphics, deltaTracker);
+                    com.jokernan.craftycards.client.ZJHClient.render(guiGraphics,deltaTracker);
                     // 3D 牌面是丢进 guiGraphics.bufferSource() 的批处理，必须在本层内刷掉：
                     // 不刷的话原版会一直拖到"菜单之后"才真正画出来，于是出牌那块牌面浮在暂停菜单
                     // 的虚化之上——手牌/底牌都被虚化、唯独它清晰。"(为什么它总在最上层)"就是这个原因。
@@ -202,7 +206,8 @@ public class CraftyCards {
          */
         static void onMouseButton(InputEvent.MouseButton.Pre event) {
             // 拦不拦由 common 的 HUD 判断（那边不认识加载器的事件类型），这里只负责取消事件
-            if (DDZGameHud.getInstance().handleMouseClick(event.getButton(), event.getAction())) {
+            if (com.jokernan.craftycards.client.ZJHClient.mouse(event.getButton(),event.getAction())
+                || DDZGameHud.getInstance().handleMouseClick(event.getButton(), event.getAction())) {
                 event.setCanceled(true);
             }
         }
@@ -212,7 +217,8 @@ public class CraftyCards {
          * <p>在 BIDDING/PLAYING 阶段取消原生滚轮事件，防止切换热键栏。</p>
          */
         static void onMouseScroll(InputEvent.MouseScrollingEvent event) {
-            if (DDZGameHud.getInstance().handleScroll(event.getScrollDeltaY())) {
+            if (com.jokernan.craftycards.client.ZJHClient.scroll(event.getScrollDeltaY())
+                || DDZGameHud.getInstance().handleScroll(event.getScrollDeltaY())) {
                 event.setCanceled(true);
             }
         }

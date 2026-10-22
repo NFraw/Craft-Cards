@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.jokernan.craftycards.game.DDZInteractionTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-10-21T13:10:07" hostname="JOKERNAN" time="0.003">
+  <properties/>
+  <testcase name="otherBlocksAreNeverAffected()" classname="com.jokernan.craftycards.game.DDZInteractionTest" time="0.002"/>
+  <testcase name="tableWithSneakAndItemIsForced()" classname="com.jokernan.craftycards.game.DDZInteractionTest" time="0.0"/>
+  <testcase name="normalRightClickUntouched()" classname="com.jokernan.craftycards.game.DDZInteractionTest" time="0.0"/>
+  <testcase name="emptyHandNeedsNoForcing()" classname="com.jokernan.craftycards.game.DDZInteractionTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

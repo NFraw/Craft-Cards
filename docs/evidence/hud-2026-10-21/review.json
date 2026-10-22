@@ -1,0 +1,445 @@
+{
+  "date": "2026-10-21",
+  "timezone": "Asia/Shanghai",
+  "reviewer": "Codex",
+  "method": "逐张查看实际Minecraft客户端PNG；暗牌代表帧取第三客户端，避免将状态切换前的旧帧当成暗牌截图",
+  "scope": "29张代表性截图，非全部重复客户端视角；限制见报告",
+  "visualReview": true,
+  "images": [
+    {
+      "file": "ddz-01-bidding.png",
+      "source": "build/mc-1.21.1/poc/hud-review-ddz-textures-20261021/screenshots/runSmokeClient1/01-bidding.png",
+      "sha256": "7B5716DF0A2F4931982F8883FC0FF6773D6CA129583148AB6FEF242469B5F660",
+      "metadata": {
+        "windowWidth": 960,
+        "windowHeight": 640,
+        "guiWidth": 480,
+        "guiHeight": 320,
+        "guiScale": 2.0,
+        "requestedScale": 2
+      },
+      "viewed": true,
+      "verdict": "已查看，未发现本场景中的阻塞性排版问题"
+    },
+    {
+      "file": "ddz-02-hud-fullscreen.png",
+      "source": "build/mc-1.21.1/poc/hud-review-ddz-textures-20261021/screenshots/runSmokeClient2/02-hud-fullscreen.png",
+      "sha256": "172D59A05CE721632620538832FF11F2B2A1E65DC60E39A4526BDB54431DFD0E",
+      "metadata": {
+        "windowWidth": 1920,
+        "windowHeight": 1080,
+        "guiWidth": 480,
+        "guiHeight": 270,
+        "guiScale": 4.0,
+        "requestedScale": 0
+      },
+      "viewed": true,
+      "verdict": "已查看，未发现本场景中的阻塞性排版问题"
+    },
+    {
+      "file": "ddz-02-hud-small.png",
+      "source": "build/mc-1.21.1/poc/hud-review-ddz-textures-20261021/screenshots/runSmokeClient2/02-hud-small.png",
+      "sha256": "96C419936FE73468D231EAF02BBA322BEB7ACBB61EE0BA525D886C9AF28A369F",
+      "metadata": {
+        "windowWidth": 1280,
+        "windowHeight": 720,
+        "guiWidth": 427,
+        "guiHeight": 240,
+        "guiScale": 3.0,
+        "requestedScale": 3
+      },
+      "viewed": true,
+      "verdict": "已查看，未发现本场景中的阻塞性排版问题"
+    },
+    {
+      "file": "ddz-02-hud-windowed.png",
+      "source": "build/mc-1.21.1/poc/hud-review-ddz-textures-20261021/screenshots/runSmokeClient2/02-hud-windowed.png",
+      "sha256": "05F0790021A89EFEFB5B8BFA43B5D39FE0C5369B580FC4007B70378D1737A652",
+      "metadata": {
+        "windowWidth": 960,
+        "windowHeight": 640,
+        "guiWidth": 480,
+        "guiHeight": 320,
+        "guiScale": 2.0,
+        "requestedScale": 2
+      },
+      "viewed": true,
+      "verdict": "已查看，未发现本场景中的阻塞性排版问题"
+    },
+    {
+      "file": "ddz-02-playing.png",
+      "source": "build/mc-1.21.1/poc/hud-review-ddz-textures-20261021/screenshots/runSmokeClient1/02-playing.png",
+      "sha256": "6ED1A6EB24FF413F280C0CED9207098DC73A8FA839934182E7C341B76CACD1FC",
+      "metadata": {
+        "windowWidth": 960,
+        "windowHeight": 640,
+        "guiWidth": 480,
+        "guiHeight": 320,
+        "guiScale": 2.0,
+        "requestedScale": 2
+      },
+      "viewed": true,
+      "verdict": "已查看，未发现本场景中的阻塞性排版问题"
+    },
+    {
+      "file": "ddz-02-selected.png",
+      "source": "build/mc-1.21.1/poc/hud-review-ddz-textures-20261021/screenshots/runSmokeClient2/02-selected.png",
+      "sha256": "E5E1689C52A3785CD0339936CF33CB85C52FC621F5B801908CAB4B95FED8510D",
+      "metadata": {
+        "windowWidth": 960,
+        "windowHeight": 640,
+        "guiWidth": 480,
+        "guiHeight": 320,
+        "guiScale": 2.0,
+        "requestedScale": 2
+      },
+      "viewed": true,
+      "verdict": "已查看，未发现本场景中的阻塞性排版问题"
+    },
+    {
+      "file": "ddz-03-dismissed.png",
+      "source": "build/mc-1.21.1/poc/hud-review-ddz-textures-20261021/screenshots/runSmokeClient1/03-dismissed.png",
+      "sha256": "4B180C5858EE976C590218E1CF12696400DF1927A20B44EEE2B2157F7CEC1C4A",
+      "metadata": {
+        "windowWidth": 960,
+        "windowHeight": 640,
+        "guiWidth": 480,
+        "guiHeight": 320,
+        "guiScale": 2.0,
+        "requestedScale": 2
+      },
+      "viewed": true,
+      "verdict": "已查看，未发现本场景中的阻塞性排版问题"
+    },
+    {
+      "file": "ddz-03-settled.png",
+      "source": "build/mc-1.21.1/poc/hud-review-ddz-textures-20261021/screenshots/runSmokeClient1/03-settled.png",
+      "sha256": "B52EC1309ED0F3294FEC1F9DDC24AC006E2BE22019A91403A7B1DC45611800E5",
+      "metadata": {
+        "windowWidth": 960,
+        "windowHeight": 640,
+        "guiWidth": 480,
+        "guiHeight": 320,
+        "guiScale": 2.0,
+        "requestedScale": 2
+      },
+      "viewed": true,
+      "verdict": "已查看，未发现本场景中的阻塞性排版问题"
+    },
+    {
+      "file": "ddz-04-config-home.png",
+      "source": "build/mc-1.21.1/poc/hud-review-ddz-textures-20261021/screenshots/runSmokeClient1/04-config-home.png",
+      "sha256": "74E0BF9BF0D31D0AC46D962663649007DA70501B9E916308183B4376F5949891",
+      "metadata": {
+        "windowWidth": 960,
+        "windowHeight": 640,
+        "guiWidth": 480,
+        "guiHeight": 320,
+        "guiScale": 2.0,
+        "requestedScale": 2
+      },
+      "viewed": true,
+      "verdict": "已查看，未发现本场景中的阻塞性排版问题"
+    },
+    {
+      "file": "ddz-04-config-play-bottom.png",
+      "source": "build/mc-1.21.1/poc/hud-review-ddz-textures-20261021/screenshots/runSmokeClient1/04-config-play-bottom.png",
+      "sha256": "BB615F0DAC7C931C93AC68220BA1188202026922866AB9C04B6688168DB1A987",
+      "metadata": {
+        "windowWidth": 960,
+        "windowHeight": 640,
+        "guiWidth": 480,
+        "guiHeight": 320,
+        "guiScale": 2.0,
+        "requestedScale": 2
+      },
+      "viewed": true,
+      "verdict": "已查看，未发现本场景中的阻塞性排版问题"
+    },
+    {
+      "file": "ddz-04-config-play.png",
+      "source": "build/mc-1.21.1/poc/hud-review-ddz-textures-20261021/screenshots/runSmokeClient1/04-config-play.png",
+      "sha256": "2E790B297621EC682D541F3E7A37595D3485750482864485EEB7CD7F7B8BB050",
+      "metadata": {
+        "windowWidth": 960,
+        "windowHeight": 640,
+        "guiWidth": 480,
+        "guiHeight": 320,
+        "guiScale": 2.0,
+        "requestedScale": 2
+      },
+      "viewed": true,
+      "verdict": "已查看，未发现本场景中的阻塞性排版问题"
+    },
+    {
+      "file": "ddz-04-config-render-bottom.png",
+      "source": "build/mc-1.21.1/poc/hud-review-ddz-textures-20261021/screenshots/runSmokeClient1/04-config-render-bottom.png",
+      "sha256": "8E5EF70D7B8ECD5F30056A97A3DE49555C8C5B6CD17A87891B01D0A11AF64072",
+      "metadata": {
+        "windowWidth": 960,
+        "windowHeight": 640,
+        "guiWidth": 480,
+        "guiHeight": 320,
+        "guiScale": 2.0,
+        "requestedScale": 2
+      },
+      "viewed": true,
+      "verdict": "已查看，未发现本场景中的阻塞性排版问题"
+    },
+    {
+      "file": "ddz-04-config-render.png",
+      "source": "build/mc-1.21.1/poc/hud-review-ddz-textures-20261021/screenshots/runSmokeClient1/04-config-render.png",
+      "sha256": "F17E85BB158EA7B5F43648C26CD1296FCFCA7BE6C0C7DA9926D1DA6C3D971CBA",
+      "metadata": {
+        "windowWidth": 960,
+        "windowHeight": 640,
+        "guiWidth": 480,
+        "guiHeight": 320,
+        "guiScale": 2.0,
+        "requestedScale": 2
+      },
+      "viewed": true,
+      "verdict": "已查看，未发现本场景中的阻塞性排版问题"
+    },
+    {
+      "file": "ddz-04-config-sound.png",
+      "source": "build/mc-1.21.1/poc/hud-review-ddz-textures-20261021/screenshots/runSmokeClient1/04-config-sound.png",
+      "sha256": "42EEF5CA8FE23D5831CFABDDE8A1E3D79B16DB26AA2252D945841ABBBF9B77E6",
+      "metadata": {
+        "windowWidth": 960,
+        "windowHeight": 640,
+        "guiWidth": 480,
+        "guiHeight": 320,
+        "guiScale": 2.0,
+        "requestedScale": 2
+      },
+      "viewed": true,
+      "verdict": "已查看，未发现本场景中的阻塞性排版问题"
+    },
+    {
+      "file": "ddz-04-config-table.png",
+      "source": "build/mc-1.21.1/poc/hud-review-ddz-textures-20261021/screenshots/runSmokeClient1/04-config-table.png",
+      "sha256": "78C9DA202140351362A45F4FD7B1CFFFAFB7C87612FF377E91EAD303D433E418",
+      "metadata": {
+        "windowWidth": 960,
+        "windowHeight": 640,
+        "guiWidth": 480,
+        "guiHeight": 320,
+        "guiScale": 2.0,
+        "requestedScale": 2
+      },
+      "viewed": true,
+      "verdict": "已查看，未发现本场景中的阻塞性排版问题"
+    },
+    {
+      "file": "ddz-bidding-active.png",
+      "source": "build/mc-1.21.1/poc/hud-review-ddz-textures-20261021/screenshots/runSmokeClient2/01-bidding.png",
+      "sha256": "0D2644A441F5A178C162A7362DA02FFB4222860874CC2A1B76331427AEE577F8",
+      "metadata": {
+        "windowWidth": 960,
+        "windowHeight": 640,
+        "guiWidth": 480,
+        "guiHeight": 320,
+        "guiScale": 2.0,
+        "requestedScale": 2
+      },
+      "viewed": true,
+      "verdict": "已查看，未发现本场景中的阻塞性排版问题"
+    },
+    {
+      "file": "table-game-colors.png",
+      "source": "build/mc-1.21.1/poc/hud-review-zjh-textures-20261021/screenshots/runSmokeClient1/table-game-colors.png",
+      "sha256": "BF784846F711B2B377AF2B27E8987A83994CF67B1A930CA2067C4A13BC5D9948",
+      "metadata": {
+        "windowWidth": 960,
+        "windowHeight": 640,
+        "guiWidth": 480,
+        "guiHeight": 320,
+        "guiScale": 2.0,
+        "requestedScale": 2
+      },
+      "viewed": true,
+      "verdict": "已查看，未发现本场景中的阻塞性排版问题"
+    },
+    {
+      "file": "zjh-config.png",
+      "source": "build/mc-1.21.1/poc/hud-review-zjh-textures-20261021/screenshots/runSmokeClient1/zjh-config.png",
+      "sha256": "80EC673A89808F334D80CBBAEC20818352EC90E843597568F36FE5F03F3C7F8E",
+      "metadata": {
+        "windowWidth": 960,
+        "windowHeight": 640,
+        "guiWidth": 480,
+        "guiHeight": 320,
+        "guiScale": 2.0,
+        "requestedScale": 2
+      },
+      "viewed": true,
+      "verdict": "已查看，未发现本场景中的阻塞性排版问题"
+    },
+    {
+      "file": "zjh-dark.png",
+      "source": "build/mc-1.21.1/poc/hud-review-zjh-textures-20261021/screenshots/runSmokeClient3/zjh-dark.png",
+      "sha256": "4BE191EB2C44774B3EFC914040E7BFA8186027D1A6C6D763514143B000181A81",
+      "metadata": {
+        "windowWidth": 960,
+        "windowHeight": 640,
+        "guiWidth": 480,
+        "guiHeight": 320,
+        "guiScale": 2.0,
+        "requestedScale": 2
+      },
+      "viewed": true,
+      "verdict": "已查看，未发现本场景中的阻塞性排版问题"
+    },
+    {
+      "file": "zjh-dismissed.png",
+      "source": "build/mc-1.21.1/poc/hud-review-zjh-textures-20261021/screenshots/runSmokeClient1/zjh-dismissed.png",
+      "sha256": "FD419654FADF7CB90006623A1BA0D38AF06CF36B83EDED085559646F81FFF734",
+      "metadata": {
+        "windowWidth": 960,
+        "windowHeight": 640,
+        "guiWidth": 480,
+        "guiHeight": 320,
+        "guiScale": 2.0,
+        "requestedScale": 2
+      },
+      "viewed": true,
+      "verdict": "已查看，未发现本场景中的阻塞性排版问题"
+    },
+    {
+      "file": "zjh-fullscreen.png",
+      "source": "build/mc-1.21.1/poc/hud-review-zjh-textures-20261021/screenshots/runSmokeClient1/zjh-fullscreen.png",
+      "sha256": "F9F9A5A3E4EED9D09224C6DEF8BC42EF28F8DF25785D0457C9D7BDF7D625A631",
+      "metadata": {
+        "windowWidth": 1920,
+        "windowHeight": 1080,
+        "guiWidth": 480,
+        "guiHeight": 270,
+        "guiScale": 4.0,
+        "requestedScale": 0
+      },
+      "viewed": true,
+      "verdict": "已查看，未发现本场景中的阻塞性排版问题"
+    },
+    {
+      "file": "zjh-revealed-1.png",
+      "source": "build/mc-1.21.1/poc/hud-review-zjh-textures-20261021/screenshots/runSmokeClient1/zjh-revealed-1.png",
+      "sha256": "EF570A08B4023BA36A3ECD22F14B1FA2DA38F8F685559B37D5D9EA87ABD47A4A",
+      "metadata": {
+        "windowWidth": 960,
+        "windowHeight": 640,
+        "guiWidth": 480,
+        "guiHeight": 320,
+        "guiScale": 2.0,
+        "requestedScale": 2
+      },
+      "viewed": true,
+      "verdict": "已查看，未发现本场景中的阻塞性排版问题"
+    },
+    {
+      "file": "zjh-revealed-2.png",
+      "source": "build/mc-1.21.1/poc/hud-review-zjh-textures-20261021/screenshots/runSmokeClient1/zjh-revealed-2.png",
+      "sha256": "7A87B989C0C328BA5F7CB490962E0ED576D57F212E8480FAFE7BF7030B0EAFAF",
+      "metadata": {
+        "windowWidth": 960,
+        "windowHeight": 640,
+        "guiWidth": 480,
+        "guiHeight": 320,
+        "guiScale": 2.0,
+        "requestedScale": 2
+      },
+      "viewed": true,
+      "verdict": "已查看，未发现本场景中的阻塞性排版问题"
+    },
+    {
+      "file": "zjh-revealed-3.png",
+      "source": "build/mc-1.21.1/poc/hud-review-zjh-textures-20261021/screenshots/runSmokeClient1/zjh-revealed-3.png",
+      "sha256": "D2FACE3BFC88DC13798B845ACBE6E06083893A2EDCEC2354AE342D6CB9FDEFD1",
+      "metadata": {
+        "windowWidth": 960,
+        "windowHeight": 640,
+        "guiWidth": 480,
+        "guiHeight": 320,
+        "guiScale": 2.0,
+        "requestedScale": 2
+      },
+      "viewed": true,
+      "verdict": "已查看，未发现本场景中的阻塞性排版问题"
+    },
+    {
+      "file": "zjh-selecting.png",
+      "source": "build/mc-1.21.1/poc/hud-review-zjh-textures-20261021/screenshots/runSmokeClient1/zjh-selecting.png",
+      "sha256": "91DF0E34C450A9DBA20E221811DDF1291F58D5E1AFE0E84BD006EACC0AF613A3",
+      "metadata": {
+        "windowWidth": 960,
+        "windowHeight": 640,
+        "guiWidth": 480,
+        "guiHeight": 320,
+        "guiScale": 2.0,
+        "requestedScale": 2
+      },
+      "viewed": true,
+      "verdict": "已查看，未发现本场景中的阻塞性排版问题"
+    },
+    {
+      "file": "zjh-settled.png",
+      "source": "build/mc-1.21.1/poc/hud-review-zjh-textures-20261021/screenshots/runSmokeClient1/zjh-settled.png",
+      "sha256": "B6BBA345AA6C8FD718627E02AE85A5361E3E0AFFF242D03C9E93C701D9055D63",
+      "metadata": {
+        "windowWidth": 960,
+        "windowHeight": 640,
+        "guiWidth": 480,
+        "guiHeight": 320,
+        "guiScale": 2.0,
+        "requestedScale": 2
+      },
+      "viewed": true,
+      "verdict": "已查看，未发现本场景中的阻塞性排版问题"
+    },
+    {
+      "file": "zjh-small.png",
+      "source": "build/mc-1.21.1/poc/hud-review-zjh-textures-20261021/screenshots/runSmokeClient1/zjh-small.png",
+      "sha256": "F3AE999E7822C2645B22E5E1731086C955CE740CBDFB50AD781BA01F9C7562CB",
+      "metadata": {
+        "windowWidth": 1280,
+        "windowHeight": 720,
+        "guiWidth": 427,
+        "guiHeight": 240,
+        "guiScale": 3.0,
+        "requestedScale": 3
+      },
+      "viewed": true,
+      "verdict": "已查看，未发现本场景中的阻塞性排版问题"
+    },
+    {
+      "file": "zjh-target.png",
+      "source": "build/mc-1.21.1/poc/hud-review-zjh-textures-20261021/screenshots/runSmokeClient1/zjh-target.png",
+      "sha256": "8962EA58904582F939D2F2945566A3A9A3864C6100219F3419D85C03E125C198",
+      "metadata": {
+        "windowWidth": 960,
+        "windowHeight": 640,
+        "guiWidth": 480,
+        "guiHeight": 320,
+        "guiScale": 2.0,
+        "requestedScale": 2
+      },
+      "viewed": true,
+      "verdict": "已查看，未发现本场景中的阻塞性排版问题"
+    },
+    {
+      "file": "zjh-waiting.png",
+      "source": "build/mc-1.21.1/poc/hud-review-zjh-textures-20261021/screenshots/runSmokeClient1/zjh-waiting.png",
+      "sha256": "11CB7FBDA83E6A218D2514B2E838D274790AA7445CC7B4AE0375116E03475E9A",
+      "metadata": {
+        "windowWidth": 960,
+        "windowHeight": 640,
+        "guiWidth": 480,
+        "guiHeight": 320,
+        "guiScale": 2.0,
+        "requestedScale": 2
+      },
+      "viewed": true,
+      "verdict": "已查看，未发现本场景中的阻塞性排版问题"
+    }
+  ]
+}

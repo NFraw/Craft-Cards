@@ -1,0 +1,7 @@
+{
+  "parent": "crafty_cards:block/ddz_table",
+  "textures": {
+    "atlas": "crafty_cards:block/zjh_table_atlas",
+    "particle": "crafty_cards:block/zjh_table_particle"
+  }
+}

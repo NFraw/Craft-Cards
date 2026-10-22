@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.jokernan.craftycards.client.ConfigLayoutTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2026-10-21T13:10:06" hostname="JOKERNAN" time="0.007">
+  <properties/>
+  <testcase name="footerButtonsFitScreen()" classname="com.jokernan.craftycards.client.ConfigLayoutTest" time="0.002"/>
+  <testcase name="listNeverOverlapsTitleOrFooter()" classname="com.jokernan.craftycards.client.ConfigLayoutTest" time="0.0"/>
+  <testcase name="controlsAreLaidOutLeftToRightFromTheRightEdge()" classname="com.jokernan.craftycards.client.ConfigLayoutTest" time="0.0"/>
+  <testcase name="degenerateWindowKeepsNumbersNonNegative()" classname="com.jokernan.craftycards.client.ConfigLayoutTest" time="0.0"/>
+  <testcase name="statusTextAndButtonsDoNotCollide()" classname="com.jokernan.craftycards.client.ConfigLayoutTest" time="0.003"/>
+  <testcase name="rowTextNeverOverlapsControls()" classname="com.jokernan.craftycards.client.ConfigLayoutTest" time="0.0"/>
+  <testcase name="rowIsTallEnoughForTwoLines()" classname="com.jokernan.craftycards.client.ConfigLayoutTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

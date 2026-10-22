@@ -92,7 +92,7 @@ public class RenderConfig {
 
     /** 卡牌渲染比例：由 {@link #hudCardW} 推导（补偿 FaceBakery 烘焙与 card_base.json 宽 10.2 的换算）。 */
     public static float hudCardScale() {
-        return hudCardW * 16F / 10.2F;
+        return CardGameHudLayout.cardScale(hudCardW);
     }
 
     /** 卡牌渲染高度（像素）：由 {@link #hudCardScale()} 四舍五入。 */

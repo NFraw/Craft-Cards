@@ -11,6 +11,15 @@ import net.minecraft.server.level.ServerPlayer;
 public final class NeoForgePoc {
     public NeoForgePoc() {
         var bus = NeoForge.EVENT_BUS;
+        if ("zjh".equals(System.getProperty("craftycards.smoke.game"))) {
+            new ZjhPocServer().initialize(
+                callback -> bus.addListener((ServerStartedEvent event) -> callback.accept(event.getServer())),
+                callback -> bus.addListener((PlayerEvent.PlayerLoggedInEvent event) -> {
+                    if (event.getEntity() instanceof ServerPlayer player) callback.accept(player);
+                }),
+                callback -> bus.addListener((ServerTickEvent.Post event) -> callback.accept(event.getServer())));
+            return;
+        }
         new PocServer().initialize(
             callback -> bus.addListener((ServerStartedEvent event) -> callback.accept(event.getServer())),
             callback -> bus.addListener((PlayerEvent.PlayerLoggedInEvent event) -> {

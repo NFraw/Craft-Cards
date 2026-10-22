@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.jokernan.craftycards.client.HudOptionBarTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2026-10-21T13:10:06" hostname="JOKERNAN" time="0.009">
+  <properties/>
+  <testcase name="colorsMatchTheSharedPalette()" classname="com.jokernan.craftycards.client.HudOptionBarTest" time="0.003"/>
+  <testcase name="itemsAreUniformWidthAndCenteredAsAGroup()" classname="com.jokernan.craftycards.client.HudOptionBarTest" time="0.001"/>
+  <testcase name="narrowViewportCompressesInsteadOfOverflowing()" classname="com.jokernan.craftycards.client.HudOptionBarTest" time="0.001"/>
+  <testcase name="ddzActionRowNeverCollidesWithTheHeaderOnShortViewports()" classname="com.jokernan.craftycards.client.HudOptionBarTest" time="0.001"/>
+  <testcase name="hintAndMessageSitAboveTheOptionRow()" classname="com.jokernan.craftycards.client.HudOptionBarTest" time="0.001"/>
+  <testcase name="ddzBidRowKeepsItsExactPreviousGeometry()" classname="com.jokernan.craftycards.client.HudOptionBarTest" time="0.0"/>
+  <testcase name="focusBoxIsSymmetricAroundTheItem()" classname="com.jokernan.craftycards.client.HudOptionBarTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.jokernan.craftycards.client.ZJHLayoutTest" tests="9" skipped="0" failures="0" errors="0" timestamp="2026-10-21T13:10:07" hostname="JOKERNAN" time="0.009">
+  <properties/>
+  <testcase name="messageAndHintSitAboveTheOptionRow()" classname="com.jokernan.craftycards.client.ZJHLayoutTest" time="0.001"/>
+  <testcase name="cardBoxMatchesWhatTheRendererActuallyDraws()" classname="com.jokernan.craftycards.client.ZJHLayoutTest" time="0.0"/>
+  <testcase name="settlementBlockIsVerticallyCentered()" classname="com.jokernan.craftycards.client.ZJHLayoutTest" time="0.002"/>
+  <testcase name="actionRowUsesDdzBaselineOnTheSharedCanvas()" classname="com.jokernan.craftycards.client.ZJHLayoutTest" time="0.0"/>
+  <testcase name="resultHintClearsHotbarAndItemName()" classname="com.jokernan.craftycards.client.ZJHLayoutTest" time="0.001"/>
+  <testcase name="bottomMarginDefaultsToTheSameValueAsDdz()" classname="com.jokernan.craftycards.client.ZJHLayoutTest" time="0.001"/>
+  <testcase name="resultRowSwitchesToOneLineWhenTooShort()" classname="com.jokernan.craftycards.client.ZJHLayoutTest" time="0.0"/>
+  <testcase name="cardsUseTheFullModelWidthIncludingBevels()" classname="com.jokernan.craftycards.client.ZJHLayoutTest" time="0.0"/>
+  <testcase name="threeHandSlotsAndSixResultsFitSupportedViewports()" classname="com.jokernan.craftycards.client.ZJHLayoutTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

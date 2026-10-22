@@ -71,6 +71,8 @@ public class ClientDDZData {
     }
 
     public void apply(GameStatePayload payload) {
+        if (!payload.sessionClosed() && payload.myIndex() >= 0) ZJHClient.reset();
+        else if (!payload.sessionClosed() && ZJHClient.snapshot() != null) return;
         // 收到"结束类"快照（解散 / 旁观别人的结算）时提示一句就清空状态：
         // 这类快照之后服务端不会再下发，若把状态留着就会永久占屏（全屏结算遮罩曾因此卡死旁观者）。
         // 决策规则见 ClientSnapshotPolicy（纯函数，有单测）。

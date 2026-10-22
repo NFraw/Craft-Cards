@@ -27,15 +27,25 @@ public final class NeoForgeTableEvents {
         bus.addListener(NeoForgeTableEvents::onServerTick);
         bus.addListener(NeoForgeTableEvents::onPlayerLoggedOut);
         bus.addListener(NeoForgeTableEvents::onRightClickBlock);
+        bus.addListener((net.neoforged.neoforge.event.server.ServerStoppingEvent event) ->
+            com.jokernan.craftycards.game.server.zjh.ZJHTableManager.getInstance().stop(event.getServer()));
+        bus.addListener((PlayerEvent.PlayerLoggedInEvent event) -> {
+            if(event.getEntity() instanceof ServerPlayer player) {
+                com.jokernan.craftycards.game.server.zjh.ZJHTableManager.getInstance().initialize(player.server);
+                com.jokernan.craftycards.game.server.zjh.ZJHChipEscrow.get(player.server).deliver(player);
+            }
+        });
     }
 
     private static void onServerTick(ServerTickEvent.Post event) {
         DDZTableManager.getInstance().tick(event.getServer());
+        com.jokernan.craftycards.game.server.zjh.ZJHTableManager.getInstance().tick(event.getServer());
     }
 
     private static void onPlayerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
         if (event.getEntity() instanceof ServerPlayer player) {
             DDZTableManager.getInstance().handleLogout(player);
+            com.jokernan.craftycards.game.server.zjh.ZJHTableManager.getInstance().logout(player);
         }
     }
 
@@ -52,8 +62,10 @@ public final class NeoForgeTableEvents {
     public static void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
         boolean force = DDZTableManager.shouldForceBlockUse(
             event.getEntity(), event.getLevel().getBlockState(event.getPos()));
-        if (force) {
+        if (force || event.getLevel().getBlockState(event.getPos()).getBlock() instanceof com.jokernan.craftycards.block.BlockZJHTable) {
             event.setUseBlock(TriState.TRUE);
+            if(event.getLevel().getBlockState(event.getPos()).getBlock() instanceof com.jokernan.craftycards.block.BlockZJHTable)
+                event.setUseItem(TriState.FALSE);
         }
     }
 }

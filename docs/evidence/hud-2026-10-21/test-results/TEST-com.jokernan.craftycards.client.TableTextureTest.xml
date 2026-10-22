@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.jokernan.craftycards.client.TableTextureTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-10-21T13:10:06" hostname="JOKERNAN" time="0.055">
+  <properties/>
+  <testcase name="worldModelsUseIndependentGameAtlases()" classname="com.jokernan.craftycards.client.TableTextureTest" time="0.022"/>
+  <testcase name="inventoryModelsMatchTheirOwnWorldTexture()" classname="com.jokernan.craftycards.client.TableTextureTest" time="0.002"/>
+  <testcase name="clothIsBlueForDdzAndBurgundyForZjh()" classname="com.jokernan.craftycards.client.TableTextureTest" time="0.027"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -49,6 +49,15 @@ public final class ClientBgm {
                 CustomAudio.minCardsLeft(snap.playerCardCounts()), rocketOnTable(snap));
         }
         // 主槽位在这个音乐包里没配文件时往下回退（王炸 → 残局 → 进行中）：
+        var zjh = ZJHClient.snapshot();
+        if (zjh != null && !zjh.closed()) {
+            desired = switch (zjh.phase()) {
+                case "WAITING" -> CustomAudio.Slot.BGM_WAITING;
+                case "PLAYING" -> CustomAudio.Slot.BGM_PLAYING;
+                default -> zjh.me() < 0 ? CustomAudio.Slot.BGM_WAITING
+                    : zjh.players().getCompound(zjh.me()).getBoolean("winner") ? CustomAudio.Slot.BGM_WIN : CustomAudio.Slot.BGM_LOSE;
+            };
+        }
         // 否则"给老音乐包加了新 BGM 键"会变成背景音乐直接消失
         CustomAudio.Slot resolved = null;
         for (CustomAudio.Slot candidate : CustomAudio.bgmChain(desired)) {

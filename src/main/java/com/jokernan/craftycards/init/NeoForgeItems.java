@@ -33,6 +33,9 @@ public final class NeoForgeItems {
         InitItems.CASINO_CARPET_SPACE.bind(
             BLOCKS.register("casino_carpet_space", InitItems::createCasinoCarpet));
         InitItems.DDZ_TABLE.bind(BLOCKS.register("ddz_table", InitItems::createDdzTable));
+        InitItems.ZJH_TABLE.bind(BLOCKS.register("zjh_table", InitItems::createZjhTable));
+        InitItems.CARD_EMPTY.bind(ITEMS.register("card_empty", () -> new net.minecraft.world.item.Item(new net.minecraft.world.item.Item.Properties())));
+        InitItems.ZJH_TABLE_ITEM.bind(ITEMS.register("zjh_table", () -> InitItems.createBlockItem(InitItems.ZJH_TABLE.get())));
 
         // 物品（方块物品延迟取方块实例，见类注释）
         InitItems.CASINO_CARPET_SPACE_ITEM.bind(ITEMS.register("casino_carpet_space",

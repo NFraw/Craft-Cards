@@ -24,8 +24,6 @@ final class HudSettlementLayout {
     private static final int MIN_ROW_GAP = 2;
     /** 顶部最小留白。 */
     private static final int TOP_MARGIN = 6;
-    /** 底部为"点击任意处关闭"预留的高度。 */
-    private static final int CLOSE_RESERVE = 18;
 
     /** 结果行 y（如"地主 X 获胜！"）。 */
     int resultY;
@@ -55,7 +53,9 @@ final class HudSettlementLayout {
         int headerH = lineHeight + GAP_AFTER_HEADER;
         int betH = betLines > 0 ? betLines * lineHeight + GAP_AFTER_BET : 0;
         int rowBlockH = lineHeight + LABEL_TO_CARDS + cardRowHeight;
-        int avail = screenHeight - CLOSE_RESERVE;
+        // Keep space for both the close line and the vanilla hotbar/item-name area.
+        int closeY = CardGameHudLayout.closeY(screenHeight);
+        int avail = closeY - GAP_AFTER_BET;
 
         // 屏幕矮时先收家与家的间距，宁可挨紧也不要重叠或把底部提示挤出屏
         int rowGap = ROW_GAP;
@@ -85,7 +85,7 @@ final class HudSettlementLayout {
         }
 
         // 底部提示：正常贴在屏底；若内容很长就退到内容下方，但绝不越出屏幕
-        l.closeY = Math.min(Math.max(y + GAP_AFTER_BET, screenHeight - CLOSE_RESERVE), screenHeight - lineHeight - 2);
+        l.closeY = Math.min(Math.max(y + GAP_AFTER_BET, closeY), screenHeight - lineHeight - 2);
         return l;
     }
 }

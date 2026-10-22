@@ -307,4 +307,17 @@ test {
         .withPathSensitivity(PathSensitivity.RELATIVE)
 }
 
+// 炸金花 HUD 的独立可视化探针：不启动游戏、不连服务器。
+// 按"阶段 × 分辨率"算布局、判性质、出线框图与 HTML 图廊（build/zjh-ui-probe/）。
+// 检查引擎与 ZjhUiProbeTest 共用，所以 `test` 会挡住回退、这个任务负责把结论画出来给人看。
+tasks.register('zjhUiProbe', JavaExec) {
+    group = 'verification'
+    description = '跑炸金花 HUD 布局探针并输出线框图 + 报告（输出目录见任务日志里的「输出目录」一行）'
+    dependsOn tasks.named('testClasses')
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'com.jokernan.craftycards.uiprobe.ZjhUiProbe'
+    args = [layout.buildDirectory.dir('zjh-ui-probe').get().asFile.absolutePath]
+    systemProperty 'java.awt.headless', 'true'
+}
+
 apply from: 'common/gradle/version-sources.gradle'

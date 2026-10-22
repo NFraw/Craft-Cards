@@ -82,6 +82,7 @@ public class TableConfigScreen extends ConfigScreenBase {
         list.row(toggleRow("本桌启用筹码", "关掉则这张桌子是纯娱乐局：不收押注、结算不转移物品",
             () -> chipsEnabled, v -> chipsEnabled = v));
         list.note(entryNote());
+        list.note("铁锭／金锭／钻石作筹码时，同材质普通方块自动按1:9兑换并找零");
         list.note(chipNote(snap));
     }
 
