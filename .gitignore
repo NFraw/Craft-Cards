@@ -130,3 +130,6 @@ __pycache__/
 /local-plans/
 /local-workspaces/
 /soundpacks/
+
+# Release listing drafts stay local; never published to this repo.
+/release-materials/
