@@ -111,6 +111,7 @@ gradle-app.setting
 
 # Local assistant/editor configuration must never enter release snapshots.
 .claude/settings.local.json
+/.workbuddy-ai/
 
 **/build/
 
